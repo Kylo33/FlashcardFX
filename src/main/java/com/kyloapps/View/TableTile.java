@@ -6,39 +6,36 @@ import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class TableTile extends Tile {
-    private TextField textField;
-    List<TextField> textFieldList = new ArrayList<>();
-    private ReadOnlyObjectProperty columnCount;
-    private HBox actions;
+    private final ReadOnlyObjectProperty<Integer> columnCount;
+    private final HBox actions;
 
-    public TableTile(String title, String description, ReadOnlyObjectProperty columnCount) {
+    public TableTile(String title, String description, ReadOnlyObjectProperty<Integer> columnCount) {
         super(title, description);
         this.columnCount = columnCount;
-        actions = getActions(columnCount);
+        actions = getActions();
         setAction(actions);
     }
 
-    private HBox getActions(ReadOnlyObjectProperty columnCount) {
+    private HBox getActions() {
         HBox actions = new HBox();
         actions.setSpacing(5);
 
-        for (int i = 0, c = (int) columnCount.get(); i < c; i++) {
+        for (int i = 0, c = columnCount.get(); i < c; i++) {
             actions.getChildren().add(new TextField());
         }
 
         columnCount.addListener((obs, oldValue, newValue) -> {
-            if ((int) newValue < (int) oldValue) {
-                List<Node> tiles = IntStream.range(0, (int) newValue).mapToObj((val) -> actions.getChildren().get(val)).collect(Collectors.toList());
+            if (newValue < oldValue) {
+                List<Node> tiles = IntStream.range(0, newValue).mapToObj((val) -> actions.getChildren().get(val)).collect(Collectors.toList());
                 actions.getChildren().setAll(tiles);
             } else {
-                for (int i = (int) oldValue; i < (int) newValue; i++) {
+                for (int i = oldValue; i < newValue; i++) {
                     actions.getChildren().add(new TextField());
                 }
             }
@@ -58,6 +55,6 @@ public class TableTile extends Tile {
 
     public boolean isCompleted() {
         // If any of the contents are empty strings.
-        return !Arrays.stream(getContents()).anyMatch((str) -> str.isEmpty());
+        return Arrays.stream(getContents()).noneMatch(String::isEmpty);
     }
 }
