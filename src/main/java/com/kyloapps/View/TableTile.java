@@ -1,13 +1,9 @@
 package com.kyloapps.View;
 
 import atlantafx.base.controls.Tile;
-import atlantafx.base.theme.Styles;
-import javafx.application.Platform;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
 
 import java.util.ArrayList;

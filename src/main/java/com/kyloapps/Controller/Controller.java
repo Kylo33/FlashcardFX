@@ -1,6 +1,5 @@
 package com.kyloapps.Controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.kyloapps.DisplayableFlashcard;
@@ -8,32 +7,18 @@ import com.kyloapps.Model.Deck;
 import com.kyloapps.Model.Model;
 import com.kyloapps.View.*;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.NumberBinding;
-import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.util.Pair;
-import javafx.util.StringConverter;
-import org.json.JSONObject;
-import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 public class Controller {
@@ -65,7 +50,7 @@ public class Controller {
                 Platform.runLater(() -> {
                     view.loading(true);
                     menu.getFlowPane().getChildren().addAll(change.getAddedSubList().stream()
-                            .map((deck) -> new DeckMenuCard((Deck) deck, this::handlePracticeBtn))
+                            .map((deck) -> new DeckMenuCard(deck, this::handlePracticeBtn))
                             .collect(Collectors.toList()));
                     view.loading(false);
                 });
