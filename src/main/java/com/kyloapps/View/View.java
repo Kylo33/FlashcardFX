@@ -50,7 +50,7 @@ public class View extends BorderPane {
         });
 
         // Add the toolbar
-        setTop(createToolbar());
+        setTop(new NavigationBar(presentationModel.currentPageProperty(), pageSelectHandler, pages));
 
         // Set the starting page.
         pageSelectHandler.accept(pages.get(Pages.MENU));
@@ -58,65 +58,6 @@ public class View extends BorderPane {
 
     public Map<Pages, Node> getPages() {
         return pages;
-    }
-
-    private Node createToolbar() {
-        ToolBar bar = new ToolBar();
-
-        // Create the buttons, assign their icons, and add their respective events.
-        RadioButton menuBtn = new RadioButton("Menu");
-        menuBtn.setGraphic(new FontIcon(MaterialDesignH.HOME));
-        menuBtn.setOnAction((event) -> {
-            pageSelectHandler.accept(pages.get(Pages.MENU));
-        });
-
-        RadioButton statsBtn = new RadioButton("Deck Editor");
-        statsBtn.setGraphic(new FontIcon(MaterialDesignP.PENCIL));
-        statsBtn.setOnAction((event) -> {
-            pageSelectHandler.accept(pages.get(Pages.EDITOR));
-        });
-
-        RadioButton settingsBtn = new RadioButton("Settings");
-        settingsBtn.setGraphic(new FontIcon(MaterialDesignC.COG));
-        settingsBtn.setOnAction((event) -> {
-            pageSelectHandler.accept(pages.get(Pages.SETTINGS));
-        });
-
-        // Add all the buttons to a ToggleGroup
-        ToggleGroup group = new ToggleGroup();
-        List.of(menuBtn, statsBtn, settingsBtn).forEach((element) -> {
-            element.setToggleGroup(group);
-
-            // Style them as ToggleButton
-            element.getStyleClass().remove("radio-button");
-            element.getStyleClass().add("toggle-button");
-        });
-
-        // Spacer to right-align the stats and settings buttons.
-        HBox spacer = new HBox();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-
-        // Add items
-        bar.getItems().addAll(menuBtn, spacer, statsBtn, settingsBtn);
-
-        // Listen for page changes to update the toolbar (if page is not changed via toolbar)
-        presentationModel.currentPageProperty().addListener(pageChangeListenerForBar(menuBtn, statsBtn, settingsBtn, group));
-
-        return bar;
-    }
-
-    private ChangeListener<Node> pageChangeListenerForBar(RadioButton menuBtn, RadioButton statsBtn, RadioButton settingsBtn, ToggleGroup group) {
-        return (observable, oldValue, newValue) -> {
-            if (newValue.equals(pages.get(Pages.MENU))) {
-                menuBtn.setSelected(true);
-            } else if (newValue.equals(pages.get(Pages.EDITOR))) {
-                statsBtn.setSelected(true);
-            } else if (newValue.equals(pages.get(Pages.SETTINGS))) {
-                settingsBtn.setSelected(true);
-            } else {
-                group.getSelectedToggle().setSelected(false);
-            }
-        };
     }
 
     public void loading(boolean loading) {

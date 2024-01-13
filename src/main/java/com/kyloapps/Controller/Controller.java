@@ -54,9 +54,12 @@ public class Controller {
         this.view = new View(model.getPresentationModel(), this::pageSelectHandler, model.flashcardDirectoryProperty(),
                 this::detailChangeHandler, this::saveHandler, this::createDeckActionHandler);
 
-        Menu menu = (Menu) view.getPages().get(Pages.MENU);
+        loadDecks();
+        configureEditor();
+    }
 
-        model.getDeckLoader().getDecks().clear();
+    private void loadDecks() {
+        Menu menu = (Menu) view.getPages().get(Pages.MENU);
         model.getDeckLoader().getDecks().addListener((ListChangeListener<? super Deck>) (change) -> {
             while (change.next()) {
                 Platform.runLater(() -> {
@@ -69,8 +72,6 @@ public class Controller {
             }
         });
         new Thread(() -> model.getDeckLoader().load()).start();
-
-        configureEditor();
     }
 
     private void createDeckActionHandler(Pair<String, String> stringStringPair) {

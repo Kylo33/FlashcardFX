@@ -145,14 +145,12 @@ public abstract class DisplayableFlashcard<T> {
                     try {
                         urlConnection = new URL(imageURL).openConnection();
                         urlConnection.setRequestProperty("User-Agent",
-                                "Mozilla/5.0 (X11; Linux x86_64; rv:10.0) Gecko/20100101 Firefox/10.0");
+                                "Mozilla/5.0 (X11; Linux x86_64; rv:121.0) Gecko/20100101 Firefox/121.0");
                         image = new Image(urlConnection.getInputStream());
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    Platform.runLater(() -> {
-                        imageBox.setImage(image);
-                    });
+                    Platform.runLater(() -> imageBox.setImage(image));
             }).start();
         }
     }
