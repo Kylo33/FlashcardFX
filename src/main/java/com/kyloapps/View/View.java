@@ -1,26 +1,18 @@
 package com.kyloapps.View;
 
 import atlantafx.base.theme.Styles;
-import com.kyloapps.Model.DeckLoader;
 import com.kyloapps.Model.Model;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.util.Pair;
-import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignH;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignP;
 
 import java.io.File;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
