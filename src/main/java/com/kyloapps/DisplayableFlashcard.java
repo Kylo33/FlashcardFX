@@ -1,27 +1,21 @@
 package com.kyloapps;
 
-import atlantafx.base.controls.RingProgressIndicator;
-import atlantafx.base.theme.Styles;
 import com.kyloapps.Model.AnswerChoice;
 import com.kyloapps.View.ImageBox;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
 
 import java.io.IOException;
 import java.net.URL;
@@ -36,7 +30,6 @@ public abstract class DisplayableFlashcard<T> {
     private String imageURL;
     private ImageView imageView = new ImageView();
     private GridPane container = new GridPane();
-    ChangeListener<Number> listenerForPane;
 
     public DisplayableFlashcard(String question, List<AnswerChoice<T>> options, String imageURL) {
         this.question = question;

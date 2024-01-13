@@ -11,4 +11,5 @@ module com.kyloapps {
     requires com.fasterxml.jackson.dataformat.xml;
     requires java.desktop;
     exports com.kyloapps;
+    exports com.kyloapps.Model;
 }
