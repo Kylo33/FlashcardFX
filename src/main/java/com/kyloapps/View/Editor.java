@@ -31,7 +31,6 @@ import java.util.function.Consumer;
 public class Editor extends BorderPane {
     private SimpleObjectProperty<ChoiceBox<Deck>> deckChoiceBox = new SimpleObjectProperty<>(new ChoiceBox<>());
     private HBox loadingBox;
-    private Runnable saveAction;
     private SimpleObjectProperty<Deck> currentDeck = new SimpleObjectProperty<>();
     private CardCreator creator;
     private ObjectProperty<Theme> currentTheme;
@@ -39,7 +38,6 @@ public class Editor extends BorderPane {
     public Editor(BiConsumer<String, String> detailChangeHandler, Runnable saveAction, ObjectProperty<Theme> currentThemeProperty,
                   Consumer<Pair<String, String>> createDeckActionHandler) {
         currentTheme = currentThemeProperty;
-        this.saveAction = saveAction;
         Tile deckChooserTile = new Tile("Choose a deck", "Select a deck to edit.");
         deckChooserTile.actionProperty().bind(deckChoiceBox);
 
@@ -105,8 +103,15 @@ public class Editor extends BorderPane {
         });
 
         deckDetailEditorTile.setAction(buttonBox);
+        deckGrid.add(deckDetailEditorTile, 0, 1);
 
-        VBox top = new VBox(deckGrid, deckDetailEditorTile, new Separator(Orientation.HORIZONTAL));
+        Tile deckDeleterTile = new Tile("Delete deck", "Delete the current deck");
+        Button deckDeleterButton = new Button("Delete", new FontIcon(MaterialDesignT.TRASH_CAN));
+        deckDeleterButton.getStyleClass().add(Styles.DANGER);
+        deckDeleterTile.setAction(deckDeleterButton);
+        deckGrid.add(deckDeleterTile, 1, 1);
+
+        VBox top = new VBox(deckGrid, new Separator(Orientation.HORIZONTAL));
         top.setPadding(new Insets(30));
         setTop(top);
 
@@ -121,7 +126,7 @@ public class Editor extends BorderPane {
             creator.setVisible(true);
         });
 
-        addSaveBar();
+        addSaveBar(saveAction);
     }
 
     private void setCreateAction(Button createButton, Consumer<Pair<String, String>> createDeckActionHandler) {
@@ -155,7 +160,7 @@ public class Editor extends BorderPane {
         });
     }
 
-    private void addSaveBar() {
+    private void addSaveBar(Runnable saveAction) {
         Label label = new Label("Save your changes...");
         label.getStyleClass().addAll(Styles.TEXT_MUTED, Styles.LARGE);
         Button saveBtn = new Button("Save", new FontIcon(MaterialDesignF.FLOPPY));
