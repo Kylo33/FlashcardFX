@@ -10,9 +10,6 @@ public class MainMvciController {
         MainMvciModel model = new MainMvciModel();
         MainMvciInteractor interactor = new MainMvciInteractor();
         view = new MainMvciViewBuilder(model, new SettingsMvciController().getView());
-        model.settingsPageSelectedProperty().addListener((obs, old, nww) -> {
-            System.out.println(nww);
-        });
     }
     public Region getView() {
         return view.build();
