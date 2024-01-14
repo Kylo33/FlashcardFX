@@ -8,8 +8,8 @@ public class MainMvciController {
     
     public MainMvciController() {
         MainMvciModel model = new MainMvciModel();
-        MainMvciInteractor interactor = new MainMvciInteractor();
-        view = new MainMvciViewBuilder(model, new SettingsMvciController().getView());
+        MainMvciInteractor interactor = new MainMvciInteractor(model);
+        view = new MainMvciViewBuilder(model, new SettingsMvciController(model.currentDirectoryProperty()).getView());
     }
     public Region getView() {
         return view.build();
