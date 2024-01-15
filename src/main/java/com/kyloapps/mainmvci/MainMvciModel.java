@@ -15,6 +15,7 @@ public class MainMvciModel {
     private final BooleanProperty editorPageSelected = new SimpleBooleanProperty(false);
     private final BooleanProperty settingsPageSelected = new SimpleBooleanProperty(false);
     private final ObservableList<Deck> decks = FXCollections.observableArrayList();
+    private final ObjectProperty<File> currentDirectory = new SimpleObjectProperty<>();
 
 
     public boolean isMenuPageSelected() {
@@ -56,8 +57,6 @@ public class MainMvciModel {
     public ObservableList<Deck> getDecks() {
         return decks;
     }
-
-    private final ObjectProperty<File> currentDirectory = new SimpleObjectProperty<>(null);
 
     public File getCurrentDirectory() {
         return currentDirectory.get();

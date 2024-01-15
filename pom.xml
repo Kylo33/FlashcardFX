@@ -66,6 +66,15 @@
                             <mainClass>com.kyloapps.App</mainClass>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>debug</id>
+                        <configuration>
+                            <mainClass>com.kyloapps.App</mainClass>
+                            <options>
+                                <option>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:8000</option>
+                            </options>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>

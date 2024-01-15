@@ -1,6 +1,8 @@
 package com.kyloapps.mainmvci;
 
+import com.kyloapps.domain.Deck;
 import com.kyloapps.settings.SettingsMvciController;
+import javafx.collections.ListChangeListener;
 import javafx.scene.layout.Region;
 
 public class MainMvciController {
