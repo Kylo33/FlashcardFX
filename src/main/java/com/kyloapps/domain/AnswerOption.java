@@ -1,12 +1,16 @@
 package com.kyloapps.domain;
 
-public class MultipleChoiceOption {
+public class AnswerOption<T> {
     private boolean correct;
-    private String content;
+    private T content;
 
-    public MultipleChoiceOption(boolean correct, String content) {
+    public AnswerOption(boolean correct, T content) {
         this.correct = correct;
         this.content = content;
+    }
+
+    public AnswerOption() {
+
     }
 
     public boolean isCorrect() {
@@ -17,11 +21,11 @@ public class MultipleChoiceOption {
         this.correct = correct;
     }
 
-    public String getContent() {
+    public T getContent() {
         return content;
     }
 
-    public void setContent(String content) {
+    public void setContent(T content) {
         this.content = content;
     }
 }

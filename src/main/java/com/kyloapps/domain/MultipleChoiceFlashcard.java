@@ -4,27 +4,31 @@ import java.util.List;
 
 public class MultipleChoiceFlashcard implements Flashcard{
     private String question;
-    private List<MultipleChoiceOption> answers;
+    private List<AnswerOption<String>> options;
 
-    public MultipleChoiceFlashcard(String question, List<MultipleChoiceOption> answers) {
+    public MultipleChoiceFlashcard(String question, List<AnswerOption<String>> options) {
         this.question = question;
-        this.answers = answers;
+        this.options = options;
+    }
+
+    public MultipleChoiceFlashcard() {
+
     }
 
     public String getQuestion() {
         return question;
     }
 
+    public List<AnswerOption<String>> getOptions() {
+        return options;
+    }
+
     public void setQuestion(String question) {
         this.question = question;
     }
 
-    public List<MultipleChoiceOption> getAnswers() {
-        return answers;
-    }
-
-    public void setAnswers(List<MultipleChoiceOption> answers) {
-        this.answers = answers;
+    public void setOptions(List<AnswerOption<String>> options) {
+        this.options = options;
     }
 
     @Override

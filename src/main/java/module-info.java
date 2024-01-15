@@ -12,4 +12,5 @@ module com.kyloapps {
     requires java.desktop;
     exports com.kyloapps;
     exports com.kyloapps.Model;
+    exports com.kyloapps.domain;
 }

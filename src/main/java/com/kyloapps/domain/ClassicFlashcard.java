@@ -9,6 +9,9 @@ public class ClassicFlashcard implements Flashcard{
         this.answer = answer;
     }
 
+    public ClassicFlashcard() {
+    }
+
     @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
