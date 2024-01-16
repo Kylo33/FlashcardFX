@@ -1,7 +1,7 @@
 package com.kyloapps.mainmvci;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import javafx.scene.Node;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
@@ -16,7 +16,6 @@ import org.kordamp.ikonli.materialdesign2.MaterialDesignP;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainMvciViewBuilder implements Builder<Region> {
     private final MainMvciModel model;
@@ -39,19 +38,23 @@ public class MainMvciViewBuilder implements Builder<Region> {
     }
 
     private Node createStackPane() {
-        StackPane result = new StackPane(
-                homeContent,
-                settingsContent,
-                practiceContent
-        );
-        Map<Pages, Region> pagesRegionMap = new HashMap<>();
-        pagesRegionMap.put(Pages.HOME, homeContent);
-        pagesRegionMap.put(Pages.SETTINGS, settingsContent);
-        pagesRegionMap.put(Pages.PRACTICE, practiceContent);
-        model.pageSelectedProperty().addListener((observable, newValue, oldValue) -> {
-            pagesRegionMap.get(newValue).setVisible(true);
-            pagesRegionMap.get(oldValue).setVisible(false);
+        Region[] pages = {homeContent, settingsContent, practiceContent};
+        for (Region page: pages) {
+            page.setVisible(false);
+        }
+        StackPane result = new StackPane(pages);
+
+        Map<Page, Region> pageRegionMap = new HashMap<>();
+        pageRegionMap.put(Page.HOME, homeContent);
+        pageRegionMap.put(Page.SETTINGS, settingsContent);
+        pageRegionMap.put(Page.PRACTICE, practiceContent);
+
+        model.selectedPageProperty().addListener((observable, oldPage, newPage) -> {
+            pageRegionMap.get(newPage).setVisible(true);
+            if (oldPage != null) pageRegionMap.get(oldPage).setVisible(false);
         });
+        model.setSelectedPage(Page.HOME);
+
         return result;
     }
 
@@ -70,52 +73,24 @@ public class MainMvciViewBuilder implements Builder<Region> {
             button.getStyleClass().add("toggle-button");
         });
 
-        registerPageSelectedListeners(toolbarButtonGroup, homeButton, editorButton, settingsButton);
-        model.setPageSelected(Pages.HOME);
+        BiMap<Page, RadioButton> pageButtonMap = HashBiMap.create();
+        pageButtonMap.put(Page.HOME, homeButton);
+        pageButtonMap.put(Page.EDITOR, editorButton);
+        pageButtonMap.put(Page.SETTINGS, settingsButton);
+        model.selectedPageProperty().addListener((observable, oldPage, newPage) -> {
+            if (pageButtonMap.containsKey(newPage)) {
+                pageButtonMap.get(newPage).setSelected(true);
+            }
+        });
+
+        toolbarButtonGroup.selectedToggleProperty().addListener((observable, oldToggle, newToggle) -> {
+            Page newPage = pageButtonMap.inverse().get(newToggle);
+            model.setSelectedPage(newPage);
+        });
 
         HBox spacer = new HBox();
         HBox.setHgrow(spacer, Priority.ALWAYS);
         toolBar.getItems().addAll(homeButton, spacer, editorButton, settingsButton);
         return toolBar;
-    }
-
-    private void registerPageSelectedListeners(ToggleGroup toolbarButtonGroup, RadioButton homeButton, RadioButton editorButton, RadioButton settingsButton) {
-        BooleanProperty changeInProgress = new SimpleBooleanProperty(false);
-        toolbarButtonGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
-            if (changeInProgress.get()) {
-                return;
-            }
-            changeInProgress.set(true);
-            if (newValue.equals(homeButton)) {
-                model.setPageSelected(Pages.HOME);
-            } else if (newValue.equals(editorButton)) {
-                model.setPageSelected(Pages.EDITOR);
-            } else if (newValue.equals(settingsButton)) {
-                model.setPageSelected(Pages.SETTINGS);
-            }
-            changeInProgress.set(false);
-        });
-
-        model.pageSelectedProperty().addListener((observable, oldValue, newValue) -> {
-            if (changeInProgress.get()) {
-                return;
-            }
-            changeInProgress.set(true);
-            switch (newValue) {
-                case HOME:
-                    homeButton.setSelected(true);
-                    break;
-                case EDITOR:
-                    editorButton.setSelected(true);
-                    break;
-                case SETTINGS:
-                    settingsButton.setSelected(true);
-                    break;
-                default:
-                    toolbarButtonGroup.getSelectedToggle().setSelected(false);
-                    break;
-            }
-            changeInProgress.set(false);
-        });
     }
 }

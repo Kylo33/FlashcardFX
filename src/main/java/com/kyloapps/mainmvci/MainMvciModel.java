@@ -2,7 +2,6 @@ package com.kyloapps.mainmvci;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import com.kyloapps.domain.Deck;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -11,9 +10,9 @@ import javafx.collections.ObservableList;
 import java.io.File;
 
 public class MainMvciModel {
-    private final ObjectProperty<Pages> pageSelected = new SimpleObjectProperty<>();
     private final ObservableList<Deck> decks = FXCollections.observableArrayList();
     private final ObjectProperty<File> currentDirectory = new SimpleObjectProperty<>();
+    private final ObjectProperty<Page> selectedPage = new SimpleObjectProperty<>();
 
     public ObservableList<Deck> getDecks() {
         return decks;
@@ -31,15 +30,15 @@ public class MainMvciModel {
         this.currentDirectory.set(currentDirectory);
     }
 
-    public Pages getPageSelected() {
-        return pageSelected.get();
+    public Page getSelectedPage() {
+        return selectedPage.get();
     }
 
-    public ObjectProperty<Pages> pageSelectedProperty() {
-        return pageSelected;
+    public ObjectProperty<Page> selectedPageProperty() {
+        return selectedPage;
     }
 
-    public void setPageSelected(Pages pageSelected) {
-        this.pageSelected.set(pageSelected);
+    public void setSelectedPage(Page selectedPage) {
+        this.selectedPage.set(selectedPage);
     }
 }

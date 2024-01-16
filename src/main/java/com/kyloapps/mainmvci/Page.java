@@ -1,5 +1,5 @@
 package com.kyloapps.mainmvci;
 
-public enum Pages {
+public enum Page {
     HOME, EDITOR, SETTINGS, PRACTICE
 }
