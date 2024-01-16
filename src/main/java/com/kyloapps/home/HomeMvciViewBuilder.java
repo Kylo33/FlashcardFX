@@ -19,8 +19,9 @@ import java.util.stream.Stream;
 public class HomeMvciViewBuilder implements Builder<Region> {
     private ObservableList<Node> representationOfDecks = FXCollections.observableArrayList();
     public HomeMvciViewBuilder(HomeMvciModel model) {
-        model.getDecks().addListener((ListChangeListener<? super Deck>) change -> {
-            this.representationOfDecks.setAll(change.getList().stream().map(deck -> new Label(deck.getTitle())).collect(Collectors.toList()));
+        representationOfDecks = EasyBind.map(model.getDecks(), deck -> new Label(deck.getTitle()));
+        representationOfDecks.addListener((ListChangeListener<? super Node>) change -> {
+            System.out.println(change.getList());
         });
     }
 

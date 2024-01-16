@@ -18,21 +18,18 @@ import java.util.List;
 
 public class MainMvciController {
     private final MainMvciViewBuilder view;
-    private final ObservableList<Label> labels;
+    // To prevent GC. TODO: find a more clean solution to this
+    HomeMvciController homeMvciController;
     
     public MainMvciController() {
         MainMvciModel model = new MainMvciModel();
         MainMvciInteractor interactor = new MainMvciInteractor(model);
+        homeMvciController = new HomeMvciController(model.getDecks());
         view = new MainMvciViewBuilder(
                 model,
                 new SettingsMvciController(model.currentDirectoryProperty()).getView(),
-                new HomeMvciController(model.getDecks()).getView()
+                homeMvciController.getView()
         );
-
-        labels = EasyBind.map(model.getDecks(), integer -> new Label(integer.getTitle()));
-        labels.addListener((ListChangeListener<? super Label>) (a) -> {
-            System.out.println("a.getList() = " + a.getList());
-        });
     }
     public Region getView() {
         return view.build();
