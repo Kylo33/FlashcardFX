@@ -18,16 +18,17 @@ import java.util.List;
 
 public class MainMvciController {
     private final MainMvciViewBuilder view;
-    // To prevent GC. TODO: find a more clean solution to this
-    HomeMvciController homeMvciController;
+    private final HomeMvciController homeMvciController;
+    private final SettingsMvciController settingsMvciController;
     
     public MainMvciController() {
         MainMvciModel model = new MainMvciModel();
         MainMvciInteractor interactor = new MainMvciInteractor(model);
         homeMvciController = new HomeMvciController(model.getDecks());
+        settingsMvciController = new SettingsMvciController(model.currentDirectoryProperty());
         view = new MainMvciViewBuilder(
                 model,
-                new SettingsMvciController(model.currentDirectoryProperty()).getView(),
+                settingsMvciController.getView(),
                 homeMvciController.getView()
         );
     }

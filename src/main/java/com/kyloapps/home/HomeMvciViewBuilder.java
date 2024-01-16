@@ -1,34 +1,54 @@
 package com.kyloapps.home;
 
-import com.kyloapps.domain.Deck;
+import atlantafx.base.controls.Card;
+import atlantafx.base.controls.Tile;
 import com.tobiasdiez.easybind.EasyBind;
-import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Region;
 import javafx.util.Builder;
 
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 public class HomeMvciViewBuilder implements Builder<Region> {
-    private ObservableList<Node> representationOfDecks = FXCollections.observableArrayList();
+    private HomeMvciModel model;
+    private ObservableList<Node> menuCards;
     public HomeMvciViewBuilder(HomeMvciModel model) {
-        representationOfDecks = EasyBind.map(model.getDecks(), deck -> new Label(deck.getTitle()));
-        representationOfDecks.addListener((ListChangeListener<? super Node>) change -> {
-            System.out.println(change.getList());
+        this.model = model;
+        this.menuCards = createMenuCards();
+    }
+
+    private ObservableList<Node> createMenuCards() {
+        return EasyBind.map(model.getDecks(), deck -> {
+            Card newMenuCard = new Card();
+            newMenuCard.setHeader(new Tile(deck.getTitle(), deck.getDescription()));
+            newMenuCard.getStyleClass().add("menu-card");
+            newMenuCard.setPrefHeight(110);
+            newMenuCard.setPrefWidth(200);
+            return newMenuCard;
         });
     }
 
     @Override
     public Region build() {
-        FlowPane result = new FlowPane();
-        Bindings.bindContent(result.getChildren(), representationOfDecks);
+        Region content = createContent();
+        Region result = createRoot(content);
+        return result;
+    }
+
+    private Region createContent() {
+        FlowPane content = new FlowPane();
+        content.setHgap(15);
+        content.setVgap(15);
+        Bindings.bindContent(content.getChildren(), menuCards);
+        return content;
+    }
+
+    private Region createRoot(Node content) {
+        ScrollPane result = new ScrollPane(content);
+        result.setPadding(new Insets(30));
         return result;
     }
 }
