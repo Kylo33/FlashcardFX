@@ -16,9 +16,11 @@ import java.util.List;
 public class MainMvciViewBuilder implements Builder<Region> {
     private final MainMvciModel model;
     private final Region settingsContent;
-    public MainMvciViewBuilder(MainMvciModel model, Region settingsContent) {
+    private final Region homeContent;
+    public MainMvciViewBuilder(MainMvciModel model, Region settingsContent, Region homeContent) {
         this.model = model;
         this.settingsContent = settingsContent;
+        this.homeContent = homeContent;
     }
 
     @Override
@@ -31,9 +33,11 @@ public class MainMvciViewBuilder implements Builder<Region> {
 
     private Node createStackPane() {
         StackPane result = new StackPane(
-                settingsContent
+                settingsContent,
+                homeContent
         );
         settingsContent.visibleProperty().bind(model.settingsPageSelectedProperty());
+        homeContent.visibleProperty().bind(model.homePageSelectedProperty());
         return result;
     }
 
@@ -45,7 +49,7 @@ public class MainMvciViewBuilder implements Builder<Region> {
         menuButton.setGraphic(new FontIcon(MaterialDesignH.HOME));
         editorButton.setGraphic(new FontIcon(MaterialDesignP.PENCIL));
         settingsButton.setGraphic(new FontIcon(MaterialDesignC.COG));
-        menuButton.selectedProperty().bindBidirectional(model.menuPageSelectedProperty());
+        menuButton.selectedProperty().bindBidirectional(model.homePageSelectedProperty());
         editorButton.selectedProperty().bindBidirectional(model.editorPageSelectedProperty());
         settingsButton.selectedProperty().bindBidirectional(model.settingsPageSelectedProperty());
         ToggleGroup toolbarButtonGroup = new ToggleGroup();

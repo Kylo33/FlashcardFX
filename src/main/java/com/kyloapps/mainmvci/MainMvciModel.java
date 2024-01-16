@@ -11,23 +11,23 @@ import javafx.collections.ObservableList;
 import java.io.File;
 
 public class MainMvciModel {
-    private final BooleanProperty menuPageSelected = new SimpleBooleanProperty(true);
+    private final BooleanProperty homePageSelected = new SimpleBooleanProperty(true);
     private final BooleanProperty editorPageSelected = new SimpleBooleanProperty(false);
     private final BooleanProperty settingsPageSelected = new SimpleBooleanProperty(false);
     private final ObservableList<Deck> decks = FXCollections.observableArrayList();
     private final ObjectProperty<File> currentDirectory = new SimpleObjectProperty<>();
 
 
-    public boolean isMenuPageSelected() {
-        return menuPageSelected.get();
+    public boolean getHomePageSelected() {
+        return homePageSelected.get();
     }
 
-    public BooleanProperty menuPageSelectedProperty() {
-        return menuPageSelected;
+    public BooleanProperty homePageSelectedProperty() {
+        return homePageSelected;
     }
 
-    public void setMenuPageSelected(boolean menuPageSelected) {
-        this.menuPageSelected.set(menuPageSelected);
+    public void setHomePageSelected(boolean homePageSelected) {
+        this.homePageSelected.set(homePageSelected);
     }
 
     public boolean isEditorPageSelected() {

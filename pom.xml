@@ -40,6 +40,11 @@
             <artifactId>jackson-dataformat-xml</artifactId>
             <version>2.14.2</version>
         </dependency>
+        <dependency>
+            <groupId>com.tobiasdiez</groupId>
+            <artifactId>easybind</artifactId>
+            <version>2.2</version>
+        </dependency>
 
 
     </dependencies>

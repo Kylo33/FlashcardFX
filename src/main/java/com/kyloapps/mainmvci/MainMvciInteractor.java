@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kyloapps.domain.*;
+import javafx.beans.property.ObjectProperty;
 import javafx.collections.ListChangeListener;
 
 import java.io.File;
@@ -17,13 +18,14 @@ public class MainMvciInteractor {
     private static final ObjectMapper mapper = new ObjectMapper();
     public MainMvciInteractor(MainMvciModel model) {
         this.model = model;
-        registerDeckLoader(model);
+        registerDeckLoader();
     }
 
-    private void registerDeckLoader(MainMvciModel model) {
+    private void registerDeckLoader() {
         if (model.getCurrentDirectory() != null) {
             model.getDecks().setAll(createDecks());
         }
+
         model.currentDirectoryProperty().addListener((observable, oldValue, newValue) -> {
             model.getDecks().setAll(createDecks());
         });

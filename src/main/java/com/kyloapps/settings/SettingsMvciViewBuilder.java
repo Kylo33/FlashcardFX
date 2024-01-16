@@ -3,6 +3,7 @@ package com.kyloapps.settings;
 import atlantafx.base.controls.Tile;
 import atlantafx.base.theme.*;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
