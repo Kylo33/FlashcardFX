@@ -191,9 +191,9 @@ public class Controller {
 
     public void initTheme() {
         ObservableList<String> stylesheets = this.view.getScene().getStylesheets();
-        stylesheets.addAll(this.model.getPresentationModel().getCurrentTheme().getUserAgentStylesheet(), "custom.css");
+        stylesheets.addAll(this.model.getPresentationModel().getCurrentTheme().getUserAgentStylesheet(), "old_custom.css");
         this.model.getPresentationModel().currentThemeProperty().addListener((observableValue, oldValue, newValue) -> {
-            stylesheets.setAll(newValue.getUserAgentStylesheet(), "custom.css");
+            stylesheets.setAll(newValue.getUserAgentStylesheet(), "old_custom.css");
         });
     }
 
