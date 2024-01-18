@@ -1,17 +1,13 @@
 package com.kyloapps.mainmvci;
 
-import com.fasterxml.jackson.core.JacksonException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kyloapps.domain.*;
-import javafx.beans.property.ObjectProperty;
-import javafx.collections.ListChangeListener;
+import com.kyloapps.domain.Deck;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class MainMvciInteractor {
     private final MainMvciModel model;

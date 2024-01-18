@@ -2,6 +2,7 @@ package com.kyloapps.mainmvci;
 
 import com.kyloapps.domain.Deck;
 import com.kyloapps.home.HomeMvciController;
+import com.kyloapps.practice.PracticeMvciController;
 import com.kyloapps.settings.SettingsMvciController;
 import com.tobiasdiez.easybind.EasyBind;
 import javafx.beans.value.ChangeListener;
@@ -20,16 +21,19 @@ public class MainMvciController {
     private final MainMvciViewBuilder view;
     private final HomeMvciController homeMvciController;
     private final SettingsMvciController settingsMvciController;
+    private final PracticeMvciController practiceMvciController;
     
     public MainMvciController() {
         MainMvciModel model = new MainMvciModel();
         MainMvciInteractor interactor = new MainMvciInteractor(model);
         homeMvciController = new HomeMvciController(model.getDecks());
         settingsMvciController = new SettingsMvciController(model.currentDirectoryProperty());
+        practiceMvciController = new PracticeMvciController();
         view = new MainMvciViewBuilder(
                 model,
+                homeMvciController.getView(),
                 settingsMvciController.getView(),
-                homeMvciController.getView()
+                practiceMvciController.getView()
         );
     }
     public Region getView() {

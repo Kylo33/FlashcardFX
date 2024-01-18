@@ -1,26 +1,14 @@
 package com.kyloapps.home;
 
-import atlantafx.base.controls.Card;
-import atlantafx.base.controls.Tile;
-import atlantafx.base.theme.Styles;
 import com.tobiasdiez.easybind.EasyBind;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.util.Builder;
-import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignA;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignS;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignW;
-
-import java.awt.*;
 
 public class HomeMvciViewBuilder implements Builder<Region> {
     private HomeMvciModel model;
