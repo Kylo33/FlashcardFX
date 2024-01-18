@@ -4,6 +4,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import javafx.scene.Node;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.*;
@@ -50,8 +51,10 @@ public class MainMvciViewBuilder implements Builder<Region> {
         pageRegionMap.put(Page.PRACTICE, practiceContent);
 
         model.selectedPageProperty().addListener((observable, oldPage, newPage) -> {
-            pageRegionMap.get(newPage).setVisible(true);
-            if (oldPage != null) pageRegionMap.get(oldPage).setVisible(false);
+            Region newRegion = pageRegionMap.get(newPage);
+            Region oldRegion = pageRegionMap.get(oldPage);
+            if (newRegion != null) newRegion.setVisible(true);
+            if (oldRegion != null) oldRegion.setVisible(false);
         });
         model.setSelectedPage(Page.HOME);
 
@@ -73,18 +76,19 @@ public class MainMvciViewBuilder implements Builder<Region> {
             button.getStyleClass().add("toggle-button");
         });
 
-        BiMap<Page, RadioButton> pageButtonMap = HashBiMap.create();
-        pageButtonMap.put(Page.HOME, homeButton);
-        pageButtonMap.put(Page.EDITOR, editorButton);
-        pageButtonMap.put(Page.SETTINGS, settingsButton);
+        BiMap<Page, Toggle> pageToggleMap = HashBiMap.create();
+        pageToggleMap.put(Page.HOME, homeButton);
+        pageToggleMap.put(Page.EDITOR, editorButton);
+        pageToggleMap.put(Page.SETTINGS, settingsButton);
         model.selectedPageProperty().addListener((observable, oldPage, newPage) -> {
-            if (pageButtonMap.containsKey(newPage)) {
-                pageButtonMap.get(newPage).setSelected(true);
-            }
+            if (pageToggleMap.containsKey(newPage)) {
+                pageToggleMap.get(newPage).setSelected(true);
+            } else toolbarButtonGroup.getSelectedToggle().setSelected(false);
         });
 
         toolbarButtonGroup.selectedToggleProperty().addListener((observable, oldToggle, newToggle) -> {
-            Page newPage = pageButtonMap.inverse().get(newToggle);
+            if (newToggle == null) return;
+            Page newPage = pageToggleMap.inverse().get(newToggle);
             model.setSelectedPage(newPage);
         });
 
