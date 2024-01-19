@@ -1,5 +1,6 @@
 package com.kyloapps.home;
 
+import com.kyloapps.domain.Deck;
 import com.tobiasdiez.easybind.EasyBind;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
@@ -10,17 +11,22 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Region;
 import javafx.util.Builder;
 
+import java.util.function.Consumer;
+
 public class HomeMvciViewBuilder implements Builder<Region> {
     private HomeMvciModel model;
     private ObservableList<Node> menuCards;
-    public HomeMvciViewBuilder(HomeMvciModel model) {
+    public HomeMvciViewBuilder(HomeMvciModel model, Consumer<Deck> practiceConsumer) {
         this.model = model;
-        this.menuCards = createMenuCards();
+        this.menuCards = createMenuCards(practiceConsumer);
     }
 
-    private ObservableList<Node> createMenuCards() {
+    private ObservableList<Node> createMenuCards(Consumer<Deck> practiceConsumer) {
         return EasyBind.map(model.getDecks(), deck -> {
             MenuCard card = new MenuCard(deck.getTitle(), deck.getDescription(), deck.getFlashcards().size());
+            card.setAction(() -> {
+                practiceConsumer.accept(deck);
+            });
             return card.build();
         });
     }

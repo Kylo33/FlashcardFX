@@ -10,6 +10,7 @@ import javafx.collections.ObservableList;
 import java.io.File;
 
 public class MainMvciModel {
+    private final ObjectProperty<Deck> currentDeck = new SimpleObjectProperty<>();
     private final ObservableList<Deck> decks = FXCollections.observableArrayList();
     private final ObjectProperty<File> currentDirectory = new SimpleObjectProperty<>();
     private final ObjectProperty<Page> selectedPage = new SimpleObjectProperty<>();
@@ -40,5 +41,17 @@ public class MainMvciModel {
 
     public void setSelectedPage(Page selectedPage) {
         this.selectedPage.set(selectedPage);
+    }
+
+    public Deck getCurrentDeck() {
+        return currentDeck.get();
+    }
+
+    public ObjectProperty<Deck> currentDeckProperty() {
+        return currentDeck;
+    }
+
+    public void setCurrentDeck(Deck currentDeck) {
+        this.currentDeck.set(currentDeck);
     }
 }

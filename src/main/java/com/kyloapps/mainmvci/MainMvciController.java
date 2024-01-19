@@ -2,6 +2,7 @@ package com.kyloapps.mainmvci;
 
 import com.kyloapps.domain.Deck;
 import com.kyloapps.home.HomeMvciController;
+import com.kyloapps.home.HomeMvciInteractor;
 import com.kyloapps.practice.PracticeMvciController;
 import com.kyloapps.settings.SettingsMvciController;
 import com.tobiasdiez.easybind.EasyBind;
@@ -26,7 +27,9 @@ public class MainMvciController {
     public MainMvciController() {
         MainMvciModel model = new MainMvciModel();
         MainMvciInteractor interactor = new MainMvciInteractor(model);
-        homeMvciController = new HomeMvciController(model.getDecks());
+        homeMvciController = new HomeMvciController(model.getDecks(),
+                model.selectedPageProperty(),
+                model.currentDeckProperty());
         settingsMvciController = new SettingsMvciController(model.currentDirectoryProperty());
         practiceMvciController = new PracticeMvciController();
         view = new MainMvciViewBuilder(

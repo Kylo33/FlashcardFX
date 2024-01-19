@@ -7,7 +7,11 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.util.Builder;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
@@ -50,14 +54,15 @@ public class MainMvciViewBuilder implements Builder<Region> {
         pageRegionMap.put(Page.SETTINGS, settingsContent);
         pageRegionMap.put(Page.PRACTICE, practiceContent);
 
+        // Make the new page visible and the old page invisible
         model.selectedPageProperty().addListener((observable, oldPage, newPage) -> {
             Region newRegion = pageRegionMap.get(newPage);
             Region oldRegion = pageRegionMap.get(oldPage);
             if (newRegion != null) newRegion.setVisible(true);
             if (oldRegion != null) oldRegion.setVisible(false);
         });
-        model.setSelectedPage(Page.HOME);
 
+        model.setSelectedPage(Page.HOME);
         return result;
     }
 
