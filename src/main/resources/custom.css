@@ -1,0 +1,7 @@
+.card-container {
+    -fx-padding: 30px;
+    -fx-background-radius: 10px;
+    -fx-background-color: -color-accent-subtle;
+    -fx-alignment: center;
+    -fx-font-size: 36px;
+}
