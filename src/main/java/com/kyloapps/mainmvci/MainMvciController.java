@@ -31,7 +31,7 @@ public class MainMvciController {
                 model.selectedPageProperty(),
                 model.currentDeckProperty());
         settingsMvciController = new SettingsMvciController(model.currentDirectoryProperty());
-        practiceMvciController = new PracticeMvciController();
+        practiceMvciController = new PracticeMvciController(model.currentDeckProperty());
         view = new MainMvciViewBuilder(
                 model,
                 homeMvciController.getView(),

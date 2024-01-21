@@ -15,9 +15,13 @@ import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
 
 public class PracticeMvciViewBuilder implements Builder<Region> {
     private final PracticeMvciModel model;
+    private final Runnable previousAction;
+    private final Runnable nextAction;
 
-    public PracticeMvciViewBuilder(PracticeMvciModel model) {
+    public PracticeMvciViewBuilder(PracticeMvciModel model, Runnable previousAction, Runnable nextAction) {
         this.model = model;
+        this.previousAction = previousAction;
+        this.nextAction = nextAction;
     }
 
     @Override
@@ -33,10 +37,15 @@ public class PracticeMvciViewBuilder implements Builder<Region> {
     private Node createNavigation() {
         HBox result = new HBox();
         result.setAlignment(Pos.CENTER);
+
         Button previousCardButton = new Button(null, new FontIcon(MaterialDesignC.CHEVRON_LEFT));
         Button nextCardButton = new Button(null, new FontIcon(MaterialDesignC.CHEVRON_RIGHT));
         previousCardButton.getStyleClass().addAll(Styles.LEFT_PILL, Styles.LARGE);
         nextCardButton.getStyleClass().addAll(Styles.RIGHT_PILL, Styles.LARGE);
+
+        previousCardButton.setOnAction((event) -> previousAction.run());
+        nextCardButton.setOnAction((event) -> nextAction.run());
+
         result.getChildren().addAll(previousCardButton, nextCardButton);
         return result;
     }
