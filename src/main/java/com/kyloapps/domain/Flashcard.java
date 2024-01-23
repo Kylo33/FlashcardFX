@@ -10,5 +10,5 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
     @JsonSubTypes.Type(name = "table", value = TableFlashcard.class),
 })
 public interface Flashcard {
-    void accept(Visitor visitor);
+    <T> T accept(Visitor<T> visitor);
 }

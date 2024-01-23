@@ -1,13 +1,34 @@
 package com.kyloapps.practice;
 
 import com.kyloapps.domain.Flashcard;
+import javafx.beans.binding.Bindings;
 
 public class PracticeMvciInteractor {
     private final PracticeMvciModel model;
     private final static int FIRST_FLASHCARD = 0;
     public PracticeMvciInteractor(PracticeMvciModel model) {
         this.model = model;
-        model.currentDeckProperty().addListener((observable, oldDeck, newDeck) -> model.setCurrentFlashcardIndex(FIRST_FLASHCARD));
+        model.currentDeckProperty().addListener((observable, oldDeck, newDeck) -> {
+            model.setCurrentFlashcardIndex(FIRST_FLASHCARD);
+        });
+
+        manageNextCardState();
+    }
+
+    private void manageNextCardState() {
+        model.nextCardExistsProperty().bind(Bindings.createBooleanBinding(() ->  {
+            int currentIndex = model.getCurrentFlashcardIndex();
+            if (model.getCurrentDeck() == null) return false;
+            int lastIndex = model.getCurrentDeck().getFlashcards().size() - 1;
+            return currentIndex < lastIndex;
+        }, model.currentFlashcardIndexProperty(), model.currentDeckProperty()));
+
+        model.previousCardExistsProperty().bind(Bindings.createBooleanBinding(() ->  {
+            int currentIndex = model.getCurrentFlashcardIndex();
+            return currentIndex > FIRST_FLASHCARD;
+        }, model.currentFlashcardIndexProperty(), model.currentDeckProperty()));
+
+        model.currentFlashcardIndexProperty().addListener((observable, oldValue, newValue) -> System.out.println(newValue));
     }
 
     public void nextCurrentFlashcard() {

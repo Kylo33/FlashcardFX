@@ -1,6 +1,11 @@
 package com.kyloapps.practice;
 
 import atlantafx.base.theme.Styles;
+import com.kyloapps.domain.Deck;
+import com.kyloapps.domain.Flashcard;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -17,11 +22,19 @@ public class PracticeMvciViewBuilder implements Builder<Region> {
     private final PracticeMvciModel model;
     private final Runnable previousAction;
     private final Runnable nextAction;
+    private final ObjectProperty<Node> currentCardNode = new SimpleObjectProperty<>();
+    private final PracticeViewVisitor practiceViewVisitor = new PracticeViewVisitor();
 
     public PracticeMvciViewBuilder(PracticeMvciModel model, Runnable previousAction, Runnable nextAction) {
         this.model = model;
         this.previousAction = previousAction;
         this.nextAction = nextAction;
+        currentCardNode.bind(Bindings.createObjectBinding(() -> {
+            Deck currentDeck = model.getCurrentDeck();
+            if (currentDeck == null) return null;
+            Flashcard currentFlashcard = currentDeck.getFlashcards().get(model.getCurrentFlashcardIndex());
+            return currentFlashcard.accept(practiceViewVisitor);
+        }, model.currentFlashcardIndexProperty(), model.currentDeckProperty()));
     }
 
     @Override
@@ -39,12 +52,18 @@ public class PracticeMvciViewBuilder implements Builder<Region> {
         result.setAlignment(Pos.CENTER);
 
         Button previousCardButton = new Button(null, new FontIcon(MaterialDesignC.CHEVRON_LEFT));
-        Button nextCardButton = new Button(null, new FontIcon(MaterialDesignC.CHEVRON_RIGHT));
         previousCardButton.getStyleClass().addAll(Styles.LEFT_PILL, Styles.LARGE);
-        nextCardButton.getStyleClass().addAll(Styles.RIGHT_PILL, Styles.LARGE);
-
         previousCardButton.setOnAction((event) -> previousAction.run());
+        previousCardButton.disableProperty().bind(model.previousCardExistsProperty().not());
+
+        Button nextCardButton = new Button(null, new FontIcon(MaterialDesignC.CHEVRON_RIGHT));
+        nextCardButton.getStyleClass().addAll(Styles.RIGHT_PILL, Styles.LARGE);
         nextCardButton.setOnAction((event) -> nextAction.run());
+        nextCardButton.disableProperty().bind(model.nextCardExistsProperty().not());
+
+        model.nextCardExistsProperty().addListener((a, b, c) -> {
+            System.out.println("c = " + c);
+        });
 
         result.getChildren().addAll(previousCardButton, nextCardButton);
         return result;
@@ -53,6 +72,9 @@ public class PracticeMvciViewBuilder implements Builder<Region> {
     private Node createCardContainer() {
         StackPane result = new StackPane();
         result.getStyleClass().add("card-container");
+        BorderPane cardHolder = new BorderPane();
+        cardHolder.centerProperty().bind(currentCardNode);
+        result.getChildren().add(cardHolder);
         return result;
     }
 }

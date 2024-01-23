@@ -1,7 +1,7 @@
 package com.kyloapps.domain;
 
-public interface Visitor {
-    void visit(ClassicFlashcard flashcard);
-    void visit(MultipleChoiceFlashcard flashcard);
-    void visit(TableFlashcard flashcard);
+public interface Visitor<T> {
+    T visit(ClassicFlashcard flashcard);
+    T visit(MultipleChoiceFlashcard flashcard);
+    T visit(TableFlashcard flashcard);
 }

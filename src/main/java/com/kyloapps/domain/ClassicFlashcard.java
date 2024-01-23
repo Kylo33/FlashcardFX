@@ -12,11 +12,6 @@ public class ClassicFlashcard implements Flashcard{
     public ClassicFlashcard() {
     }
 
-    @Override
-    public void accept(Visitor visitor) {
-        visitor.visit(this);
-    }
-
     public String getQuestion() {
         return question;
     }
@@ -31,5 +26,10 @@ public class ClassicFlashcard implements Flashcard{
 
     public void setAnswer(String answer) {
         this.answer = answer;
+    }
+
+    @Override
+    public <T> T accept(Visitor<T> visitor) {
+        return visitor.visit(this);
     }
 }
