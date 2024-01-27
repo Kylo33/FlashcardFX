@@ -22,6 +22,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
 
 import java.io.File;
+import java.util.function.Consumer;
 
 public class SettingsMvciViewBuilder implements Builder<Region> {
     private final SettingsMvciModel model;
@@ -75,20 +76,15 @@ public class SettingsMvciViewBuilder implements Builder<Region> {
         Tile result = new Tile("Program appearance", "Configure the appearance of the app.");
         ChoiceBox<Theme> themeChooser = new ChoiceBox<>();
         result.setAction(themeChooser);
-        Theme[] themes = {
-                new PrimerLight(),
-                new PrimerDark(),
-                new CupertinoLight(),
-                new CupertinoDark(),
-                new NordLight(),
-                new NordDark(),
-                new Dracula(),
-        };
-        themeChooser.getItems().setAll(themes);
-        themeChooser.valueProperty().addListener((observable, oldValue, newValue) -> {
-            Application.setUserAgentStylesheet(newValue.getUserAgentStylesheet());
+
+        themeChooser.getItems().setAll(model.getThemes());
+        themeChooser.valueProperty().bindBidirectional(model.currentThemeProperty());
+
+        Application.setUserAgentStylesheet(model.getCurrentTheme().getUserAgentStylesheet());
+        model.currentThemeProperty().addListener((observable, oldTheme, newTheme) -> {
+            Application.setUserAgentStylesheet(newTheme.getUserAgentStylesheet());
         });
-        themeChooser.setValue(themes[0]);
+
         themeChooser.setConverter(new StringConverter<>() {
             @Override
             public String toString(Theme theme) {

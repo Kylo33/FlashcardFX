@@ -3,6 +3,7 @@ package com.kyloapps.home;
 import com.kyloapps.domain.Deck;
 import com.tobiasdiez.easybind.EasyBind;
 import javafx.beans.binding.Bindings;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -11,6 +12,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Region;
 import javafx.util.Builder;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 public class HomeMvciViewBuilder implements Builder<Region> {
@@ -42,7 +44,13 @@ public class HomeMvciViewBuilder implements Builder<Region> {
         FlowPane content = new FlowPane();
         content.setHgap(15);
         content.setVgap(15);
-        Bindings.bindContent(content.getChildren(), menuCards);
+        menuCards.addListener((ListChangeListener<? super Node>) change -> {
+            if (change.getList().isEmpty()) {
+                content.getChildren().clear();
+                return;
+            }
+            content.getChildren().setAll(change.getList());
+        });
         return content;
     }
 

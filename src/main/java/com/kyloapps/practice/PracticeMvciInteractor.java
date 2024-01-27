@@ -8,10 +8,10 @@ public class PracticeMvciInteractor {
     private final static int FIRST_FLASHCARD = 0;
     public PracticeMvciInteractor(PracticeMvciModel model) {
         this.model = model;
+
         model.currentDeckProperty().addListener((observable, oldDeck, newDeck) -> {
             model.setCurrentFlashcardIndex(FIRST_FLASHCARD);
         });
-
         manageNextCardState();
     }
 

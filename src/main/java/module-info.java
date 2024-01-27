@@ -4,7 +4,6 @@ module com.kyloapps {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.ikonli.materialdesign2;
     requires java.prefs;
-    requires org.json;
     requires com.fasterxml.jackson.databind;
     requires com.fasterxml.jackson.annotation;
     requires com.fasterxml.jackson.core;
@@ -13,6 +12,5 @@ module com.kyloapps {
     requires com.tobiasdiez.easybind;
     requires com.google.common;
     exports com.kyloapps;
-    exports com.kyloapps.Model;
     exports com.kyloapps.domain;
 }

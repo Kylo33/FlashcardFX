@@ -61,10 +61,6 @@ public class PracticeMvciViewBuilder implements Builder<Region> {
         nextCardButton.setOnAction((event) -> nextAction.run());
         nextCardButton.disableProperty().bind(model.nextCardExistsProperty().not());
 
-        model.nextCardExistsProperty().addListener((a, b, c) -> {
-            System.out.println("c = " + c);
-        });
-
         result.getChildren().addAll(previousCardButton, nextCardButton);
         return result;
     }
