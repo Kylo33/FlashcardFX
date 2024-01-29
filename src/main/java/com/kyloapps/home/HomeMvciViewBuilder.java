@@ -2,11 +2,14 @@ package com.kyloapps.home;
 
 import com.kyloapps.domain.Deck;
 import com.tobiasdiez.easybind.EasyBind;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Region;
@@ -24,12 +27,17 @@ public class HomeMvciViewBuilder implements Builder<Region> {
     }
 
     private ObservableList<Node> createMenuCards(Consumer<Deck> practiceConsumer) {
-        return EasyBind.map(model.getDecks(), deck -> {
-            MenuCard card = new MenuCard(deck.getTitle(), deck.getDescription(), deck.getFlashcards().size());
+        /*
+         Must use mapBacked to avoid the "duplicate children added" exception.
+         From: https://github.com/tobiasdiez/EasyBind, I want to have the "elements of the list [be]
+         converted once and then stored in memory"
+        */
+        return EasyBind.mapBacked(model.getDecks(), deck -> {
+            MenuCardBuilder card = new MenuCardBuilder(deck.getTitle(), deck.getDescription(), deck.getFlashcards().size());
             card.setAction(() -> {
                 practiceConsumer.accept(deck);
             });
-            return card.build();
+            return new Label(deck.getTitle());
         });
     }
 
@@ -44,13 +52,7 @@ public class HomeMvciViewBuilder implements Builder<Region> {
         FlowPane content = new FlowPane();
         content.setHgap(15);
         content.setVgap(15);
-        menuCards.addListener((ListChangeListener<? super Node>) change -> {
-            if (change.getList().isEmpty()) {
-                content.getChildren().clear();
-                return;
-            }
-            content.getChildren().setAll(change.getList());
-        });
+        Bindings.bindContent(content.getChildren(), menuCards);
         return content;
     }
 

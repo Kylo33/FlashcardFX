@@ -18,13 +18,13 @@ import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignW;
 
 
-public class MenuCard implements Builder<Region> {
+public class MenuCardBuilder implements Builder<Region> {
     private final String title;
     private final String description;
     private final Integer cardCount;
     private final ObjectProperty<EventHandler<ActionEvent>> actionEventObjectProperty = new SimpleObjectProperty<>();
 
-    public MenuCard(String title, String description, int cardCount) {
+    public MenuCardBuilder(String title, String description, int cardCount) {
         this.title = title;
         this.description = description;
         this.cardCount = cardCount;
