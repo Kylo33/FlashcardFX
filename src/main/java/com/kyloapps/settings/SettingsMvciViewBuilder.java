@@ -47,6 +47,7 @@ public class SettingsMvciViewBuilder implements Builder<Region> {
         result.setAction(chooseDirectoryButton);
         chooseDirectoryButton.setOnAction((event) -> {
             DirectoryChooser directoryChooser = new DirectoryChooser();
+            directoryChooser.setInitialDirectory(model.getCurrentDirectory());
             directoryChooser.setTitle("Choose a Flashcard Directory");
             File choice = directoryChooser.showDialog(chooseDirectoryButton.getScene().getWindow());
             if (choice != null) {

@@ -10,6 +10,7 @@ import javafx.scene.layout.Region;
 
 public class HomeMvciController {
     private final HomeMvciViewBuilder view;
+
     public HomeMvciController(ObservableList<Deck> decks,
                               ObjectProperty<Page> selectedPageProperty,
                               ObjectProperty<Deck> currentDeckProperty) {

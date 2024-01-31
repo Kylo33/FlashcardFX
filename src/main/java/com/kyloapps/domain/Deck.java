@@ -3,9 +3,9 @@ package com.kyloapps.domain;
 import java.util.List;
 
 public class Deck {
-     private String title;
-     private String description;
-     private List<Flashcard> flashcards;
+    private String title;
+    private String description;
+    private List<Flashcard> flashcards;
 
     public Deck(String title, String description, List<Flashcard> flashcards) {
         this.title = title;

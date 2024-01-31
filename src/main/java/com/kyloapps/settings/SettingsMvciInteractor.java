@@ -1,10 +1,6 @@
 package com.kyloapps.settings;
 
-import atlantafx.base.theme.Theme;
-import javafx.application.Application;
-
 import java.io.File;
-import java.util.Arrays;
 import java.util.prefs.Preferences;
 
 public class SettingsMvciInteractor {
@@ -17,6 +13,7 @@ public class SettingsMvciInteractor {
         this.model = model;
         loadPreferences();
         listenToChangePreferences();
+        System.out.println(preferences.absolutePath());
     }
 
     private void loadPreferences() {

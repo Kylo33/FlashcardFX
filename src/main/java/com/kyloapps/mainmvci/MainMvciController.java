@@ -1,5 +1,6 @@
 package com.kyloapps.mainmvci;
 
+import com.kyloapps.deckeditor.DeckEditorMvciController;
 import com.kyloapps.home.HomeMvciController;
 import com.kyloapps.practice.PracticeMvciController;
 import com.kyloapps.settings.SettingsMvciController;
@@ -10,7 +11,8 @@ public class MainMvciController {
     private final HomeMvciController homeMvciController;
     private final SettingsMvciController settingsMvciController;
     private final PracticeMvciController practiceMvciController;
-    
+    private final DeckEditorMvciController deckEditorMvciController;
+
     public MainMvciController() {
         MainMvciModel model = new MainMvciModel();
         MainMvciInteractor interactor = new MainMvciInteractor(model);
@@ -19,13 +21,16 @@ public class MainMvciController {
                 model.currentDeckProperty());
         settingsMvciController = new SettingsMvciController(model.currentDirectoryProperty());
         practiceMvciController = new PracticeMvciController(model.currentDeckProperty());
+        deckEditorMvciController = new DeckEditorMvciController();
         view = new MainMvciViewBuilder(
                 model,
                 homeMvciController.getView(),
                 settingsMvciController.getView(),
-                practiceMvciController.getView()
+                practiceMvciController.getView(),
+                deckEditorMvciController.getView()
         );
     }
+
     public Region getView() {
         return view.build();
     }

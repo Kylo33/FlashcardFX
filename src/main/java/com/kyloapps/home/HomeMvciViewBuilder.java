@@ -2,25 +2,21 @@ package com.kyloapps.home;
 
 import com.kyloapps.domain.Deck;
 import com.tobiasdiez.easybind.EasyBind;
-import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Region;
 import javafx.util.Builder;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 public class HomeMvciViewBuilder implements Builder<Region> {
-    private HomeMvciModel model;
-    private ObservableList<Node> menuCards;
+    private final HomeMvciModel model;
+    private final ObservableList<Node> menuCards;
+
     public HomeMvciViewBuilder(HomeMvciModel model, Consumer<Deck> practiceConsumer) {
         this.model = model;
         this.menuCards = createMenuCards(practiceConsumer);
@@ -37,7 +33,7 @@ public class HomeMvciViewBuilder implements Builder<Region> {
             card.setAction(() -> {
                 practiceConsumer.accept(deck);
             });
-            return new Label(deck.getTitle());
+            return card.build();
         });
     }
 

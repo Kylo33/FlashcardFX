@@ -2,7 +2,7 @@ package com.kyloapps.domain;
 
 import java.util.List;
 
-public class MultipleChoiceFlashcard implements Flashcard{
+public class MultipleChoiceFlashcard implements Flashcard {
     private String question;
     private List<AnswerOption<String>> options;
 
@@ -19,12 +19,12 @@ public class MultipleChoiceFlashcard implements Flashcard{
         return question;
     }
 
-    public List<AnswerOption<String>> getOptions() {
-        return options;
-    }
-
     public void setQuestion(String question) {
         this.question = question;
+    }
+
+    public List<AnswerOption<String>> getOptions() {
+        return options;
     }
 
     public void setOptions(List<AnswerOption<String>> options) {

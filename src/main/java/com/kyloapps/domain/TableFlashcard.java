@@ -2,7 +2,7 @@ package com.kyloapps.domain;
 
 import java.util.List;
 
-public class TableFlashcard implements Flashcard{
+public class TableFlashcard implements Flashcard {
     private String question;
     private List<String> headers;
     private List<AnswerOption<List<String>>> options;

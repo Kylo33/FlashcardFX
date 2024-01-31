@@ -1,6 +1,6 @@
 package com.kyloapps.domain;
 
-public class ClassicFlashcard implements Flashcard{
+public class ClassicFlashcard implements Flashcard {
     private String question;
     private String answer;
 

@@ -8,6 +8,7 @@ public class HomeMvciInteractor {
     private final ObjectProperty<Page> selectedPageProperty;
     private final ObjectProperty<Deck> currentDeckProperty;
     private final HomeMvciModel model;
+
     public HomeMvciInteractor(HomeMvciModel model,
                               ObjectProperty<Page> selectedPageProperty,
                               ObjectProperty<Deck> currentDeckProperty) {
@@ -15,6 +16,7 @@ public class HomeMvciInteractor {
         this.selectedPageProperty = selectedPageProperty;
         this.currentDeckProperty = currentDeckProperty;
     }
+
     public void beginPractice(Deck deck) {
         selectedPageProperty.setValue(Page.PRACTICE);
         currentDeckProperty.setValue(deck);

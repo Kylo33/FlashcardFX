@@ -27,11 +27,14 @@ public class MainMvciViewBuilder implements Builder<Region> {
     private final Region settingsContent;
     private final Region homeContent;
     private final Region practiceContent;
-    public MainMvciViewBuilder(MainMvciModel model, Region homeContent, Region settingsContent, Region practiceContent) {
+    private final Region editorContent;
+
+    public MainMvciViewBuilder(MainMvciModel model, Region homeContent, Region settingsContent, Region practiceContent, Region editorContent) {
         this.model = model;
         this.settingsContent = settingsContent;
         this.homeContent = homeContent;
         this.practiceContent = practiceContent;
+        this.editorContent = editorContent;
     }
 
     @Override
@@ -43,7 +46,7 @@ public class MainMvciViewBuilder implements Builder<Region> {
     }
 
     private Node createStackPane() {
-        Region[] pages = {homeContent, settingsContent, practiceContent};
+        Region[] pages = {homeContent, settingsContent, practiceContent, editorContent};
         for (Region page: pages) {
             page.setVisible(false);
         }
@@ -53,6 +56,7 @@ public class MainMvciViewBuilder implements Builder<Region> {
         pageRegionMap.put(Page.HOME, homeContent);
         pageRegionMap.put(Page.SETTINGS, settingsContent);
         pageRegionMap.put(Page.PRACTICE, practiceContent);
+        pageRegionMap.put(Page.EDITOR, editorContent);
 
         // Make the new page visible and the old page invisible
         model.selectedPageProperty().addListener((observable, oldPage, newPage) -> {
