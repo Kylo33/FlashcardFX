@@ -11,9 +11,6 @@ public class PracticeMvciController {
         PracticeMvciInteractor interactor = new PracticeMvciInteractor(model);
         view = new PracticeMvciViewBuilder(model, interactor::previousCurrentFlashcard, interactor::nextCurrentFlashcard);
         model.currentDeckProperty().bind(currentDeckProperty);
-        model.currentDeckProperty().addListener((observable, oldDeck, newDeck) -> {
-            System.out.println("newDeck = " + newDeck);
-        });
     }
 
     public Region getView() {

@@ -13,7 +13,6 @@ public class SettingsMvciInteractor {
         this.model = model;
         loadPreferences();
         listenToChangePreferences();
-        System.out.println(preferences.absolutePath());
     }
 
     private void loadPreferences() {
@@ -44,10 +43,5 @@ public class SettingsMvciInteractor {
         model.currentDirectoryProperty().addListener(((observableValue, oldDirectory, newDirectory) -> {
             preferences.put(DECK_DIRECTORY_FIELD, newDirectory.getAbsolutePath());
         }));
-    }
-
-    public void chooseDirectory(File newDirectory) {
-        this.model.setCurrentDirectory(newDirectory);
-
     }
 }

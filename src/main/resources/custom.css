@@ -5,3 +5,7 @@
     -fx-alignment: center;
     -fx-font-size: 36px;
 }
+
+.choice-box .context-menu {
+    -fx-max-height: 300px;
+}
