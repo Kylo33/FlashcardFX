@@ -15,7 +15,10 @@ public class DeckEditorMvciInteractor {
     }
 
     public void createDeck() {
-        //TODO
-        System.out.println("TODO");
+        model.getDecks().add(new Deck(
+                model.getNewDeckName(),
+                model.getNewDeckDescription(),
+                FXCollections.observableArrayList()
+        ));
     }
 }

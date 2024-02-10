@@ -25,10 +25,10 @@ public class DeckEditorMvciViewBuilder implements Builder<Region> {
     private final Runnable deleteDeckAction;
     private final Runnable createDeckAction;
 
-    public DeckEditorMvciViewBuilder(DeckEditorMvciModel model, Runnable deleteDeckAction, Runnable createDeckAction) {
+    public DeckEditorMvciViewBuilder(DeckEditorMvciModel model, Runnable createDeckAction, Runnable deleteDeckAction) {
         this.model = model;
-        this.deleteDeckAction = deleteDeckAction;
         this.createDeckAction = createDeckAction;
+        this.deleteDeckAction = deleteDeckAction;
     }
 
     @Override
@@ -122,7 +122,10 @@ public class DeckEditorMvciViewBuilder implements Builder<Region> {
         createButton.getStyleClass().add(Styles.SUCCESS);
         BorderPane.setMargin(createButton, new Insets(15));
         BorderPane.setAlignment(createButton, Pos.BOTTOM_RIGHT);
-        createButton.setOnAction((event) -> createDeckAction.run());
+        createButton.setOnAction((event) -> {
+            createDeckAction.run();
+            modalPane.hide();
+        });
         content.setBottom(createButton);
 
         Node center = getCreationDialogContent();
@@ -134,10 +137,12 @@ public class DeckEditorMvciViewBuilder implements Builder<Region> {
     private Node getCreationDialogContent() {
         Tile titleTile = new Tile("Deck Title", "Give your deck a descriptive name!");
         TextField titleField = new TextField();
+        titleField.textProperty().bindBidirectional(model.newDeckNameProperty());
         titleTile.setAction(titleField);
 
         Tile descriptionTile = new Tile("Deck Description", "Give your deck a description.");
         TextField descriptionField = new TextField();
+        descriptionField.textProperty().bindBidirectional(model.newDeckDescriptionProperty());
         descriptionTile.setAction(descriptionField);
 
         VBox node = new VBox(15, titleTile, new Separator(Orientation.HORIZONTAL), descriptionTile);

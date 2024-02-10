@@ -3,11 +3,16 @@ package com.kyloapps.home;
 import atlantafx.base.controls.Card;
 import atlantafx.base.controls.Tile;
 import atlantafx.base.theme.Styles;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.IntegerBinding;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -19,21 +24,21 @@ import org.kordamp.ikonli.materialdesign2.MaterialDesignW;
 
 
 public class MenuCardBuilder implements Builder<Region> {
-    private final String title;
-    private final String description;
-    private final Integer cardCount;
     private final ObjectProperty<EventHandler<ActionEvent>> actionEventObjectProperty = new SimpleObjectProperty<>();
+    private final StringProperty title;
+    private final StringProperty description;
+    private final IntegerBinding cardCountBinding;
 
-    public MenuCardBuilder(String title, String description, int cardCount) {
+    public MenuCardBuilder(StringProperty title, StringProperty description, IntegerBinding cardCountBinding) {
         this.title = title;
         this.description = description;
-        this.cardCount = cardCount;
+        this.cardCountBinding = cardCountBinding;
     }
 
     @Override
     public Region build() {
         Card result = new Card();
-        result.setHeader(new Tile(title, description));
+        result.setHeader(getHeader());
         result.setFooter(getFooter());
         result.setMinWidth(200);
         result.setMaxWidth(200);
@@ -42,12 +47,23 @@ public class MenuCardBuilder implements Builder<Region> {
         return result;
     }
 
+    private Node getHeader() {
+        Tile headerTile = new Tile();
+        headerTile.titleProperty().bind(title);
+        headerTile.descriptionProperty().bind(description);
+        return headerTile;
+    }
+
     private Region getFooter() {
         Button practiceButton = new Button("Practice", new FontIcon(MaterialDesignW.WEIGHT_LIFTER));
         practiceButton.setDefaultButton(true);
         practiceButton.getStyleClass().add(Styles.SMALL);
         practiceButton.onActionProperty().bind(actionEventObjectProperty);
-        Label cardCountLabel = new Label(cardCount.toString(), new FontIcon(MaterialDesignC.CARD_TEXT));
+
+        practiceButton.disableProperty().bind(Bindings.createBooleanBinding(() -> !(cardCountBinding.get() > 0), cardCountBinding));
+
+        Label cardCountLabel = new Label(null, new FontIcon(MaterialDesignC.CARD_TEXT));
+        cardCountLabel.textProperty().bind(cardCountBinding.asString());
         HBox result = new HBox(15, practiceButton, cardCountLabel);
         result.setAlignment(Pos.CENTER_LEFT);
         return result;

@@ -31,7 +31,7 @@ public class HomeMvciViewBuilder implements Builder<Region> {
          converted once and then stored in memory"
         */
         return EasyBind.mapBacked(model.getDecks(), deck -> {
-            MenuCardBuilder card = new MenuCardBuilder(deck.getTitle(), deck.getDescription(), deck.getFlashcards().size());
+            MenuCardBuilder card = new MenuCardBuilder(deck.titleProperty(), deck.descriptionProperty(), Bindings.createIntegerBinding(() -> deck.getFlashcards().size(), deck.getFlashcards()));
             card.setAction(() -> {
                 practiceConsumer.accept(deck);
             });
