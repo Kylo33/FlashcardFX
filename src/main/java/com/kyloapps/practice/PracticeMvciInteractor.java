@@ -27,8 +27,6 @@ public class PracticeMvciInteractor {
             int currentIndex = model.getCurrentFlashcardIndex();
             return currentIndex > FIRST_FLASHCARD;
         }, model.currentFlashcardIndexProperty(), model.currentDeckProperty()));
-
-        model.currentFlashcardIndexProperty().addListener((observable, oldValue, newValue) -> System.out.println(newValue));
     }
 
     public void nextCurrentFlashcard() {

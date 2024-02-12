@@ -4,16 +4,18 @@ import atlantafx.base.controls.ModalPane;
 import atlantafx.base.controls.Tile;
 import atlantafx.base.theme.Styles;
 import com.kyloapps.domain.Deck;
+import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.util.Builder;
 import javafx.util.StringConverter;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignP;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignT;
@@ -24,12 +26,16 @@ public class DeckEditorMvciViewBuilder implements Builder<Region> {
     private final ModalPane modalPane = new ModalPane();
     private final Runnable deleteDeckAction;
     private final Runnable createDeckAction;
+    private final Runnable editDeckAction;
 
-    public DeckEditorMvciViewBuilder(DeckEditorMvciModel model, Runnable createDeckAction, Runnable deleteDeckAction) {
+    public DeckEditorMvciViewBuilder(DeckEditorMvciModel model, Runnable createDeckAction, Runnable deleteDeckAction, Runnable editDeckAction) {
         this.model = model;
         this.createDeckAction = createDeckAction;
         this.deleteDeckAction = deleteDeckAction;
+        this.editDeckAction = editDeckAction;
     }
+
+
 
     @Override
     public Region build() {
@@ -61,15 +67,10 @@ public class DeckEditorMvciViewBuilder implements Builder<Region> {
         );
     }
 
-    /**
-     * Creates a grid of menu options related to entire decks. (Creating, deleting, switching, and renaming decks)
-     *
-     * @return Node with the options in it
-     */
     private Node createGeneralDeckEditor() {
         GridPane result = new GridPane();
         result.add(createDeckSwitcher(), 0, 0);
-        result.add(createDeckRenamer(), 0, 1);
+        result.add(createDeckDetailer(), 0, 1);
         result.add(createDeckCreator(), 1, 0);
         result.add(createDeckDeleter(), 1, 1);
 
@@ -85,38 +86,70 @@ public class DeckEditorMvciViewBuilder implements Builder<Region> {
     }
 
     private Node createDeckDeleter() {
-        Tile result = new Tile("Delete Deck", "Delete the deck that is selected.");
+        Tile result = new Tile("Delete Deck", "Delete the selected deck.");
         Button deleteButton = new Button("Delete", new FontIcon(MaterialDesignT.TRASH_CAN));
         deleteButton.getStyleClass().add(Styles.DANGER);
-        deleteButton.setOnAction(event -> deleteDeckAction.run());
-        model.setCurrentDeck(null);
+        deleteButton.setOnAction(event -> {
+            modalPane.show(createDeckDeletionDialog());
+        });
+        deleteButton.disableProperty().bind(Bindings.createBooleanBinding(() -> model.getCurrentDeck() == null, model.currentDeckProperty()));
         result.setAction(deleteButton);
         return result;
     }
 
+    private Region createDeckDeletionDialog() {
+        Text deckNameText = new Text();
+        deckNameText.textProperty().bind(model.editingDeckNameProperty());
+        deckNameText.setStyle("-fx-fill: -color-accent-emphasis;");
+        TextFlow confirmation = new TextFlow(new Text("Confirm deletion of "), deckNameText);
+
+        confirmation.getStyleClass().add(Styles.TITLE_4);
+
+        Label deletionInfo = new Label("Deck and its contents will be permanently deleted. Be careful.");
+        deletionInfo.getStyleClass().add(Styles.TEXT_MUTED);
+        Button deleteButton = new Button("Delete", new FontIcon(MaterialDesignT.TRASH_CAN));
+        deleteButton.getStyleClass().add(Styles.DANGER);
+        deleteButton.setOnAction((event) -> {
+            deleteDeckAction.run();
+            modalPane.hide();
+        });
+
+        HBox buttonBox = new HBox(deleteButton);
+        buttonBox.setAlignment(Pos.CENTER);
+        VBox vBox = new VBox(15, confirmation, deletionInfo, buttonBox);
+        HBox hBox = new HBox(vBox);
+        hBox.setAlignment(Pos.CENTER);
+
+        DeckEditorDialog dialog = new DeckEditorDialog(modalPane, hBox, null);
+        return dialog.build();
+    }
+
     private Node createDeckCreator() {
         Tile result = new Tile("Create Deck", "Create a new deck.");
-        Button createButton = new Button("Create", new FontIcon(MaterialDesignP.PLUS));
-        createButton.getStyleClass().add(Styles.SUCCESS);
-        result.setAction(createButton);
+        Button createButtonTileAction = new Button("Create", new FontIcon(MaterialDesignP.PLUS));
+        createButtonTileAction.getStyleClass().add(Styles.SUCCESS);
+        result.setAction(createButtonTileAction);
 
-        createButton.setOnAction(event -> showCreationDialog());
+        createButtonTileAction.setOnAction(event -> {
+            modalPane.show(createDeckCreationDialog());
+        });
 
         return result;
     }
 
-    private void showCreationDialog() {
-        BorderPane result = new BorderPane();
-        BorderPane content = new BorderPane();
-        BorderPane.setMargin(content, new Insets(40));
-        content.getStyleClass().add(Styles.BG_DEFAULT);
-        result.setCenter(content);
+    private Region createDeckCreationDialog() {
+        Tile deckTitleTile = new Tile("Deck Title", "Give your deck a descriptive name!");
+        TextField titleField = new TextField();
+        titleField.textProperty().bindBidirectional(model.newDeckNameProperty());
+        deckTitleTile.setAction(titleField);
 
-        Button closeButton = new Button("Close", new FontIcon(MaterialDesignC.CLOSE));
-        BorderPane.setMargin(closeButton, new Insets(15));
-        BorderPane.setAlignment(closeButton, Pos.TOP_RIGHT);
-        closeButton.setOnAction((event) -> modalPane.hide());
-        content.setTop(closeButton);
+        Tile deckDescriptionTile = new Tile("Deck Description", "Give your deck a description.");
+        TextField descriptionField = new TextField();
+        descriptionField.textProperty().bindBidirectional(model.newDeckDescriptionProperty());
+        deckDescriptionTile.setAction(descriptionField);
+
+        VBox content = new VBox(15, deckTitleTile, new Separator(Orientation.HORIZONTAL), deckDescriptionTile);
+        content.setPadding(new Insets(15));
 
         Button createButton = new Button("Create Deck", new FontIcon(MaterialDesignP.PLUS));
         createButton.getStyleClass().add(Styles.SUCCESS);
@@ -126,36 +159,49 @@ public class DeckEditorMvciViewBuilder implements Builder<Region> {
             createDeckAction.run();
             modalPane.hide();
         });
-        content.setBottom(createButton);
 
-        Node center = getCreationDialogContent();
-        content.setCenter(center);
-
-        modalPane.show(result);
+        DeckEditorDialog dialog = new DeckEditorDialog(modalPane, content, createButton);
+        return dialog.build();
     }
 
-    private Node getCreationDialogContent() {
-        Tile titleTile = new Tile("Deck Title", "Give your deck a descriptive name!");
-        TextField titleField = new TextField();
-        titleField.textProperty().bindBidirectional(model.newDeckNameProperty());
-        titleTile.setAction(titleField);
-
-        Tile descriptionTile = new Tile("Deck Description", "Give your deck a description.");
-        TextField descriptionField = new TextField();
-        descriptionField.textProperty().bindBidirectional(model.newDeckDescriptionProperty());
-        descriptionTile.setAction(descriptionField);
-
-        VBox node = new VBox(15, titleTile, new Separator(Orientation.HORIZONTAL), descriptionTile);
-        node.setPadding(new Insets(15));
-        return node;
-    }
-
-    private Node createDeckRenamer() {
+    private Node createDeckDetailer() {
         Tile result = new Tile("Edit Deck Details", "Edit the details of the current deck.");
-        Button renameButton = new Button("Rename", new FontIcon(MaterialDesignF.FORM_TEXTBOX));
-        Button descriptionEditButton = new Button("Change Description", new FontIcon(MaterialDesignF.FORMAT_ALIGN_LEFT));
-        result.setAction(new HBox(15, renameButton, descriptionEditButton));
+        Button editButton = new Button("Edit", new FontIcon(MaterialDesignF.FORM_TEXTBOX));
+        result.setAction(editButton);
+        editButton.setOnAction((event) -> {
+            modalPane.show(createDeckDetailDialog());
+        });
+        editButton.disableProperty().bind(Bindings.createBooleanBinding(() -> model.getCurrentDeck() == null, model.currentDeckProperty()));
         return result;
+    }
+
+    private Region createDeckDetailDialog() {
+        Tile deckTitleTile = new Tile("Deck Title", "Give your deck a descriptive name!");
+        TextField titleField = new TextField(model.getCurrentDeck().getTitle());
+        model.editingDeckNameProperty().unbind();
+        model.editingDeckNameProperty().bind(titleField.textProperty());
+        deckTitleTile.setAction(titleField);
+
+        Tile deckDescriptionTile = new Tile("Deck Description", "Give your deck a description.");
+        TextField descriptionField = new TextField(model.getCurrentDeck().getDescription());
+        model.editingDeckDescriptionProperty().unbind();
+        model.editingDeckDescriptionProperty().bind(descriptionField.textProperty());
+        deckDescriptionTile.setAction(descriptionField);
+
+        VBox content = new VBox(15, deckTitleTile, new Separator(Orientation.HORIZONTAL), deckDescriptionTile);
+        content.setPadding(new Insets(15));
+
+        Button saveChanges = new Button("Save Changes", new FontIcon(MaterialDesignF.FLOPPY));
+        saveChanges.getStyleClass().add(Styles.SUCCESS);
+        BorderPane.setMargin(saveChanges, new Insets(15));
+        BorderPane.setAlignment(saveChanges, Pos.BOTTOM_RIGHT);
+        saveChanges.setOnAction((event) -> {
+            editDeckAction.run();
+            modalPane.hide();
+        });
+
+        DeckEditorDialog dialog = new DeckEditorDialog(modalPane, content, saveChanges);
+        return dialog.build();
     }
 
     private Node createDeckSwitcher() {

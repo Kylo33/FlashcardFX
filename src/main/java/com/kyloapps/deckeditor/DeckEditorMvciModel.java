@@ -13,7 +13,8 @@ public class DeckEditorMvciModel {
     private final ObjectProperty<Deck> currentDeck = new SimpleObjectProperty<>();
     private final StringProperty newDeckName = new SimpleStringProperty();
     private final StringProperty newDeckDescription = new SimpleStringProperty();
-
+    private final StringProperty editingDeckName = new SimpleStringProperty();
+    private final StringProperty editingDeckDescription = new SimpleStringProperty();
 
     public ObservableList<Deck> getDecks() {
         return decks;
@@ -53,5 +54,29 @@ public class DeckEditorMvciModel {
 
     public void setNewDeckDescription(String newDeckDescription) {
         this.newDeckDescription.set(newDeckDescription);
+    }
+
+    public String getEditingDeckName() {
+        return editingDeckName.get();
+    }
+
+    public StringProperty editingDeckNameProperty() {
+        return editingDeckName;
+    }
+
+    public void setEditingDeckName(String editingDeckName) {
+        this.editingDeckName.set(editingDeckName);
+    }
+
+    public String getEditingDeckDescription() {
+        return editingDeckDescription.get();
+    }
+
+    public StringProperty editingDeckDescriptionProperty() {
+        return editingDeckDescription;
+    }
+
+    public void setEditingDeckDescription(String editingDeckDescription) {
+        this.editingDeckDescription.set(editingDeckDescription);
     }
 }

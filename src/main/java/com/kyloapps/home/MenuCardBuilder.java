@@ -9,6 +9,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -17,6 +18,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.util.Builder;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
@@ -48,10 +50,15 @@ public class MenuCardBuilder implements Builder<Region> {
     }
 
     private Node getHeader() {
-        Tile headerTile = new Tile();
-        headerTile.titleProperty().bind(title);
-        headerTile.descriptionProperty().bind(description);
-        return headerTile;
+        Label titleLabel = new Label();
+        titleLabel.textProperty().bind(title);
+        titleLabel.getStyleClass().add(Styles.TITLE_4);
+
+        Label descriptionLabel = new Label();
+        descriptionLabel.textProperty().bind(description);
+        descriptionLabel.getStyleClass().add(Styles.TEXT_MUTED);
+
+        return new VBox(5, titleLabel, descriptionLabel);
     }
 
     private Region getFooter() {

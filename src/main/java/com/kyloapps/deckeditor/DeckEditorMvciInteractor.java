@@ -21,4 +21,10 @@ public class DeckEditorMvciInteractor {
                 FXCollections.observableArrayList()
         ));
     }
+
+    public void confirmEditDeck() {
+        Deck currentDeck = model.getCurrentDeck();
+        currentDeck.setTitle(model.getEditingDeckName());
+        currentDeck.setDescription(model.getEditingDeckDescription());
+    }
 }

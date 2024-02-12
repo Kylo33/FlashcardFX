@@ -1,6 +1,5 @@
 module com.kyloapps {
     requires javafx.controls;
-    requires atlantafx.base;
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.ikonli.materialdesign2;
     requires java.prefs;
@@ -11,6 +10,7 @@ module com.kyloapps {
     requires java.desktop;
     requires com.tobiasdiez.easybind;
     requires com.google.common;
+    requires atlantafx.base;
     exports com.kyloapps;
     exports com.kyloapps.domain;
 }
