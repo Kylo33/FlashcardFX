@@ -1,6 +1,7 @@
 package com.kyloapps.deckeditor;
 
 import com.kyloapps.domain.Deck;
+import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -9,7 +10,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class DeckEditorMvciModel {
-    private final ObservableList<Deck> decks = FXCollections.observableArrayList();
+    private final ObservableList<Deck> decks = FXCollections.observableArrayList(deck -> {
+        return new Observable[]{deck.titleProperty(), deck.descriptionProperty(), deck.getFlashcards()};
+    });
     private final ObjectProperty<Deck> currentDeck = new SimpleObjectProperty<>();
     private final StringProperty newDeckName = new SimpleStringProperty();
     private final StringProperty newDeckDescription = new SimpleStringProperty();

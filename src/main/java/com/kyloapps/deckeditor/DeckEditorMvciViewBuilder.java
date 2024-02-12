@@ -35,8 +35,6 @@ public class DeckEditorMvciViewBuilder implements Builder<Region> {
         this.editDeckAction = editDeckAction;
     }
 
-
-
     @Override
     public Region build() {
         StackPane result = new StackPane();
@@ -78,9 +76,7 @@ public class DeckEditorMvciViewBuilder implements Builder<Region> {
         columnConstraints.setPercentWidth(50d);
         result.getColumnConstraints().add(columnConstraints);
 
-        result.getChildren().stream().forEach(child -> {
-            GridPane.setHgrow(child, Priority.ALWAYS);
-        });
+        result.getChildren().forEach(child -> GridPane.setHgrow(child, Priority.ALWAYS));
 
         return result;
     }
@@ -206,15 +202,16 @@ public class DeckEditorMvciViewBuilder implements Builder<Region> {
 
     private Node createDeckSwitcher() {
         Tile result = new Tile("Switch Decks", "Choose another deck to edit.");
-        ChoiceBox<Deck> deckChoiceBox = new ChoiceBox<>(model.getDecks());
-        deckChoiceBox.valueProperty().bindBidirectional(model.currentDeckProperty());
-        result.setAction(deckChoiceBox);
 
-        deckChoiceBox.setConverter(new StringConverter<>() {
+        ComboBox<Deck> deckComboBox = new ComboBox<>();
+        deckComboBox.setItems(model.getDecks());
+        deckComboBox.valueProperty().bindBidirectional(model.currentDeckProperty());
+        deckComboBox.setConverter(new StringConverter<>() {
             @Override
             public String toString(Deck deck) {
                 if (deck == null)
-                    return null;
+                    return "";
+
                 String title;
                 if (deck.getTitle().length() > MAX_DECK_NAME_LENGTH)
                     title = deck.getTitle().substring(0, MAX_DECK_NAME_LENGTH - 1) + "...";
@@ -229,6 +226,7 @@ public class DeckEditorMvciViewBuilder implements Builder<Region> {
             }
         });
 
+        result.setAction(deckComboBox);
         return result;
     }
 }

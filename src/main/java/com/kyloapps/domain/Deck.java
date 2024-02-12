@@ -64,8 +64,8 @@ public class Deck {
     @Override
     public String toString() {
         return "Deck{" +
-                "title='" + title + '\'' +
-                ", description='" + description + '\'' +
+                "title=" + title +
+                ", description=" + description +
                 ", flashcards=" + flashcards +
                 '}';
     }

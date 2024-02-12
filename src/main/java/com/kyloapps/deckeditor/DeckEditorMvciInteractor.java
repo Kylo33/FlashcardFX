@@ -1,6 +1,7 @@
 package com.kyloapps.deckeditor;
 
 import com.kyloapps.domain.Deck;
+import javafx.beans.InvalidationListener;
 import javafx.collections.FXCollections;
 
 public class DeckEditorMvciInteractor {
