@@ -21,6 +21,7 @@ import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
 
 import javax.security.auth.callback.Callback;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -102,14 +103,20 @@ public class FormBuilderVisitor implements Visitor<Region> {
         Spinner<Integer> columnCountSpinner = new Spinner<>(1, 10, DEFAULT_TABLE_COLUMNS);
         columnCountTile.setAction(columnCountSpinner);
 
-        VBox tableRowInputList = new VBox();
+        Tile headersTile = new TableRowInput(columnCountSpinner.valueProperty(), "Table Headers", "Input the first row of the table.");
 
-        // I need to bind the value of the row count spinner to the number of elements in the table row input vbox
+        VBox tableRowInput = new VBox();
+
+        Supplier<Node> tableAnswerSupplier = () -> {
+            return new TableRowInputAnswer(columnCountSpinner.valueProperty(), "Answer Option", "Enter a possible answer.", false);
+        };
+
+        populate(tableRowInput.getChildren(), rowCountSpinner.getValue(), tableAnswerSupplier);
         rowCountSpinner.valueProperty().addListener((observable, oldRowCount, desiredRowCount) -> {
-            populate(tableRowInputList.getChildren(), desiredRowCount, () -> new TableRowInput(columnCountSpinner.valueProperty(), "Answer Option", "Enter a possible answer."));
+            populate(tableRowInput.getChildren(), desiredRowCount, tableAnswerSupplier);
         });
 
-        return new VBox(15, questionTile, rowCountTile, columnCountTile, tableRowInputList);
+        return new VBox(15, questionTile, rowCountTile, columnCountTile, headersTile, tableRowInput);
     }
 
     public static <T> void populate(List<T> list, int desiredCount, Supplier<T> nodeSupplier) {
