@@ -3,8 +3,12 @@ package com.kyloapps.deckeditor;
 import atlantafx.base.controls.ModalPane;
 import atlantafx.base.controls.Tile;
 import atlantafx.base.theme.Styles;
+import com.kyloapps.deckeditor.cardeditor.CardEditorMvciController;
 import com.kyloapps.domain.Deck;
+import com.tobiasdiez.easybind.EasyBind;
 import javafx.beans.binding.Bindings;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -27,6 +31,9 @@ public class DeckEditorMvciViewBuilder implements Builder<Region> {
     private final Runnable deleteDeckAction;
     private final Runnable createDeckAction;
     private final Runnable editDeckAction;
+    private final ObservableList<CardEditorMvciController> cardEditorControllers = FXCollections.observableArrayList();
+    private final ObservableList<Node> mappedCardEditors = EasyBind.mapBacked(
+            cardEditorControllers, cardEditor -> new VBox(cardEditor.getView(), new Separator(Orientation.HORIZONTAL)));
 
     public DeckEditorMvciViewBuilder(DeckEditorMvciModel model, Runnable createDeckAction, Runnable deleteDeckAction, Runnable editDeckAction) {
         this.model = model;
@@ -49,20 +56,21 @@ public class DeckEditorMvciViewBuilder implements Builder<Region> {
     private Node createCardEditor() {
         ScrollPane result = new ScrollPane();
         result.setFitToWidth(true);
-        VBox cardEditors = new VBox();
-        result.setContent(new VBox(cardEditors, createNewCardRegion()));
+        VBox cardEditorBox = new VBox();
+        Bindings.bindContent(cardEditorBox.getChildren(), mappedCardEditors);
+        result.setContent(new VBox(cardEditorBox, createNewCardRegion(() -> {
+            cardEditorControllers.add(new CardEditorMvciController());
+        })));
         return result;
     }
 
-    private Region createNewCardRegion() {
+    private Region createNewCardRegion(Runnable action) {
         Button newCardButton = new Button("New Card", new FontIcon(MaterialDesignP.PLUS));
+        newCardButton.setOnAction((event) -> action.run());
         HBox buttonWrapper = new HBox(newCardButton);
         buttonWrapper.setAlignment(Pos.CENTER);
         newCardButton.getStyleClass().add(Styles.SUCCESS);
-        return new VBox(
-                new Separator(Orientation.HORIZONTAL),
-                buttonWrapper
-        );
+        return buttonWrapper;
     }
 
     private Node createGeneralDeckEditor() {
