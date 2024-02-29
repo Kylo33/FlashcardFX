@@ -1,13 +1,11 @@
 package com.kyloapps.deckeditor.cardeditor;
 
 import atlantafx.base.controls.Tile;
-import javafx.beans.binding.Bindings;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+
+import static com.kyloapps.deckeditor.cardeditor.TextFieldTile.populateList;
 
 public class TableRowInput extends Tile {
     private final ObservableValue<Integer> columnCount;
@@ -23,6 +21,6 @@ public class TableRowInput extends Tile {
     }
 
     private void adjustTextFieldCount() {
-        FormBuilderVisitor.populate(textFieldBox.getChildren(), columnCount.getValue(), TextField::new);
+        populateList(textFieldBox.getChildren(), columnCount.getValue(), TextField::new);
     }
 }

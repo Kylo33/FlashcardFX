@@ -9,3 +9,7 @@
 .choice-box .context-menu {
     -fx-max-height: 300px;
 }
+
+.success-toggle:selected {
+    -fx-background-color: -color-success-emphasis;
+}

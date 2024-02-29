@@ -1,46 +1,56 @@
 package com.kyloapps.deckeditor.cardeditor;
 
 import atlantafx.base.controls.Tile;
-import atlantafx.base.theme.Styles;
 import com.kyloapps.domain.ClassicFlashcard;
 import com.kyloapps.domain.MultipleChoiceFlashcard;
 import com.kyloapps.domain.TableFlashcard;
 import com.kyloapps.domain.Visitor;
-import com.tobiasdiez.easybind.EasyBind;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
 
-import javax.security.auth.callback.Callback;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.kyloapps.deckeditor.cardeditor.TextFieldTile.populateList;
+
+/**
+ * Visits flashcards to return a respective form GUI Region. Users should use the form to input information in order to
+ * create or edit flashcards.
+ */
 public class FormBuilderVisitor implements Visitor<Region> {
 
-    public static final int DEFAULT_MCQ_ANSWER_COUNT = 4;
-    public static final int DEFAULT_TABLE_ROWS = 4;
-    public static final int DEFAULT_TABLE_COLUMNS = 2;
+    private static final int DEFAULT_MCQ_ANSWER_COUNT = 4;
+    private static final int DEFAULT_TABLE_ROWS = 4;
+    private static final int DEFAULT_TABLE_COLUMNS = 2;
+    private static final int MINIMUM_MCQ_ANSWER_COUNT = 1;
+    private static final int MAXIMUM_MCQ_ANSWER_COUNT = 10;
+    private static final int FORM_VERTICAL_SPACING = 15;
+    private static final int MINIMUM_TABLE_ROWS = 1;
+    private static final int MAXIMUM_TABLE_ROWS = 10;
+    private static final int MINIMUM_TABLE_COLUMNS = 1;
+    private static final int MAXIMUM_TABLE_COLUMNS = 10;
 
+    /**
+     * @param flashcard Flashcard to generate the form for.
+     * @return Form for flashcard editing/creation.
+     */
     @Override
     public Region visit(ClassicFlashcard flashcard) {
-        Tile questionTile = new Tile("Enter the Question", "Question to be displayed on the flashcard.");
-        TextField questionInputField = new TextField();
-        questionTile.setAction(questionInputField);
+        TextFieldTile questionTile = new TextFieldTile(
+                "Enter the Question",
+                "Question to be displayed on the flashcard."
+        );
 
-        Tile answerTile = new Tile("Enter the Answer", "Answer to be displayed on the other side.");
+        TextFieldTile answerTile = new TextFieldTile(
+                "Enter the Answer",
+                "Answer to be displayed on the other side."
+        );
+
         TextField answerInputField = new TextField();
         answerTile.setAction(answerInputField);
-        return new VBox(15, questionTile, answerTile);
+        return new VBox(FORM_VERTICAL_SPACING, questionTile, answerTile);
     }
 
     @Override
@@ -50,83 +60,67 @@ public class FormBuilderVisitor implements Visitor<Region> {
         questionTile.setAction(questionInputField);
 
         Tile answerCountTile = new Tile("# Of Answers", "Enter the number of possible answers");
-        Spinner<Integer> answerCountSpinner = new Spinner<>(1, 10, DEFAULT_MCQ_ANSWER_COUNT);
+        Spinner<Integer> answerCountSpinner = new Spinner<>(MINIMUM_MCQ_ANSWER_COUNT, MAXIMUM_MCQ_ANSWER_COUNT, DEFAULT_MCQ_ANSWER_COUNT);
         answerCountTile.setAction(answerCountSpinner);
 
-        VBox answerBox = new VBox(15);
-//        FormBuilderVisitor.shrinkOrGrowToSize(
-//                answerBox.getChildren().size(),
-//                DEFAULT_MCQ_ANSWER_COUNT,
-//                () -> removeMultipleChoiceAnswer(answerBox),
-//                () -> addMultipleChoiceAnswer(answerBox)
-//        );
-//        answerCountSpinner.valueProperty().addListener((observable, oldAnswerCount, newAnswerCount) -> {
-//            FormBuilderVisitor.shrinkOrGrowToSize(
-//                    oldAnswerCount,
-//                    newAnswerCount,
-//                    () -> removeMultipleChoiceAnswer(answerBox),
-//                    () -> addMultipleChoiceAnswer(answerBox)
-//            );
-//        });
+        VBox answerOptionBox = new VBox(FORM_VERTICAL_SPACING);
 
-        return new VBox(15, questionTile, answerCountTile, answerBox);
-    }
+        Supplier<Node> answerOptionSupplier = () -> new TextFieldTileAnswerOption(
+                "Answer Option",
+                "Enter a possible answer.",
+                false
+        );
 
-    private void removeMultipleChoiceAnswer(Pane answerBox) {
-        answerBox.getChildren().remove(answerBox.getChildren().size() - 1);
-    }
+        populateList(answerOptionBox.getChildren(), answerCountSpinner.getValue(), answerOptionSupplier);
+        answerCountSpinner.valueProperty().addListener((observable, oldCount, desiredCount) -> populateList(
+                answerOptionBox.getChildren(),
+                desiredCount,
+                answerOptionSupplier
+        ));
 
-    private void addMultipleChoiceAnswer(Pane answerBox) {
-        Tile result = new Tile("Answer Choice", "Enter text to be displayed as an answer to the question.");
-
-        ToggleButton correctSwitch = new ToggleButton(null, new FontIcon(MaterialDesignC.CHECK));
-        correctSwitch.getStyleClass().addAll(Styles.BUTTON_ICON);
-
-        TextField optionContent = new TextField();
-
-        result.setAction(new HBox(10, optionContent, correctSwitch));
-
-        answerBox.getChildren().add(result);
+        return new VBox(15, questionTile, answerCountTile, answerOptionBox);
     }
 
     @Override
     public Region visit(TableFlashcard flashcard) {
-        Tile questionTile = new Tile("Enter the Question", "Question to be displayed on the flashcard.");
-        TextField questionInputField = new TextField();
-        questionTile.setAction(questionInputField);
+        TextFieldTile questionTile = new TextFieldTile(
+                "Enter the Question",
+                "Question to be displayed on the flashcard."
+        );
 
         Tile rowCountTile = new Tile("# of Rows", "Enter the number of rows (possible answers)");
-        Spinner<Integer> rowCountSpinner = new Spinner<>(1, 10, DEFAULT_TABLE_ROWS);
+        Spinner<Integer> rowCountSpinner = new Spinner<>(MINIMUM_TABLE_ROWS, MAXIMUM_TABLE_ROWS, DEFAULT_TABLE_ROWS);
         rowCountTile.setAction(rowCountSpinner);
 
         Tile columnCountTile = new Tile("# of Columns", "Enter the number of rows (possible answers)");
-        Spinner<Integer> columnCountSpinner = new Spinner<>(1, 10, DEFAULT_TABLE_COLUMNS);
+        Spinner<Integer> columnCountSpinner = new Spinner<>(MINIMUM_TABLE_COLUMNS, MAXIMUM_TABLE_COLUMNS, DEFAULT_TABLE_COLUMNS);
         columnCountTile.setAction(columnCountSpinner);
 
-        Tile headersTile = new TableRowInput(columnCountSpinner.valueProperty(), "Table Headers", "Input the first row of the table.");
+        TextFieldTile headersTile = new TextFieldTile(
+                "Table Headers",
+                "Input the first row of the table."
+        );
+        headersTile.textFieldCountProperty().bind(columnCountSpinner.valueProperty());
 
         VBox tableRowInput = new VBox();
 
         Supplier<Node> tableAnswerSupplier = () -> {
-            return new TableRowInputAnswer(columnCountSpinner.valueProperty(), "Answer Option", "Enter a possible answer.", false);
+            TextFieldTileAnswerOption tableAnswerOption = new TextFieldTileAnswerOption(
+                    "Answer Option",
+                    "Enter a possible answer.",
+                    false
+            );
+            tableAnswerOption.textFieldCountProperty().bind(columnCountSpinner.valueProperty());
+            return tableAnswerOption;
         };
 
-        populate(tableRowInput.getChildren(), rowCountSpinner.getValue(), tableAnswerSupplier);
-        rowCountSpinner.valueProperty().addListener((observable, oldRowCount, desiredRowCount) -> {
-            populate(tableRowInput.getChildren(), desiredRowCount, tableAnswerSupplier);
-        });
+        populateList(tableRowInput.getChildren(), rowCountSpinner.getValue(), tableAnswerSupplier);
+        rowCountSpinner.valueProperty().addListener((observable, oldRowCount, desiredRowCount) -> populateList(
+                tableRowInput.getChildren(),
+                desiredRowCount,
+                tableAnswerSupplier
+        ));
 
-        return new VBox(15, questionTile, rowCountTile, columnCountTile, headersTile, tableRowInput);
-    }
-
-    public static <T> void populate(List<T> list, int desiredCount, Supplier<T> nodeSupplier) {
-        int currentCount = list.size();
-        if (desiredCount > currentCount) {
-            for (int i = 0, c = desiredCount - currentCount; i < c; i++)
-                list.add(nodeSupplier.get());
-        } else if (desiredCount < currentCount) {
-            for (int i = 0, c = currentCount - desiredCount; i < c; i++)
-                list.remove(list.size() - 1);
-        }
+        return new VBox(FORM_VERTICAL_SPACING, questionTile, rowCountTile, columnCountTile, headersTile, tableRowInput);
     }
 }
