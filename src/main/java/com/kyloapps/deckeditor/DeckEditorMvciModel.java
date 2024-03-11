@@ -1,11 +1,9 @@
 package com.kyloapps.deckeditor;
 
+import com.kyloapps.deckeditor.cardeditor.CardEditorMvciController;
 import com.kyloapps.domain.Deck;
 import javafx.beans.Observable;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -18,6 +16,8 @@ public class DeckEditorMvciModel {
     private final StringProperty newDeckDescription = new SimpleStringProperty();
     private final StringProperty editingDeckName = new SimpleStringProperty();
     private final StringProperty editingDeckDescription = new SimpleStringProperty();
+    private final BooleanProperty changesWereMade = new SimpleBooleanProperty(false);
+    private final ObservableList<CardEditorMvciController> cardEditorControllers = FXCollections.observableArrayList();
 
     public ObservableList<Deck> getDecks() {
         return decks;
@@ -81,5 +81,21 @@ public class DeckEditorMvciModel {
 
     public void setEditingDeckDescription(String editingDeckDescription) {
         this.editingDeckDescription.set(editingDeckDescription);
+    }
+
+    public boolean isChangesWereMade() {
+        return changesWereMade.get();
+    }
+
+    public BooleanProperty changesWereMadeProperty() {
+        return changesWereMade;
+    }
+
+    public void setChangesWereMade(boolean changesWereMade) {
+        this.changesWereMade.set(changesWereMade);
+    }
+
+    public ObservableList<CardEditorMvciController> getCardEditorControllers() {
+        return cardEditorControllers;
     }
 }

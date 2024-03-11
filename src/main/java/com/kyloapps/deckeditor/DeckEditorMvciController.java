@@ -11,7 +11,13 @@ public class DeckEditorMvciController {
     public DeckEditorMvciController(ObservableList<Deck> deckListProperty) {
         DeckEditorMvciModel model = new DeckEditorMvciModel();
         DeckEditorMvciInteractor interactor = new DeckEditorMvciInteractor(model);
-        viewBuilder = new DeckEditorMvciViewBuilder(model, interactor::createDeck, interactor::deleteDeck, interactor::confirmEditDeck);
+        viewBuilder = new DeckEditorMvciViewBuilder(
+                model,
+                interactor::createDeck,
+                interactor::deleteDeck,
+                interactor::confirmEditDeck,
+                interactor::createCardEditor
+        );
         Bindings.bindContentBidirectional(model.getDecks(), deckListProperty);
     }
 

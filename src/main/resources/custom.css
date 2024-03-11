@@ -13,3 +13,8 @@
 .success-toggle:selected {
     -fx-background-color: -color-success-emphasis;
 }
+
+.save-bar {
+    -fx-background-color: -color-neutral-muted;
+    -fx-padding: 10;
+}

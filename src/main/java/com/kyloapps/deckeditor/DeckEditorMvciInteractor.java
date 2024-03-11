@@ -1,7 +1,8 @@
 package com.kyloapps.deckeditor;
 
+import com.kyloapps.deckeditor.cardeditor.CardEditorMvciController;
 import com.kyloapps.domain.Deck;
-import javafx.beans.InvalidationListener;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 
 public class DeckEditorMvciInteractor {
@@ -9,6 +10,9 @@ public class DeckEditorMvciInteractor {
 
     public DeckEditorMvciInteractor(DeckEditorMvciModel model) {
         this.model = model;
+        model.changesWereMadeProperty().bind( // TOdO
+                Bindings.createBooleanBinding(() -> true, model.getCardEditorControllers())
+        );
     }
 
     public void deleteDeck() {
@@ -27,5 +31,10 @@ public class DeckEditorMvciInteractor {
         Deck currentDeck = model.getCurrentDeck();
         currentDeck.setTitle(model.getEditingDeckName());
         currentDeck.setDescription(model.getEditingDeckDescription());
+    }
+
+    public void createCardEditor() {
+        CardEditorMvciController result = new CardEditorMvciController();
+        model.getCardEditorControllers().add(result);
     }
 }

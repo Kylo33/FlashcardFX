@@ -7,14 +7,17 @@ import javafx.scene.Node;
 import javafx.scene.control.ToggleButton;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
+import org.nield.dirtyfx.beans.DirtyBooleanProperty;
 
 public class TextFieldTileAnswerOption extends TextFieldTile{
     private static final String SUCCESS_TOGGLEBUTTON_STYLE = "success-toggle";
 
-    private final BooleanProperty correct = new SimpleBooleanProperty();
+    private final DirtyBooleanProperty correct;
     public TextFieldTileAnswerOption(String title, String description, boolean isCorrect) {
         super(title, description);
-        correct.set(isCorrect);
+
+        correct = new DirtyBooleanProperty(isCorrect);
+        compositeDirtyPropertyProperty().add(correct);
 
         getActionPane().getChildren().add(0, createCorrectButton());
     }

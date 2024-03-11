@@ -20,9 +20,7 @@ import javafx.scene.text.TextFlow;
 import javafx.util.Builder;
 import javafx.util.StringConverter;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignP;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignT;
+import org.kordamp.ikonli.materialdesign2.*;
 
 public class DeckEditorMvciViewBuilder implements Builder<Region> {
     private static final int MAX_DECK_NAME_LENGTH = 10;
@@ -31,42 +29,67 @@ public class DeckEditorMvciViewBuilder implements Builder<Region> {
     private final Runnable deleteDeckAction;
     private final Runnable createDeckAction;
     private final Runnable editDeckAction;
-    private final ObservableList<CardEditorMvciController> cardEditorControllers = FXCollections.observableArrayList();
-    private final ObservableList<Node> mappedCardEditors = EasyBind.mapBacked(
-            cardEditorControllers, cardEditor -> new VBox(cardEditor.getView(), new Separator(Orientation.HORIZONTAL)));
+    private final Runnable createCardEditorAction;
+    private final ObservableList<Node> mappedCardEditors;
 
-    public DeckEditorMvciViewBuilder(DeckEditorMvciModel model, Runnable createDeckAction, Runnable deleteDeckAction, Runnable editDeckAction) {
+    public DeckEditorMvciViewBuilder(DeckEditorMvciModel model, Runnable createDeckAction, Runnable deleteDeckAction, Runnable editDeckAction, Runnable createCardEditorAction) {
         this.model = model;
         this.createDeckAction = createDeckAction;
         this.deleteDeckAction = deleteDeckAction;
         this.editDeckAction = editDeckAction;
+        this.createCardEditorAction = createCardEditorAction;
+        mappedCardEditors = EasyBind.mapBacked(model.getCardEditorControllers(), cardEditor ->
+                new VBox(cardEditor.getView(), new Separator(Orientation.HORIZONTAL))
+        );
     }
 
     @Override
     public Region build() {
         StackPane result = new StackPane();
         BorderPane content = new BorderPane();
-        content.setPadding(new Insets(30));
-        content.setTop(new VBox(createGeneralDeckEditor(), new Separator(Orientation.HORIZONTAL)));
-        content.setCenter(createCardEditor());
+
+        VBox topBox = new VBox(createGeneralDeckEditor(), new Separator(Orientation.HORIZONTAL));
+        BorderPane.setMargin(topBox, new Insets(30));
+        content.setTop(topBox);
+
+        Node cardEditor = createCardEditorRegion();
+        BorderPane.setMargin(cardEditor, new Insets(0, 30, 30, 30));
+        content.setCenter(cardEditor);
+
+        content.setBottom(createSaveBar());
         result.getChildren().addAll(modalPane, content);
         return result;
     }
 
-    private Node createCardEditor() {
+    private Node createSaveBar() {
+        HBox result = new HBox(10);
+        result.getStyleClass().add("save-bar");
+
+        Button saveButton = new Button("Save Changes", new FontIcon(MaterialDesignF.FLOPPY));
+        saveButton.getStyleClass().add(Styles.SUCCESS);
+        saveButton.disableProperty().bind(model.changesWereMadeProperty().not());
+
+        Button revertButton = new Button("Revert Changes", new FontIcon(MaterialDesignR.REFRESH));
+        revertButton.getStyleClass().add(Styles.DANGER);
+        revertButton.disableProperty().bind(model.changesWereMadeProperty().not());
+
+        result.getChildren().addAll(saveButton, revertButton);
+        result.setAlignment(Pos.CENTER);
+        return result;
+    }
+
+    private Region createCardEditorRegion() {
         ScrollPane result = new ScrollPane();
         result.setFitToWidth(true);
         VBox cardEditorBox = new VBox();
         Bindings.bindContent(cardEditorBox.getChildren(), mappedCardEditors);
-        result.setContent(new VBox(cardEditorBox, createNewCardRegion(() -> {
-            cardEditorControllers.add(new CardEditorMvciController());
-        })));
+        result.setContent(new VBox(cardEditorBox, createNewCardRegion()));
         return result;
     }
 
-    private Region createNewCardRegion(Runnable action) {
+    private Region createNewCardRegion() {
         Button newCardButton = new Button("New Card", new FontIcon(MaterialDesignP.PLUS));
-        newCardButton.setOnAction((event) -> action.run());
+        newCardButton.setOnAction((event) -> createCardEditorAction.run());
         HBox buttonWrapper = new HBox(newCardButton);
         buttonWrapper.setAlignment(Pos.CENTER);
         newCardButton.getStyleClass().add(Styles.SUCCESS);
