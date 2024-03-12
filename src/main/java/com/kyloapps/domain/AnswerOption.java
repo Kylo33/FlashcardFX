@@ -1,11 +1,14 @@
 package com.kyloapps.domain;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+
 public class AnswerOption<T> {
-    private boolean correct;
+    private BooleanProperty correct = new SimpleBooleanProperty();
     private T content;
 
     public AnswerOption(boolean correct, T content) {
-        this.correct = correct;
+        this.correct.set(correct);
         this.content = content;
     }
 
@@ -14,11 +17,11 @@ public class AnswerOption<T> {
     }
 
     public boolean isCorrect() {
-        return correct;
+        return correct.get();
     }
 
-    public void setCorrect(boolean correct) {
-        this.correct = correct;
+    public BooleanProperty correctProperty() {
+        return correct;
     }
 
     public T getContent() {

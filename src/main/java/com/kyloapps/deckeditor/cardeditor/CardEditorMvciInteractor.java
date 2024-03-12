@@ -5,8 +5,4 @@ public class CardEditorMvciInteractor {
     public CardEditorMvciInteractor(CardEditorMvciModel model) {
         this.model = model;
     }
-
-    public void createTextFieldTile() {
-
-    }
 }

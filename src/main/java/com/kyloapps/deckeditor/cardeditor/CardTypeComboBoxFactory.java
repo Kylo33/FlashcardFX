@@ -8,8 +8,7 @@ import javafx.util.StringConverter;
 import java.util.ArrayList;
 
 /*
-    This class and its implementation were primarily designed by me. However, I did get feedback from ChatGPT (3.5)
-    to be completely transparent.
+    This class and its implementation were primarily designed by me. However, I did get feedback from ChatGPT (3.5).
  */
 public class CardTypeComboBoxFactory {
     private static final Visitor<String> cardTypeVisitor = new Visitor<>() {

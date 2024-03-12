@@ -1,31 +1,42 @@
 package com.kyloapps.domain;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 public class ClassicFlashcard implements Flashcard {
-    private String question;
-    private String answer;
+    private StringProperty question = new SimpleStringProperty();
+    private StringProperty answer = new SimpleStringProperty();
 
     public ClassicFlashcard(String question, String answer) {
-        this.question = question;
-        this.answer = answer;
+        this.question.set(question);
+        this.answer.set(answer);
     }
 
     public ClassicFlashcard() {
     }
 
     public String getQuestion() {
+        return question.get();
+    }
+
+    public StringProperty questionProperty() {
         return question;
     }
 
     public void setQuestion(String question) {
-        this.question = question;
+        this.question.set(question);
     }
 
     public String getAnswer() {
+        return answer.get();
+    }
+
+    public StringProperty answerProperty() {
         return answer;
     }
 
     public void setAnswer(String answer) {
-        this.answer = answer;
+        this.answer.set(answer);
     }
 
     @Override

@@ -10,6 +10,7 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import org.nield.dirtyfx.beans.DirtyStringProperty;
 
 import java.util.function.Supplier;
 
@@ -32,6 +33,12 @@ public class FormBuilderVisitor implements Visitor<Region> {
     private static final int MINIMUM_TABLE_COLUMNS = 1;
     private static final int MAXIMUM_TABLE_COLUMNS = 10;
 
+    private final CardEditorMvciModel model;
+
+    public FormBuilderVisitor(CardEditorMvciModel model) {
+        this.model = model;
+    }
+
     /**
      * @param flashcard Flashcard to generate the form for.
      * @return Form for flashcard editing/creation.
@@ -43,13 +50,19 @@ public class FormBuilderVisitor implements Visitor<Region> {
                 "Question to be displayed on the flashcard."
         );
 
+        DirtyStringProperty questionProperty = new DirtyStringProperty(questionTile.getTextFields().get(0).getText());
+        questionTile.getTextFields().get(0).textProperty().bindBidirectional(questionProperty);
+        model.dirtyProperty().add(questionProperty);
+
         TextFieldTile answerTile = new TextFieldTile(
                 "Enter the Answer",
                 "Answer to be displayed on the other side."
         );
 
-        TextField answerInputField = new TextField();
-        answerTile.setAction(answerInputField);
+        DirtyStringProperty answerProperty = new DirtyStringProperty(answerTile.getTextFields().get(0).getText());
+        answerTile.getTextFields().get(0).textProperty().bindBidirectional(answerProperty);
+        model.dirtyProperty().add(answerProperty);
+
         return new VBox(FORM_VERTICAL_SPACING, questionTile, answerTile);
     }
 
@@ -83,6 +96,8 @@ public class FormBuilderVisitor implements Visitor<Region> {
 
     @Override
     public Region visit(TableFlashcard flashcard) {
+        // I think that this should be bound to the flashcard's properties. Be
+
         TextFieldTile questionTile = new TextFieldTile(
                 "Enter the Question",
                 "Question to be displayed on the flashcard."

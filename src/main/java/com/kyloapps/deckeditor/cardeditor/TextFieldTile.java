@@ -13,6 +13,7 @@ import org.nield.dirtyfx.tracking.CompositeDirtyProperty;
 
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class TextFieldTile extends Tile {
     private static final int TEXT_BOX_PADDING = 5;
@@ -73,5 +74,9 @@ public class TextFieldTile extends Tile {
 
     public CompositeDirtyProperty compositeDirtyPropertyProperty() {
         return compositeDirtyProperty;
+    }
+
+    public List<TextField> getTextFields() {
+        return textFieldBox.getChildren().stream().map(node -> (TextField) node).collect(Collectors.toList());
     }
 }

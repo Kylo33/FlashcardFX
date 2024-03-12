@@ -16,7 +16,9 @@ public class DeckEditorMvciController {
                 interactor::createDeck,
                 interactor::deleteDeck,
                 interactor::confirmEditDeck,
-                interactor::createCardEditor
+                interactor::createCardEditor,
+                interactor::saveChanges,
+                interactor::revertChanges
         );
         Bindings.bindContentBidirectional(model.getDecks(), deckListProperty);
     }

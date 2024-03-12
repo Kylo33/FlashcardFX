@@ -7,6 +7,7 @@ import com.kyloapps.deckeditor.cardeditor.CardEditorMvciController;
 import com.kyloapps.domain.Deck;
 import com.tobiasdiez.easybind.EasyBind;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -21,6 +22,7 @@ import javafx.util.Builder;
 import javafx.util.StringConverter;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.*;
+import org.nield.dirtyfx.beans.DirtyBooleanProperty;
 
 public class DeckEditorMvciViewBuilder implements Builder<Region> {
     private static final int MAX_DECK_NAME_LENGTH = 10;
@@ -30,14 +32,24 @@ public class DeckEditorMvciViewBuilder implements Builder<Region> {
     private final Runnable createDeckAction;
     private final Runnable editDeckAction;
     private final Runnable createCardEditorAction;
+    private final Runnable saveAction;
+    private final Runnable revertAction;
     private final ObservableList<Node> mappedCardEditors;
 
-    public DeckEditorMvciViewBuilder(DeckEditorMvciModel model, Runnable createDeckAction, Runnable deleteDeckAction, Runnable editDeckAction, Runnable createCardEditorAction) {
+    public DeckEditorMvciViewBuilder(DeckEditorMvciModel model,
+                                     Runnable createDeckAction,
+                                     Runnable deleteDeckAction,
+                                     Runnable editDeckAction,
+                                     Runnable createCardEditorAction,
+                                     Runnable saveAction,
+                                     Runnable revertAction) {
         this.model = model;
         this.createDeckAction = createDeckAction;
         this.deleteDeckAction = deleteDeckAction;
         this.editDeckAction = editDeckAction;
         this.createCardEditorAction = createCardEditorAction;
+        this.saveAction = saveAction;
+        this.revertAction = revertAction;
         mappedCardEditors = EasyBind.mapBacked(model.getCardEditorControllers(), cardEditor ->
                 new VBox(cardEditor.getView(), new Separator(Orientation.HORIZONTAL))
         );
@@ -65,13 +77,19 @@ public class DeckEditorMvciViewBuilder implements Builder<Region> {
         HBox result = new HBox(10);
         result.getStyleClass().add("save-bar");
 
+        BooleanBinding changesWereMade = Bindings.createBooleanBinding(
+                () -> model.getCompositeDirtyProperty().isDirty(),
+                model.getCompositeDirtyProperty());
+
         Button saveButton = new Button("Save Changes", new FontIcon(MaterialDesignF.FLOPPY));
+        saveButton.setOnAction((event) -> saveAction.run());
         saveButton.getStyleClass().add(Styles.SUCCESS);
-        saveButton.disableProperty().bind(model.changesWereMadeProperty().not());
+        saveButton.disableProperty().bind(changesWereMade.not());
 
         Button revertButton = new Button("Revert Changes", new FontIcon(MaterialDesignR.REFRESH));
+        revertButton.setOnAction((event) -> revertAction.run());
         revertButton.getStyleClass().add(Styles.DANGER);
-        revertButton.disableProperty().bind(model.changesWereMadeProperty().not());
+        revertButton.disableProperty().bind(changesWereMade.not());
 
         result.getChildren().addAll(saveButton, revertButton);
         result.setAlignment(Pos.CENTER);

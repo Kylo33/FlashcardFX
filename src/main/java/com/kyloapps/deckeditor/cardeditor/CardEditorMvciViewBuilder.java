@@ -11,10 +11,11 @@ import javafx.util.Builder;
 public class CardEditorMvciViewBuilder implements Builder<Region> {
 
     private final CardEditorMvciModel model;
-    private final FormBuilderVisitor formBuilderVisitor = new FormBuilderVisitor();
+    private final FormBuilderVisitor formBuilderVisitor;
 
     public CardEditorMvciViewBuilder(CardEditorMvciModel model) {
         this.model = model;
+        formBuilderVisitor = new FormBuilderVisitor(model);
     }
 
     @Override
@@ -35,6 +36,7 @@ public class CardEditorMvciViewBuilder implements Builder<Region> {
     private Node createCardFields() {
         VBox container = new VBox();
         model.flashcardProperty().addListener((observableValue, oldFlashcard, newFlashcard) -> {
+            model.dirtyProperty().clear();
             Node cardFields = newFlashcard.accept(formBuilderVisitor);
             container.getChildren().add(cardFields);
             if (container.getChildren().size() > 1) {
