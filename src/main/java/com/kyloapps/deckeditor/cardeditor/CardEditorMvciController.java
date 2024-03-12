@@ -13,6 +13,10 @@ public class CardEditorMvciController {
         viewBuilder = new CardEditorMvciViewBuilder(model);
     }
 
+    public void loadCard(Flashcard flashcard) {
+        model.setFlashcard(flashcard);
+    }
+
     public Region getView() {
         return viewBuilder.build();
     }

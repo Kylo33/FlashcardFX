@@ -12,16 +12,18 @@ public class CardEditorMvciViewBuilder implements Builder<Region> {
 
     private final CardEditorMvciModel model;
     private final FormBuilderVisitor formBuilderVisitor;
+    private final Node formContainer;
 
     public CardEditorMvciViewBuilder(CardEditorMvciModel model) {
         this.model = model;
         formBuilderVisitor = new FormBuilderVisitor(model);
+        formContainer = createCardFields();
     }
 
     @Override
     public Region build() {
         VBox result = new VBox(15);
-        result.getChildren().addAll(createTypeTile(), createCardFields());
+        result.getChildren().addAll(createTypeTile(), formContainer);
         return result;
     }
 

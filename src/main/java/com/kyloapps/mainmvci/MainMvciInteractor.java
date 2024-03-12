@@ -2,7 +2,6 @@ package com.kyloapps.mainmvci;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kyloapps.domain.Deck;
-import javafx.collections.ObservableList;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +33,7 @@ public class MainMvciInteractor {
                 Deck newDeck;
                 try {
                     newDeck = mapper.readValue(file, Deck.class);
+                    newDeck.setFile(file);
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
                     continue;

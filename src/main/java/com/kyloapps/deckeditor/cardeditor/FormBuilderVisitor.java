@@ -50,18 +50,22 @@ public class FormBuilderVisitor implements Visitor<Region> {
                 "Question to be displayed on the flashcard."
         );
 
-        DirtyStringProperty questionProperty = new DirtyStringProperty(questionTile.getTextFields().get(0).getText());
+        DirtyStringProperty questionProperty = new DirtyStringProperty(flashcard.getQuestion());
         questionTile.getTextFields().get(0).textProperty().bindBidirectional(questionProperty);
         model.dirtyProperty().add(questionProperty);
+
+        flashcard.questionProperty().bind(questionProperty);
 
         TextFieldTile answerTile = new TextFieldTile(
                 "Enter the Answer",
                 "Answer to be displayed on the other side."
         );
 
-        DirtyStringProperty answerProperty = new DirtyStringProperty(answerTile.getTextFields().get(0).getText());
+        DirtyStringProperty answerProperty = new DirtyStringProperty(flashcard.getAnswer());
         answerTile.getTextFields().get(0).textProperty().bindBidirectional(answerProperty);
         model.dirtyProperty().add(answerProperty);
+
+        flashcard.answerProperty().bind(answerProperty);
 
         return new VBox(FORM_VERTICAL_SPACING, questionTile, answerTile);
     }

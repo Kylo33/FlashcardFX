@@ -13,6 +13,8 @@ public class ClassicFlashcard implements Flashcard {
     }
 
     public ClassicFlashcard() {
+        this.question.set("");
+        this.answer.set("");
     }
 
     public String getQuestion() {
