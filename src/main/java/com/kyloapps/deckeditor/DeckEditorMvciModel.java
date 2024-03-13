@@ -6,18 +6,19 @@ import javafx.beans.Observable;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.nield.dirtyfx.collections.DirtyObservableList;
 import org.nield.dirtyfx.tracking.CompositeDirtyProperty;
 
 public class DeckEditorMvciModel {
     private final ObservableList<Deck> decks = FXCollections.observableArrayList(deck -> {
         return new Observable[]{deck.titleProperty(), deck.descriptionProperty(), deck.getFlashcards()};
-    });
+    });d
     private final ObjectProperty<Deck> currentDeck = new SimpleObjectProperty<>();
     private final StringProperty newDeckName = new SimpleStringProperty();
     private final StringProperty newDeckDescription = new SimpleStringProperty();
     private final StringProperty editingDeckName = new SimpleStringProperty();
     private final StringProperty editingDeckDescription = new SimpleStringProperty();
-    private final ObservableList<CardEditorMvciController> cardEditorControllers = FXCollections.observableArrayList();
+    private final DirtyObservableList<CardEditorMvciController> cardEditorControllers = new DirtyObservableList<>(); // STORE IN COMPOSITE DIRTY PROPERTY BELOW
     private final CompositeDirtyProperty compositeDirtyProperty = new CompositeDirtyProperty();
 
     public ObservableList<Deck> getDecks() {
@@ -88,7 +89,7 @@ public class DeckEditorMvciModel {
         return compositeDirtyProperty;
     }
 
-    public ObservableList<CardEditorMvciController> getCardEditorControllers() {
+    public DirtyObservableList<CardEditorMvciController> getCardEditorControllers() {
         return cardEditorControllers;
     }
 }

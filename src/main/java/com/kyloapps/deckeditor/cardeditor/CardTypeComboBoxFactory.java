@@ -1,7 +1,9 @@
 package com.kyloapps.deckeditor.cardeditor;
 
 import com.kyloapps.domain.*;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
 import javafx.util.StringConverter;
 
@@ -51,7 +53,7 @@ public class CardTypeComboBoxFactory {
         @Override
         public Void visit(MultipleChoiceFlashcard flashcard) {
             flashcard.setQuestion("");
-            flashcard.setOptions(new ArrayList<>());
+            flashcard.setOptions(FXCollections.<AnswerOption<StringProperty>>observableArrayList());
             return null;
         }
 

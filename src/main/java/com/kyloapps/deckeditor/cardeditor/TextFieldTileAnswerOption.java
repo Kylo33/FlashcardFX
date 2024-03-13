@@ -12,13 +12,9 @@ import org.nield.dirtyfx.beans.DirtyBooleanProperty;
 public class TextFieldTileAnswerOption extends TextFieldTile{
     private static final String SUCCESS_TOGGLEBUTTON_STYLE = "success-toggle";
 
-    private final DirtyBooleanProperty correct;
-    public TextFieldTileAnswerOption(String title, String description, boolean isCorrect) {
+    private final BooleanProperty correct = new SimpleBooleanProperty();
+    public TextFieldTileAnswerOption(String title, String description) {
         super(title, description);
-
-        correct = new DirtyBooleanProperty(isCorrect);
-        compositeDirtyPropertyProperty().add(correct);
-
         getActionPane().getChildren().add(0, createCorrectButton());
     }
 
@@ -28,5 +24,17 @@ public class TextFieldTileAnswerOption extends TextFieldTile{
         resultButton.getStyleClass().addAll(Styles.BUTTON_ICON, SUCCESS_TOGGLEBUTTON_STYLE);
         resultButton.selectedProperty().bindBidirectional(correct);
         return resultButton;
+    }
+
+    public boolean isCorrect() {
+        return correct.get();
+    }
+
+    public BooleanProperty correctProperty() {
+        return correct;
+    }
+
+    public void setCorrect(boolean correct) {
+        this.correct.set(correct);
     }
 }

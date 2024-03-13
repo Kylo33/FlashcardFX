@@ -2,6 +2,7 @@ package com.kyloapps.deckeditor.cardeditor;
 
 import com.kyloapps.domain.Flashcard;
 import javafx.scene.layout.Region;
+import org.nield.dirtyfx.tracking.CompositeDirtyProperty;
 import org.nield.dirtyfx.tracking.DirtyProperty;
 
 public class CardEditorMvciController {
@@ -22,7 +23,10 @@ public class CardEditorMvciController {
     }
 
     public DirtyProperty dirtyProperty() {
-        return model.dirtyProperty();
+        CompositeDirtyProperty result = new CompositeDirtyProperty();
+        result.add(model.getDirtyProperties());
+        model.getDirtyProperties().forEach(result::add);
+        return result;
     }
 
     public Flashcard getFlashcard() {

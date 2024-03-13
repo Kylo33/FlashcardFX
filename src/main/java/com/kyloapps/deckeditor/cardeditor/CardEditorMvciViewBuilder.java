@@ -38,7 +38,6 @@ public class CardEditorMvciViewBuilder implements Builder<Region> {
     private Node createCardFields() {
         VBox container = new VBox();
         model.flashcardProperty().addListener((observableValue, oldFlashcard, newFlashcard) -> {
-            model.dirtyProperty().clear();
             Node cardFields = newFlashcard.accept(formBuilderVisitor);
             container.getChildren().add(cardFields);
             if (container.getChildren().size() > 1) {

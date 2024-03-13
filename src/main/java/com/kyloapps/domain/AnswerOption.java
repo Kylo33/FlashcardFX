@@ -24,6 +24,10 @@ public class AnswerOption<T> {
         return correct;
     }
 
+    public void setCorrect(boolean correct) {
+        this.correct.set(correct);
+    }
+
     public T getContent() {
         return content;
     }
