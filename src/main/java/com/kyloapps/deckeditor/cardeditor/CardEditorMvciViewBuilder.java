@@ -35,6 +35,7 @@ public class CardEditorMvciViewBuilder implements Builder<Region> {
         return typeTile;
     }
 
+
     private Node createCardFields() {
         VBox container = new VBox();
         model.flashcardProperty().addListener((observableValue, oldFlashcard, newFlashcard) -> {

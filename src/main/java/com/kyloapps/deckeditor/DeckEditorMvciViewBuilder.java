@@ -4,11 +4,12 @@ import atlantafx.base.controls.ModalPane;
 import atlantafx.base.controls.Tile;
 import atlantafx.base.theme.Styles;
 import com.kyloapps.deckeditor.cardeditor.CardEditorMvciController;
+import com.kyloapps.deckeditor.cardeditor.CardTypeComboBoxFactory;
 import com.kyloapps.domain.Deck;
+import com.kyloapps.domain.Flashcard;
 import com.tobiasdiez.easybind.EasyBind;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -22,7 +23,9 @@ import javafx.util.Builder;
 import javafx.util.StringConverter;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.*;
-import org.nield.dirtyfx.beans.DirtyBooleanProperty;
+import org.nield.dirtyfx.beans.DirtyStringProperty;
+
+import java.util.function.Consumer;
 
 public class DeckEditorMvciViewBuilder implements Builder<Region> {
     private static final int MAX_DECK_NAME_LENGTH = 10;
@@ -34,6 +37,7 @@ public class DeckEditorMvciViewBuilder implements Builder<Region> {
     private final Runnable createCardEditorAction;
     private final Runnable saveAction;
     private final Runnable revertAction;
+    private final Consumer<CardEditorMvciController> deleteCardAction;
     private final ObservableList<Node> mappedCardEditors;
 
     public DeckEditorMvciViewBuilder(DeckEditorMvciModel model,
@@ -42,7 +46,8 @@ public class DeckEditorMvciViewBuilder implements Builder<Region> {
                                      Runnable editDeckAction,
                                      Runnable createCardEditorAction,
                                      Runnable saveAction,
-                                     Runnable revertAction) {
+                                     Runnable revertAction,
+                                     Consumer<CardEditorMvciController> deleteCardAction) {
         this.model = model;
         this.createDeckAction = createDeckAction;
         this.deleteDeckAction = deleteDeckAction;
@@ -50,9 +55,22 @@ public class DeckEditorMvciViewBuilder implements Builder<Region> {
         this.createCardEditorAction = createCardEditorAction;
         this.saveAction = saveAction;
         this.revertAction = revertAction;
-        mappedCardEditors = EasyBind.mapBacked(model.getCardEditorControllers(), cardEditor ->
-                new VBox(cardEditor.getView(), new Separator(Orientation.HORIZONTAL))
-        );
+        this.deleteCardAction = deleteCardAction;
+        mappedCardEditors = EasyBind.mapBacked(model.getCardEditorControllers(), cardEditorController -> {
+            VBox cardNodes = new VBox(15, cardEditorController.getView(), createDeleteCardRegion(cardEditorController));
+            return new VBox(cardNodes, new Separator(Orientation.HORIZONTAL));
+        });
+    }
+
+    private Node createDeleteCardRegion(CardEditorMvciController cardEditorController) {
+        Tile deleteTile = new Tile("Delete Flashcard", "Delete this Flashcard?");
+        Button deletionButton = new Button("Delete", new FontIcon(MaterialDesignT.TRASH_CAN));
+        deletionButton.getStyleClass().add(Styles.DANGER);
+
+        deletionButton.setOnAction((event) -> deleteCardAction.accept(cardEditorController));
+        deleteTile.setAction(deletionButton);
+
+        return deleteTile;
     }
 
     @Override
@@ -107,10 +125,12 @@ public class DeckEditorMvciViewBuilder implements Builder<Region> {
 
     private Region createNewCardRegion() {
         Button newCardButton = new Button("New Card", new FontIcon(MaterialDesignP.PLUS));
+        newCardButton.getStyleClass().add(Styles.SUCCESS);
         newCardButton.setOnAction((event) -> createCardEditorAction.run());
+        newCardButton.disableProperty().bind(Bindings.createBooleanBinding(() -> model.getCurrentDeck() == null, model.currentDeckProperty()));
+
         HBox buttonWrapper = new HBox(newCardButton);
         buttonWrapper.setAlignment(Pos.CENTER);
-        newCardButton.getStyleClass().add(Styles.SUCCESS);
         return buttonWrapper;
     }
 
@@ -213,39 +233,30 @@ public class DeckEditorMvciViewBuilder implements Builder<Region> {
         Tile result = new Tile("Edit Deck Details", "Edit the details of the current deck.");
         Button editButton = new Button("Edit", new FontIcon(MaterialDesignF.FORM_TEXTBOX));
         result.setAction(editButton);
-        editButton.setOnAction((event) -> {
-            modalPane.show(createDeckDetailDialog());
-        });
-        editButton.disableProperty().bind(Bindings.createBooleanBinding(() -> model.getCurrentDeck() == null, model.currentDeckProperty()));
+        editButton.setOnAction((event) -> modalPane.show(createDeckDetailDialog()));
+        editButton.disableProperty().bind(
+                Bindings.createBooleanBinding(() -> model.getCurrentDeck() == null, model.currentDeckProperty())
+        );
         return result;
     }
 
     private Region createDeckDetailDialog() {
         Tile deckTitleTile = new Tile("Deck Title", "Give your deck a descriptive name!");
-        TextField titleField = new TextField(model.getCurrentDeck().getTitle());
+        TextField titleField = new TextField();
         model.editingDeckNameProperty().unbind();
-        model.editingDeckNameProperty().bind(titleField.textProperty());
+        titleField.textProperty().bindBidirectional(model.editingDeckNameProperty());
         deckTitleTile.setAction(titleField);
 
         Tile deckDescriptionTile = new Tile("Deck Description", "Give your deck a description.");
-        TextField descriptionField = new TextField(model.getCurrentDeck().getDescription());
+        TextField descriptionField = new TextField();
         model.editingDeckDescriptionProperty().unbind();
-        model.editingDeckDescriptionProperty().bind(descriptionField.textProperty());
+        descriptionField.textProperty().bindBidirectional(model.editingDeckDescriptionProperty());
         deckDescriptionTile.setAction(descriptionField);
 
         VBox content = new VBox(15, deckTitleTile, new Separator(Orientation.HORIZONTAL), deckDescriptionTile);
         content.setPadding(new Insets(15));
 
-        Button saveChanges = new Button("Save Changes", new FontIcon(MaterialDesignF.FLOPPY));
-        saveChanges.getStyleClass().add(Styles.SUCCESS);
-        BorderPane.setMargin(saveChanges, new Insets(15));
-        BorderPane.setAlignment(saveChanges, Pos.BOTTOM_RIGHT);
-        saveChanges.setOnAction((event) -> {
-            editDeckAction.run();
-            modalPane.hide();
-        });
-
-        DeckEditorDialog dialog = new DeckEditorDialog(modalPane, content, saveChanges);
+        DeckEditorDialog dialog = new DeckEditorDialog(modalPane, content, new Region());
         return dialog.build();
     }
 

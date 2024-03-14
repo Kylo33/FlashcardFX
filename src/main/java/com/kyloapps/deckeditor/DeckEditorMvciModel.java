@@ -6,18 +6,19 @@ import javafx.beans.Observable;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.nield.dirtyfx.beans.DirtyStringProperty;
 import org.nield.dirtyfx.collections.DirtyObservableList;
 import org.nield.dirtyfx.tracking.CompositeDirtyProperty;
 
 public class DeckEditorMvciModel {
-    private final ObservableList<Deck> decks = FXCollections.observableArrayList(deck -> {
-        return new Observable[]{deck.titleProperty(), deck.descriptionProperty(), deck.getFlashcards()};
-    });d
+    private final ObservableList<Deck> decks = FXCollections.observableArrayList(deck ->
+        new Observable[]{deck.titleProperty(), deck.descriptionProperty(), deck.getFlashcards()}
+    );
     private final ObjectProperty<Deck> currentDeck = new SimpleObjectProperty<>();
     private final StringProperty newDeckName = new SimpleStringProperty();
     private final StringProperty newDeckDescription = new SimpleStringProperty();
-    private final StringProperty editingDeckName = new SimpleStringProperty();
-    private final StringProperty editingDeckDescription = new SimpleStringProperty();
+    private final DirtyStringProperty editingDeckName = new DirtyStringProperty("");
+    private final DirtyStringProperty editingDeckDescription = new DirtyStringProperty("");
     private final DirtyObservableList<CardEditorMvciController> cardEditorControllers = new DirtyObservableList<>(); // STORE IN COMPOSITE DIRTY PROPERTY BELOW
     private final CompositeDirtyProperty compositeDirtyProperty = new CompositeDirtyProperty();
 
@@ -65,7 +66,7 @@ public class DeckEditorMvciModel {
         return editingDeckName.get();
     }
 
-    public StringProperty editingDeckNameProperty() {
+    public DirtyStringProperty editingDeckNameProperty() {
         return editingDeckName;
     }
 
@@ -77,12 +78,16 @@ public class DeckEditorMvciModel {
         return editingDeckDescription.get();
     }
 
-    public StringProperty editingDeckDescriptionProperty() {
+    public DirtyStringProperty editingDeckDescriptionProperty() {
         return editingDeckDescription;
     }
 
     public void setEditingDeckDescription(String editingDeckDescription) {
         this.editingDeckDescription.set(editingDeckDescription);
+    }
+
+    public CompositeDirtyProperty compositeDirtyPropertyProperty() {
+        return compositeDirtyProperty;
     }
 
     public CompositeDirtyProperty getCompositeDirtyProperty() {

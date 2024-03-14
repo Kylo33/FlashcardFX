@@ -8,8 +8,6 @@ import com.kyloapps.domain.Deck;
 import com.kyloapps.domain.StringPropertySerializer;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import org.nield.dirtyfx.tracking.CompositeDirtyProperty;
 
 import java.io.IOException;
 import java.util.stream.Collectors;
@@ -43,6 +41,11 @@ public class DeckEditorMvciInteractor {
                 result.loadCard(flashcard);
                 return result;
             }).collect(Collectors.toList()));
+
+            // Set the title & description for the deck.
+
+            model.editingDeckNameProperty().set(model.getCurrentDeck().getTitle());
+            model.editingDeckDescriptionProperty().set(model.getCurrentDeck().getDescription());
 
             // Rebaseline
             updateCompositeDirtyProperty();
@@ -85,6 +88,11 @@ public class DeckEditorMvciInteractor {
                         .collect(Collectors.toList())
         );
 
+        // Update the deck details.
+
+        model.getCurrentDeck().setTitle(model.getEditingDeckName());
+        model.getCurrentDeck().setDescription(model.getEditingDeckDescription());
+
         try {
             mapper.writeValue(model.getCurrentDeck().getFile(), model.getCurrentDeck());
         } catch (IOException e) {
@@ -96,7 +104,11 @@ public class DeckEditorMvciInteractor {
         // Update the model's CompositeDirtyProperty. If a new card is added, its dirty properties don't need to be tracked right away.
         // The fact that the new card exists will be tracked in the cardEditorControllers list, and that can just be reverted.
         model.getCompositeDirtyProperty().clear();
-        model.getCompositeDirtyProperty().add(model.getCardEditorControllers());
+        model.getCompositeDirtyProperty().addAll(
+                model.editingDeckDescriptionProperty(),
+                model.editingDeckNameProperty(),
+                model.getCardEditorControllers()
+        );
         model.getCardEditorControllers()
                 .stream()
                 .map(CardEditorMvciController::dirtyProperty)
@@ -106,5 +118,9 @@ public class DeckEditorMvciInteractor {
     public void revertChanges() {
         updateCompositeDirtyProperty();
         model.getCompositeDirtyProperty().reset();
+    }
+
+    public void deleteCard(CardEditorMvciController controller) {
+        model.getCardEditorControllers().remove(controller);
     }
 }
