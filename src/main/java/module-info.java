@@ -14,4 +14,6 @@ module com.kyloapps {
     requires atlantafx.base;
     exports com.kyloapps;
     exports com.kyloapps.domain;
+    exports com.kyloapps.deckeditor;
+    exports com.kyloapps.deckeditor.cardeditor;
 }

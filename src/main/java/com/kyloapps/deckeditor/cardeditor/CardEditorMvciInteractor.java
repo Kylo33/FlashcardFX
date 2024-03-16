@@ -1,20 +1,20 @@
 package com.kyloapps.deckeditor.cardeditor;
 
-import com.tobiasdiez.easybind.EasyBind;
-import javafx.beans.binding.Bindings;
+import com.kyloapps.deckeditor.DirtyUtils;
 
 public class CardEditorMvciInteractor {
     private final CardEditorMvciModel model;
     public CardEditorMvciInteractor(CardEditorMvciModel model) {
         this.model = model;
-        bindTextFieldTileDirtyProperties();
+        bindCompositeDirtyProperty();
     }
 
-    /** Bind the getTextFieldTileDirtyProperties to the getTextFieldTiles mapped to their CompositeDirtyProperties */
-    private void bindTextFieldTileDirtyProperties() {
-        Bindings.bindContent(
-                model.getTextFieldTileDirtyProperties(),
-                EasyBind.mapBacked(model.getTextFieldTiles(), TextFieldTile::getCompositeDirtyProperty)
+    /** Bind the compositeDirtyProperty to the compositeDirtyProperties and the TextFieldTiles DirtyList */
+    private void bindCompositeDirtyProperty() {
+        DirtyUtils.bindCompositeDirtyProperty(
+                model.getCompositeDirtyProperty(),
+                model.getTextFieldTiles(),
+                TextFieldTile::getCompositeDirtyProperty
         );
     }
 }

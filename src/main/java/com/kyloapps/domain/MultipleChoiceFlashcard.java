@@ -12,17 +12,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class MultipleChoiceFlashcard implements Flashcard {
-    private StringProperty question = new SimpleStringProperty();
+    private StringProperty question = new SimpleStringProperty("");
     private ObservableList<AnswerOption<StringProperty>> options = FXCollections.observableArrayList();
 
-    public MultipleChoiceFlashcard(String question, List<AnswerOption<StringProperty>> options) {
-        this.question.set(question);
-        this.options.setAll(options);
-    }
-
-    public MultipleChoiceFlashcard() {
-        this.question.set("");
-    }
+    public MultipleChoiceFlashcard() {}
 
     public String getQuestion() {
         return question.get();

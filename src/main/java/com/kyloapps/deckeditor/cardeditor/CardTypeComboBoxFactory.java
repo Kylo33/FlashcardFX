@@ -1,13 +1,9 @@
 package com.kyloapps.deckeditor.cardeditor;
 
 import com.kyloapps.domain.*;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
 import javafx.util.StringConverter;
-
-import java.util.ArrayList;
 
 /*
     This class and its implementation were primarily designed by me. However, I did get feedback from ChatGPT (3.5).
@@ -42,26 +38,30 @@ public class CardTypeComboBoxFactory {
         }
     };
 
-    private static Visitor<Void> cardResetVisitor = new Visitor<>() {
+    //TODO move away, this is not just view.
+    private static final Visitor<Void> cardResetVisitor = new Visitor<>() {
         @Override
         public Void visit(ClassicFlashcard flashcard) {
-            flashcard.setAnswer("");
+            flashcard.questionProperty().unbind();
             flashcard.setQuestion("");
+            flashcard.answerProperty().unbind();
+            flashcard.setAnswer("");
             return null;
         }
 
         @Override
         public Void visit(MultipleChoiceFlashcard flashcard) {
+            flashcard.questionProperty().unbind();
             flashcard.setQuestion("");
-            flashcard.setOptions(FXCollections.<AnswerOption<StringProperty>>observableArrayList());
+            flashcard.getOptions().clear();
             return null;
         }
 
         @Override
         public Void visit(TableFlashcard flashcard) {
-            flashcard.setOptions(new ArrayList<>());
-            flashcard.setHeaders(new ArrayList<>());
-            flashcard.setQuestion("");
+            flashcard.setOptions("");
+            flashcard.getHeaders().clear();
+            flashcard.getOptions().clear();
             return null;
         }
     };

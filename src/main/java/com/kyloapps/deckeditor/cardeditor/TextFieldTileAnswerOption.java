@@ -5,36 +5,41 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.Node;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.layout.HBox;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
 import org.nield.dirtyfx.beans.DirtyBooleanProperty;
+import org.nield.dirtyfx.tracking.CompositeDirtyProperty;
 
+/** Subclass of TextFieldTile that includes an option to be correct or not. */
 public class TextFieldTileAnswerOption extends TextFieldTile{
-    private static final String SUCCESS_TOGGLEBUTTON_STYLE = "success-toggle";
 
-    private final BooleanProperty correct = new SimpleBooleanProperty();
+    private final DirtyBooleanProperty correct;
+
     public TextFieldTileAnswerOption(String title, String description) {
+        this(title, description, false);
+    }
+
+    public TextFieldTileAnswerOption(String title, String description, boolean correct) {
         super(title, description);
-        getActionPane().getChildren().add(0, createCorrectButton());
+        this.correct = new DirtyBooleanProperty(correct);
+
+        // Add a "correct" checkbox toggle to the left of the TextField s provided by TextFieldTile
+        Node textFieldTileActionNode = getAction();
+        setAction(new HBox(TEXT_BOX_PADDING, createCorrectToggle(), textFieldTileActionNode));
     }
 
-    private Node createCorrectButton() {
-        ToggleButton resultButton = new ToggleButton();
-        resultButton.setGraphic(new FontIcon(MaterialDesignC.CHECK));
-        resultButton.getStyleClass().addAll(Styles.BUTTON_ICON, SUCCESS_TOGGLEBUTTON_STYLE);
-        resultButton.selectedProperty().bindBidirectional(correct);
-        return resultButton;
+    private Node createCorrectToggle() {
+        ToggleButton result = new ToggleButton(null, new FontIcon(MaterialDesignC.CHECK));
+        result.getStyleClass().addAll(".success-toggle", Styles.BUTTON_ICON);
+        result.selectedProperty().bindBidirectional(this.correct);
+        return result;
     }
 
-    public boolean isCorrect() {
-        return correct.get();
-    }
-
-    public BooleanProperty correctProperty() {
-        return correct;
-    }
-
-    public void setCorrect(boolean correct) {
-        this.correct.set(correct);
+    @Override
+    public CompositeDirtyProperty getCompositeDirtyProperty() {
+        CompositeDirtyProperty result = super.getCompositeDirtyProperty();
+        result.add(this.correct);
+        return result;
     }
 }

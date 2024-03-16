@@ -1,44 +1,67 @@
 package com.kyloapps.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TableFlashcard implements Flashcard {
-    private String question;
-    private List<String> headers;
-    private List<AnswerOption<List<String>>> options;
+    private StringProperty question = new SimpleStringProperty("");
+    private ObservableList<StringProperty> headers = FXCollections.observableArrayList();
+    private ObservableList<AnswerOption<ObservableList<StringProperty>>> options = FXCollections.observableArrayList();
 
-    public TableFlashcard(String question, List<String> headers, List<AnswerOption<List<String>>> options) {
-        this.question = question;
-        this.headers = headers;
-        this.options = options;
-    }
-
-    public TableFlashcard() {
-
-    }
+    public TableFlashcard() {}
 
     public String getQuestion() {
+        return question.get();
+    }
+
+    public StringProperty questionProperty() {
         return question;
     }
 
-    public void setQuestion(String question) {
-        this.question = question;
+    public void setOptions(String question) {
+        this.question.set(question);
     }
 
-    public List<String> getHeaders() {
+    public ObservableList<StringProperty> getHeaders() {
         return headers;
     }
 
-    public void setHeaders(List<String> headers) {
+    public void setHeaders(ObservableList<StringProperty> headers) {
         this.headers = headers;
     }
 
-    public List<AnswerOption<List<String>>> getOptions() {
+    @JsonDeserialize
+    public void setHeaders(List<String> headers) {
+        this.headers.setAll(
+                headers.stream()
+                        .map(SimpleStringProperty::new)
+                        .collect(Collectors.toList())
+        );
+    }
+
+    public ObservableList<AnswerOption<ObservableList<StringProperty>>> getOptions() {
         return options;
     }
 
-    public void setOptions(List<AnswerOption<List<String>>> options) {
+    public void setOptions(ObservableList<AnswerOption<ObservableList<StringProperty>>> options) {
         this.options = options;
+    }
+
+    @JsonDeserialize
+    public void setOptions(List<AnswerOption<List<String>>> options) {
+        this.options.clear();
+        options.stream().map( // Map each AnswerOption to an AnswerOption with observablelist of StringProperty
+                answerOptionOfLists -> new AnswerOption<ObservableList<StringProperty>>(
+                        answerOptionOfLists.isCorrect(),
+                        answerOptionOfLists.getContent().stream().map(SimpleStringProperty::new).collect(Collectors.toCollection(FXCollections::observableArrayList))
+                )
+        ).forEachOrdered(this.options::add);
     }
 
     @Override

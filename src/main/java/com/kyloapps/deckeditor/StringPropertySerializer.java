@@ -1,4 +1,4 @@
-package com.kyloapps.domain;
+package com.kyloapps.deckeditor;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;

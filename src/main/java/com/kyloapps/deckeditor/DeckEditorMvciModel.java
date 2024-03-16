@@ -9,23 +9,26 @@ import javafx.collections.ObservableList;
 import org.nield.dirtyfx.beans.DirtyStringProperty;
 import org.nield.dirtyfx.collections.DirtyObservableList;
 import org.nield.dirtyfx.tracking.CompositeDirtyProperty;
+import org.nield.dirtyfx.tracking.DirtyProperty;
 
 public class DeckEditorMvciModel {
+    // Store the deck and current deck
+    private final ObjectProperty<Deck> currentDeck = new SimpleObjectProperty<>();
     private final ObservableList<Deck> decks = FXCollections.observableArrayList(deck ->
         new Observable[]{deck.titleProperty(), deck.descriptionProperty(), deck.getFlashcards()}
     );
-    private final ObjectProperty<Deck> currentDeck = new SimpleObjectProperty<>();
-    private final StringProperty newDeckName = new SimpleStringProperty();
-    private final StringProperty newDeckDescription = new SimpleStringProperty();
-    private final DirtyStringProperty editingDeckName = new DirtyStringProperty("");
-    private final DirtyStringProperty editingDeckDescription = new DirtyStringProperty("");
-    private final DirtyObservableList<CardEditorMvciController> cardEditorControllers = new DirtyObservableList<>(); // STORE IN COMPOSITE DIRTY PROPERTY BELOW
+
+    // Store all the CardEditorController s
+    private final DirtyObservableList<CardEditorMvciController> cardEditorControllers = new DirtyObservableList<>();
+
+    // Store the new deck details (for when editing or creating a deck)
+    private final DirtyStringProperty deckNameInput = new DirtyStringProperty("");
+    private final DirtyStringProperty deckDescriptionInput = new DirtyStringProperty("");
+
+    // Store a master CompositeDirtyProperty to determine if changes have been made.
     private final CompositeDirtyProperty compositeDirtyProperty = new CompositeDirtyProperty();
 
-    public ObservableList<Deck> getDecks() {
-        return decks;
-    }
-
+    // Getters and setters
     public Deck getCurrentDeck() {
         return currentDeck.get();
     }
@@ -38,63 +41,39 @@ public class DeckEditorMvciModel {
         this.currentDeck.set(currentDeck);
     }
 
-    public String getNewDeckName() {
-        return newDeckName.get();
-    }
-
-    public StringProperty newDeckNameProperty() {
-        return newDeckName;
-    }
-
-    public void setNewDeckName(String newDeckName) {
-        this.newDeckName.set(newDeckName);
-    }
-
-    public String getNewDeckDescription() {
-        return newDeckDescription.get();
-    }
-
-    public StringProperty newDeckDescriptionProperty() {
-        return newDeckDescription;
-    }
-
-    public void setNewDeckDescription(String newDeckDescription) {
-        this.newDeckDescription.set(newDeckDescription);
-    }
-
-    public String getEditingDeckName() {
-        return editingDeckName.get();
-    }
-
-    public DirtyStringProperty editingDeckNameProperty() {
-        return editingDeckName;
-    }
-
-    public void setEditingDeckName(String editingDeckName) {
-        this.editingDeckName.set(editingDeckName);
-    }
-
-    public String getEditingDeckDescription() {
-        return editingDeckDescription.get();
-    }
-
-    public DirtyStringProperty editingDeckDescriptionProperty() {
-        return editingDeckDescription;
-    }
-
-    public void setEditingDeckDescription(String editingDeckDescription) {
-        this.editingDeckDescription.set(editingDeckDescription);
-    }
-
-    public CompositeDirtyProperty compositeDirtyPropertyProperty() {
-        return compositeDirtyProperty;
-    }
-
-    public CompositeDirtyProperty getCompositeDirtyProperty() {
-        return compositeDirtyProperty;
+    public ObservableList<Deck> getDecks() {
+        return decks;
     }
 
     public DirtyObservableList<CardEditorMvciController> getCardEditorControllers() {
         return cardEditorControllers;
+    }
+
+    public String getDeckNameInput() {
+        return deckNameInput.get();
+    }
+
+    public DirtyStringProperty deckNameInputProperty() {
+        return deckNameInput;
+    }
+
+    public void setDeckNameInput(String deckNameInput) {
+        this.deckNameInput.set(deckNameInput);
+    }
+
+    public String getDeckDescriptionInput() {
+        return deckDescriptionInput.get();
+    }
+
+    public DirtyStringProperty deckDescriptionInputProperty() {
+        return deckDescriptionInput;
+    }
+
+    public void setDeckDescriptionInput(String deckDescriptionInput) {
+        this.deckDescriptionInput.set(deckDescriptionInput);
+    }
+
+    public CompositeDirtyProperty getCompositeDirtyProperty() {
+        return compositeDirtyProperty;
     }
 }

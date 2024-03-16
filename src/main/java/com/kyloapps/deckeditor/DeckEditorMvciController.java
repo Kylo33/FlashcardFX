@@ -1,6 +1,7 @@
 package com.kyloapps.deckeditor;
 
 import com.kyloapps.domain.Deck;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.Region;
@@ -19,7 +20,8 @@ public class DeckEditorMvciController {
                 interactor::createCardEditor,
                 interactor::saveChanges,
                 interactor::revertChanges,
-                interactor::deleteCard
+                interactor::deleteCard,
+                interactor::switchDecks
         );
         Bindings.bindContentBidirectional(model.getDecks(), deckListProperty);
     }

@@ -4,18 +4,10 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class ClassicFlashcard implements Flashcard {
-    private StringProperty question = new SimpleStringProperty();
-    private StringProperty answer = new SimpleStringProperty();
+    private StringProperty question = new SimpleStringProperty("");
+    private StringProperty answer = new SimpleStringProperty("");
 
-    public ClassicFlashcard(String question, String answer) {
-        this.question.set(question);
-        this.answer.set(answer);
-    }
-
-    public ClassicFlashcard() {
-        this.question.set("");
-        this.answer.set("");
-    }
+    public ClassicFlashcard() {}
 
     public String getQuestion() {
         return question.get();
