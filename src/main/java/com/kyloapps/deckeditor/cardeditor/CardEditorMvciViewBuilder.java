@@ -12,10 +12,12 @@ public class CardEditorMvciViewBuilder implements Builder<Region> {
 
     private final CardEditorMvciModel model;
     private final FormBuilderVisitor formBuilderVisitor;
+    private final Runnable changeCardTypeAction;
     private final Node formContainer;
 
-    public CardEditorMvciViewBuilder(CardEditorMvciModel model) {
+    public CardEditorMvciViewBuilder(CardEditorMvciModel model, Runnable changeCardTypeAction) {
         this.model = model;
+        this.changeCardTypeAction = changeCardTypeAction;
         formBuilderVisitor = new FormBuilderVisitor(model);
         formContainer = createCardFields();
     }
@@ -29,7 +31,7 @@ public class CardEditorMvciViewBuilder implements Builder<Region> {
 
     private Node createTypeTile() {
         Tile typeTile = new Tile("Select Flashcard Type", "What kind of flashcard do you want to create?");
-        ComboBox<Flashcard> cardTypeComboBox = CardTypeComboBoxFactory.createCardTypeComboBox();
+        ComboBox<Flashcard> cardTypeComboBox = CardTypeComboBoxFactory.createCardTypeComboBox(changeCardTypeAction);
         cardTypeComboBox.valueProperty().bindBidirectional(model.flashcardProperty());
         typeTile.setAction(cardTypeComboBox);
         return typeTile;

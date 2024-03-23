@@ -1,20 +1,16 @@
 package com.kyloapps.deckeditor.cardeditor;
 
-import com.kyloapps.deckeditor.DirtyUtils;
+import javafx.collections.ListChangeListener;
 
 public class CardEditorMvciInteractor {
     private final CardEditorMvciModel model;
     public CardEditorMvciInteractor(CardEditorMvciModel model) {
         this.model = model;
-        bindCompositeDirtyProperty();
+        model.getMasterDirtyProperty().add(model.flashcardProperty());
+        model.getMasterDirtyProperty().add(model.getTextFieldTileDeepDirtyList());
     }
 
-    /** Bind the compositeDirtyProperty to the compositeDirtyProperties and the TextFieldTiles DirtyList */
-    private void bindCompositeDirtyProperty() {
-        DirtyUtils.bindCompositeDirtyProperty(
-                model.getCompositeDirtyProperty(),
-                model.getTextFieldTiles(),
-                TextFieldTile::getCompositeDirtyProperty
-        );
+    public void changeCard() {
+        model.getTextFieldTileDeepDirtyList().getCurrentObservableList().clear();
     }
 }

@@ -1,46 +1,39 @@
 package com.kyloapps.deckeditor.cardeditor;
 
 import atlantafx.base.controls.Tile;
-import com.kyloapps.deckeditor.DirtyUtils;
-import com.tobiasdiez.easybind.EasyBind;
+import com.kyloapps.dirty.DeepDirtyList;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import org.nield.dirtyfx.beans.DirtyStringProperty;
-import org.nield.dirtyfx.collections.DirtyObservableList;
 import org.nield.dirtyfx.tracking.CompositeDirtyProperty;
 import org.nield.dirtyfx.tracking.DirtyProperty;
 
-import java.awt.*;
+import java.util.stream.IntStream;
 
 /** A tile with a variable number of TextFields (can be bound) */
 public class TextFieldTile extends Tile {
     public static final int TEXT_BOX_PADDING = 5;
-    private final DirtyObservableList<TextField> textFields = new DirtyObservableList<>(createTextField());
-    private final CompositeDirtyProperty compositeDirtyProperty = new CompositeDirtyProperty();
+    private final ObservableList<TextField> textFields = FXCollections.observableArrayList(createTextField());
     private final IntegerProperty textFieldCount = new SimpleIntegerProperty(textFields.size());
+    private final CompositeDirtyProperty masterDirtyProperty = new CompositeDirtyProperty();
 
     public TextFieldTile(String title, String description) {
         super(title, description);
         setAction(getActionPane());
+        masterDirtyProperty.add(new DeepDirtyList<>(textFields, TextFieldTile::createStringDirtyProperty));
         registerTextFieldCountListener();
-        bindCompositeProperty();
     }
 
-    private void bindCompositeProperty() {
-        DirtyUtils.bindCompositeDirtyProperty(
-                compositeDirtyProperty,
-                textFields,
-                (textField) -> {
-                    DirtyStringProperty dirtyStringProperty = new DirtyStringProperty(textField.getText());
-                    textField.textProperty().bindBidirectional(dirtyStringProperty);
-                    return dirtyStringProperty;
-                }
-        );
+    private static DirtyProperty createStringDirtyProperty(TextField textField) {
+        DirtyStringProperty dirtyStringProperty = new DirtyStringProperty(textField.getText());
+        textField.textProperty().bindBidirectional(dirtyStringProperty);
+        return dirtyStringProperty;
     }
 
     private void registerTextFieldCountListener() {
@@ -61,10 +54,6 @@ public class TextFieldTile extends Tile {
         return textFieldBox;
     }
 
-    public CompositeDirtyProperty getCompositeDirtyProperty() {
-        return compositeDirtyProperty;
-    }
-
     //TODO bind bidirectionally to this on the spinner side so that when the dirty list of textfields gets reset,
     // the counter will as well.
 
@@ -82,5 +71,25 @@ public class TextFieldTile extends Tile {
 
     public ObservableList<TextField> getTextFields() {
         return textFields;
+    }
+
+    public CompositeDirtyProperty getMasterDirtyProperty() {
+        return masterDirtyProperty;
+    }
+
+    // TODO check if this works. try removing a blank answer and adding a new one.
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TextFieldTile that = (TextFieldTile) o;
+
+        return (IntStream.range(0, getTextFieldCount()).allMatch(i -> {
+            String thisText = this.getTextFields().get(i).getText();
+            String thatText = that.getTextFields().get(i).getText();
+            return thisText.equals(thatText);
+        }));
     }
 }

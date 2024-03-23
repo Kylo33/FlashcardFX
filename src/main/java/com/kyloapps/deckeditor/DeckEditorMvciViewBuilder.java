@@ -99,8 +99,8 @@ public class DeckEditorMvciViewBuilder implements Builder<Region> {
         result.getStyleClass().add("save-bar");
 
         BooleanBinding changesWereMade = Bindings.createBooleanBinding(
-                () -> model.getCompositeDirtyProperty().isDirty(),
-                model.getCompositeDirtyProperty());
+                () -> model.getMasterDirtyProperty().isDirty(),
+                model.getMasterDirtyProperty().isDirtyProperty());
 
         Button saveButton = new Button("Save Changes", new FontIcon(MaterialDesignF.FLOPPY));
         saveButton.setOnAction((event) -> saveAction.run());

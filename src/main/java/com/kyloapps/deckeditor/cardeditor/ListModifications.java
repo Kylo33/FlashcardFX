@@ -1,6 +1,7 @@
 package com.kyloapps.deckeditor.cardeditor;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class ListModifications {
@@ -11,7 +12,7 @@ public class ListModifications {
      * @param nodeSupplier A supplier for additional list elements
      * @param onRemove Ran after each element is deleted.
      */
-    public static <T> void populateList(List<T> list, int desiredCount, Supplier<T> nodeSupplier, Runnable onRemove) {
+    public static <T> void populateList(List<T> list, int desiredCount, Supplier<T> nodeSupplier, Consumer<T> onRemove) {
         if (desiredCount < 0) throw new IllegalArgumentException("desiredCount must be greater than zero.");
         int currentCount = list.size();
         if (desiredCount > currentCount) {
@@ -19,8 +20,9 @@ public class ListModifications {
                 list.add(nodeSupplier.get());
         } else if (desiredCount < currentCount) {
             for (int i = 0, c = currentCount - desiredCount; i < c; i++) {
+                T removedElement = list.get(list.size() - 1);
                 list.remove(list.size() - 1);
-                onRemove.run();
+                onRemove.accept(removedElement);
             }
         }
     }
@@ -32,6 +34,6 @@ public class ListModifications {
      * @param nodeSupplier A supplier for additional list elements
      */
     public static <T> void populateList(List<T> list, int desiredCount, Supplier<T> nodeSupplier) {
-        populateList(list, desiredCount, nodeSupplier, () -> {});
+        populateList(list, desiredCount, nodeSupplier, (a) -> {});
     }
 }

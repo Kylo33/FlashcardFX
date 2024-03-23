@@ -26,7 +26,7 @@ public class CardTypeComboBoxFactory {
         }
     };
 
-    private static final StringConverter<Flashcard> flashcardStringConverter = new StringConverter<Flashcard>() {
+    private static final StringConverter<Flashcard> flashcardStringConverter = new StringConverter<>() {
         @Override
         public String toString(Flashcard flashcard) {
             return flashcard == null ? "" : flashcard.accept(cardTypeVisitor);
@@ -38,35 +38,7 @@ public class CardTypeComboBoxFactory {
         }
     };
 
-    //TODO move away, this is not just view.
-    private static final Visitor<Void> cardResetVisitor = new Visitor<>() {
-        @Override
-        public Void visit(ClassicFlashcard flashcard) {
-            flashcard.questionProperty().unbind();
-            flashcard.setQuestion("");
-            flashcard.answerProperty().unbind();
-            flashcard.setAnswer("");
-            return null;
-        }
-
-        @Override
-        public Void visit(MultipleChoiceFlashcard flashcard) {
-            flashcard.questionProperty().unbind();
-            flashcard.setQuestion("");
-            flashcard.getOptions().clear();
-            return null;
-        }
-
-        @Override
-        public Void visit(TableFlashcard flashcard) {
-            flashcard.setOptions("");
-            flashcard.getHeaders().clear();
-            flashcard.getOptions().clear();
-            return null;
-        }
-    };
-
-    static ComboBox<Flashcard> createCardTypeComboBox() {
+    static ComboBox<Flashcard> createCardTypeComboBox(Runnable action) {
         ComboBox<Flashcard> flashcardComboBox = new ComboBox<>(FXCollections.observableArrayList(
                 new ClassicFlashcard(),
                 new MultipleChoiceFlashcard(),
@@ -74,7 +46,7 @@ public class CardTypeComboBoxFactory {
         ));
         flashcardComboBox.valueProperty().addListener((observableValue, oldFlashcard, newFlashcard) -> {
             if (oldFlashcard != null)
-                oldFlashcard.accept(cardResetVisitor);
+                action.run();
         });
         flashcardComboBox.setConverter(flashcardStringConverter);
         return flashcardComboBox;

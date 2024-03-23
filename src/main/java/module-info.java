@@ -16,4 +16,5 @@ module com.kyloapps {
     exports com.kyloapps.domain;
     exports com.kyloapps.deckeditor;
     exports com.kyloapps.deckeditor.cardeditor;
+    exports com.kyloapps.dirty;
 }

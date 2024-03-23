@@ -1,14 +1,13 @@
 package com.kyloapps.deckeditor;
 
 import com.kyloapps.deckeditor.cardeditor.CardEditorMvciController;
+import com.kyloapps.dirty.DeepDirtyList;
 import com.kyloapps.domain.Deck;
 import javafx.beans.Observable;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.nield.dirtyfx.beans.DirtyStringProperty;
-import org.nield.dirtyfx.collections.DirtyObservableList;
-import org.nield.dirtyfx.tracking.CompositeDirtyProperty;
 import org.nield.dirtyfx.tracking.DirtyProperty;
 
 public class DeckEditorMvciModel {
@@ -19,14 +18,14 @@ public class DeckEditorMvciModel {
     );
 
     // Store all the CardEditorController s
-    private final DirtyObservableList<CardEditorMvciController> cardEditorControllers = new DirtyObservableList<>();
+    private final ObservableList<CardEditorMvciController> cardEditorControllers = FXCollections.observableArrayList();
 
     // Store the new deck details (for when editing or creating a deck)
     private final DirtyStringProperty deckNameInput = new DirtyStringProperty("");
     private final DirtyStringProperty deckDescriptionInput = new DirtyStringProperty("");
 
     // Store a master CompositeDirtyProperty to determine if changes have been made.
-    private final CompositeDirtyProperty compositeDirtyProperty = new CompositeDirtyProperty();
+    private final DirtyProperty masterDirtyProperty = new DeepDirtyList<>(cardEditorControllers, CardEditorMvciController::dirtyProperty);
 
     // Getters and setters
     public Deck getCurrentDeck() {
@@ -45,7 +44,7 @@ public class DeckEditorMvciModel {
         return decks;
     }
 
-    public DirtyObservableList<CardEditorMvciController> getCardEditorControllers() {
+    public ObservableList<CardEditorMvciController> getCardEditorControllers() {
         return cardEditorControllers;
     }
 
@@ -73,7 +72,7 @@ public class DeckEditorMvciModel {
         this.deckDescriptionInput.set(deckDescriptionInput);
     }
 
-    public CompositeDirtyProperty getCompositeDirtyProperty() {
-        return compositeDirtyProperty;
+    public DirtyProperty getMasterDirtyProperty() {
+        return masterDirtyProperty;
     }
 }

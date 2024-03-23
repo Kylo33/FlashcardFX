@@ -3,25 +3,23 @@ package com.kyloapps.deckeditor;
 import com.kyloapps.domain.Deck;
 import com.kyloapps.deckeditor.cardeditor.CardEditorMvciController;
 import javafx.application.Platform;
-import org.nield.dirtyfx.tracking.DirtyProperty;
-
-import java.util.ArrayList;
 
 public class DeckEditorMvciInteractor {
     private final DeckEditorMvciModel model;
 
     public DeckEditorMvciInteractor(DeckEditorMvciModel model) {
         this.model = model;
-        bindCompositeDirtyProperty();
-    }
-
-    /** Maintain the CompositeDirtyProperty with all other DirtyProperties */
-    private void bindCompositeDirtyProperty() {
-        DirtyUtils.bindCompositeDirtyProperty(
-                model.getCompositeDirtyProperty(),
-                model.getCardEditorControllers(),
-                CardEditorMvciController::dirtyProperty
-        );
+        new Thread(() -> {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            Platform.runLater(() -> {
+                model.setCurrentDeck(model.getDecks().get(0));
+                switchDecks();
+            });
+        }).start();
     }
 
     public void createDeck() {
@@ -41,11 +39,11 @@ public class DeckEditorMvciInteractor {
     }
 
     public void saveChanges() {
-
+        model.getMasterDirtyProperty().rebaseline();
     }
 
     public void revertChanges() {
-
+        model.getMasterDirtyProperty().reset();
     }
 
     public void deleteCard(CardEditorMvciController cardEditorMvciController) {
@@ -60,6 +58,6 @@ public class DeckEditorMvciInteractor {
             cardController.loadCard(flashcard);
             model.getCardEditorControllers().add(cardController);
         });
-        model.getCompositeDirtyProperty().rebaseline();
+        model.getMasterDirtyProperty().rebaseline();
     }
 }
