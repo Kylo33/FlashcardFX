@@ -1,14 +1,10 @@
 package com.kyloapps.utils;
 
-import com.tobiasdiez.easybind.EasyBind;
-import javafx.application.Platform;
-import javafx.beans.Observable;
-import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.collections.*;
 import org.nield.dirtyfx.tracking.DirtyProperty;
 
 import java.util.function.Function;
@@ -16,29 +12,55 @@ import java.util.function.Function;
 public class DeepDirtyList<T> implements DirtyProperty {
     private final ObservableList<T> currentObservableList;
     private final ObservableList<T> baseObservableList;
+    private final Function<T, DirtyProperty> dirtyPropertyExtractor;
 
-    private final ObservableList<DirtyProperty> dirtyProperties = FXCollections.observableArrayList(dirtyProperty ->
-            new Observable[]{dirtyProperty.isDirtyProperty()}
-    );
+    private final ObservableMap<T, DirtyProperty> baseDirtyPropertyMap = FXCollections.observableHashMap();
+    private final ObservableMap<T, DirtyProperty> currentDirtyPropertyMap = FXCollections.observableHashMap();
 
-    private final ObservableList<DirtyProperty> dirtyPropertyBoundList; // Store here to prevent the binding being GC'd
-    private final BooleanProperty isDirty = new SimpleBooleanProperty();
+    private final BooleanProperty isDirty = new SimpleBooleanProperty(false);
 
     public DeepDirtyList(ObservableList<T> currentObservableList, Function<T, DirtyProperty> dirtyPropertyExtractor) {
         this.currentObservableList = currentObservableList;
         this.baseObservableList = FXCollections.observableArrayList(currentObservableList);
+        this.dirtyPropertyExtractor = dirtyPropertyExtractor;
 
-        dirtyPropertyBoundList = EasyBind.mapBacked(currentObservableList, dirtyPropertyExtractor);
-        Bindings.bindContent(dirtyProperties, dirtyPropertyBoundList);
-
+        configureDirtyPropertyMap();
         bindIsDirty();
     }
 
+    private void configureDirtyPropertyMap() {
+        currentObservableList.forEach(t -> currentDirtyPropertyMap.put(t, dirtyPropertyExtractor.apply(t)));
+        currentObservableList.addListener((ListChangeListener<? super T>) change -> {
+            while (change.next()) {
+                if (change.wasAdded())
+                    change.getAddedSubList().forEach(t -> currentDirtyPropertyMap.put(t, dirtyPropertyExtractor.apply(t)));
+                if (change.wasRemoved())
+                    change.getRemoved().forEach(currentDirtyPropertyMap::remove);
+            }
+        });
+    }
+
     private void bindIsDirty() {
-        isDirty.bind(Bindings.createBooleanBinding(() -> {
-            return !baseObservableList.equals(currentObservableList)
-                    || dirtyProperties.stream().anyMatch(DirtyProperty::isDirty);
-        }, currentObservableList, baseObservableList, dirtyProperties));
+        isDirty.bind(new BooleanBinding() {
+            {
+                bind(currentObservableList, baseObservableList, currentDirtyPropertyMap);
+                currentDirtyPropertyMap.values().forEach(dirtyProperty -> bind(dirtyProperty.isDirtyProperty()));
+                currentDirtyPropertyMap.addListener((MapChangeListener<? super T, ? super DirtyProperty>) change -> {
+                    if (change.wasAdded()) {
+                        bind(change.getValueAdded().isDirtyProperty());
+                    }
+                    if (change.wasRemoved()) {
+                        unbind(change.getValueRemoved().isDirtyProperty());
+                    }
+                });
+            }
+
+            @Override
+            protected boolean computeValue() {
+                return !baseObservableList.equals(currentObservableList)
+                        || currentDirtyPropertyMap.values().stream().anyMatch(DirtyProperty::isDirty);
+            }
+        });
     }
 
     @Override
@@ -54,12 +76,18 @@ public class DeepDirtyList<T> implements DirtyProperty {
     @Override
     public void rebaseline() {
         baseObservableList.setAll(currentObservableList);
-        dirtyProperties.forEach(DirtyProperty::rebaseline);
+        baseDirtyPropertyMap.clear();
+        baseDirtyPropertyMap.putAll(currentDirtyPropertyMap);
+
+        currentDirtyPropertyMap.forEach(((t, dirtyProperty) -> dirtyProperty.rebaseline()));
     }
 
     @Override
     public void reset() {
         currentObservableList.setAll(baseObservableList);
-        dirtyProperties.forEach(DirtyProperty::reset);
+        currentDirtyPropertyMap.clear();
+        currentDirtyPropertyMap.putAll(baseDirtyPropertyMap);
+
+        currentDirtyPropertyMap.forEach(((t, dirtyProperty) -> dirtyProperty.reset()));
     }
 }
