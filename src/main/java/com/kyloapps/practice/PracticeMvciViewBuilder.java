@@ -23,7 +23,7 @@ public class PracticeMvciViewBuilder implements Builder<Region> {
     private final Runnable previousAction;
     private final Runnable nextAction;
     private final ObjectProperty<Node> currentCardNode = new SimpleObjectProperty<>();
-    private final PracticeViewVisitor practiceViewVisitor = new PracticeViewVisitor();
+    private final PracticeViewFlashcardVisitor practiceViewVisitor = new PracticeViewFlashcardVisitor();
 
     public PracticeMvciViewBuilder(PracticeMvciModel model, Runnable previousAction, Runnable nextAction) {
         this.model = model;

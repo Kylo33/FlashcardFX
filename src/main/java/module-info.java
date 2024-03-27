@@ -16,5 +16,9 @@ module com.kyloapps {
     exports com.kyloapps.domain;
     exports com.kyloapps.deckeditor;
     exports com.kyloapps.deckeditor.cardeditor;
-    exports com.kyloapps.dirty;
+    exports com.kyloapps.utils;
+    exports com.kyloapps.deckeditor.cardeditor.forms;
+    exports com.kyloapps.deckeditor.cardeditor.forms.multiplechoice;
+    exports com.kyloapps.deckeditor.cardeditor.forms.classic;
+//    exports com.kyloapps.deckeditor.cardeditor.forms.table;
 }

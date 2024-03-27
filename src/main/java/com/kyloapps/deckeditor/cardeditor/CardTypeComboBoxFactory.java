@@ -1,54 +1,37 @@
 package com.kyloapps.deckeditor.cardeditor;
 
+import com.kyloapps.deckeditor.cardeditor.forms.CardController;
+import com.kyloapps.deckeditor.cardeditor.forms.multiplechoice.MultipleChoiceMvciController;
 import com.kyloapps.domain.*;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
 import javafx.util.StringConverter;
 
-/*
-    This class and its implementation were primarily designed by me. However, I did get feedback from ChatGPT (3.5).
- */
 public class CardTypeComboBoxFactory {
-    private static final Visitor<String> cardTypeVisitor = new Visitor<>() {
+    private static final ControllerVisitor<String> controllerVisitor = new ControllerVisitor<>() {
         @Override
-        public String visit(ClassicFlashcard flashcard) {
-            return "Classic (Front & Back)";
-        }
-
-        @Override
-        public String visit(MultipleChoiceFlashcard flashcard) {
+        public String visit(MultipleChoiceMvciController controller) {
             return "Multiple Choice";
-        }
-
-        @Override
-        public String visit(TableFlashcard flashcard) {
-            return "Table";
         }
     };
 
-    private static final StringConverter<Flashcard> flashcardStringConverter = new StringConverter<>() {
+    private static final StringConverter<CardController<?>> controllerStringConverter = new StringConverter<>() {
         @Override
-        public String toString(Flashcard flashcard) {
-            return flashcard == null ? "" : flashcard.accept(cardTypeVisitor);
+        public String toString(CardController<?> controller) {
+            return controller == null ? "" : controller.accept(controllerVisitor);
         }
 
         @Override
-        public Flashcard fromString(String s) {
+        public CardController<?> fromString(String s) {
             return null;
         }
     };
 
-    static ComboBox<Flashcard> createCardTypeComboBox(Runnable action) {
-        ComboBox<Flashcard> flashcardComboBox = new ComboBox<>(FXCollections.observableArrayList(
-                new ClassicFlashcard(),
-                new MultipleChoiceFlashcard(),
-                new TableFlashcard()
+    static ComboBox<CardController<?>> createCardTypeComboBox() {
+        ComboBox<CardController<?>> controllerComboBox = new ComboBox<>(FXCollections.observableArrayList(
+                new MultipleChoiceMvciController()
         ));
-        flashcardComboBox.valueProperty().addListener((observableValue, oldFlashcard, newFlashcard) -> {
-            if (oldFlashcard != null)
-                action.run();
-        });
-        flashcardComboBox.setConverter(flashcardStringConverter);
-        return flashcardComboBox;
+        controllerComboBox.setConverter(controllerStringConverter);
+        return controllerComboBox;
     }
 }

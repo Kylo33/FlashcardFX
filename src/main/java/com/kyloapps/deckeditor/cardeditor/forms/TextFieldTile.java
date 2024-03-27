@@ -1,7 +1,8 @@
-package com.kyloapps.deckeditor.cardeditor;
+package com.kyloapps.deckeditor.cardeditor.forms;
 
 import atlantafx.base.controls.Tile;
-import com.kyloapps.dirty.DeepDirtyList;
+import com.kyloapps.utils.ListModifications;
+import com.kyloapps.utils.DeepDirtyList;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
@@ -76,8 +77,6 @@ public class TextFieldTile extends Tile {
     public CompositeDirtyProperty getMasterDirtyProperty() {
         return masterDirtyProperty;
     }
-
-    // TODO check if this works. try removing a blank answer and adding a new one.
 
     @Override
     public boolean equals(Object o) {

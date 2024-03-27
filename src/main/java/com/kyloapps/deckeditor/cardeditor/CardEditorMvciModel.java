@@ -1,39 +1,27 @@
 package com.kyloapps.deckeditor.cardeditor;
 
-import com.kyloapps.dirty.DeepDirtyList;
-import com.kyloapps.domain.Flashcard;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import org.nield.dirtyfx.beans.DirtyObjectProperty;
-import org.nield.dirtyfx.tracking.CompositeDirtyProperty;
+import com.kyloapps.deckeditor.cardeditor.forms.CardController;
+import com.kyloapps.utils.DeepDirtyProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 
 public class CardEditorMvciModel {
-    private final DirtyObjectProperty<Flashcard> flashcard = new DirtyObjectProperty<>(null);
-    private final ObservableList<ObservableList<TextFieldTile>> textFieldTileLists = FXCollections.observableArrayList();
-    private final ObservableList<DeepDirtyList<TextFieldTile>> textFieldTileDeepDirtyList = FXCollections.observableArrayList();
-    private final CompositeDirtyProperty masterDirtyProperty = new CompositeDirtyProperty();
+    private final ObjectProperty<CardController<?>> controller = new SimpleObjectProperty<>();
+    private final DeepDirtyProperty<CardController<?>> controllerDeepDirtyProperty = new DeepDirtyProperty<>(controller, CardController::getDirtyProperty);
 
-    public Flashcard getFlashcard() {
-        return flashcard.getValue();
+    public CardController<?> getController() {
+        return controller.getValue();
     }
 
-    public void setFlashcard(Flashcard flashcard) {
-        this.flashcard.setValue(flashcard);
+    public ObjectProperty<CardController<?>> controllerProperty() {
+        return controller;
     }
 
-    public DirtyObjectProperty<Flashcard> flashcardProperty() {
-        return flashcard;
+    public void setController(CardController<?> controller) {
+        this.controller.setValue(controller);
     }
 
-    public ObservableList<ObservableList<TextFieldTile>> getTextFieldTileLists() {
-        return textFieldTileLists;
-    }
-
-    public CompositeDirtyProperty getMasterDirtyProperty() {
-        return masterDirtyProperty;
-    }
-
-    public DeepDirtyList<TextFieldTile> getTextFieldTileDeepDirtyList() {
-        return textFieldTileDeepDirtyList;
+    public DeepDirtyProperty<CardController<?>> getControllerDeepDirtyProperty() {
+        return controllerDeepDirtyProperty;
     }
 }

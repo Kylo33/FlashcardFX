@@ -9,17 +9,6 @@ public class DeckEditorMvciInteractor {
 
     public DeckEditorMvciInteractor(DeckEditorMvciModel model) {
         this.model = model;
-        new Thread(() -> {
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            Platform.runLater(() -> {
-                model.setCurrentDeck(model.getDecks().get(0));
-                switchDecks();
-            });
-        }).start();
     }
 
     public void createDeck() {
@@ -51,8 +40,10 @@ public class DeckEditorMvciInteractor {
     }
 
     public void switchDecks() {
+        model.getCardEditorControllers().clear();
+
         Deck currentDeck = model.getCurrentDeck();
-        // Load cards
+        //   Load cards
         currentDeck.getFlashcards().forEach(flashcard -> {
             CardEditorMvciController cardController = new CardEditorMvciController();
             cardController.loadCard(flashcard);

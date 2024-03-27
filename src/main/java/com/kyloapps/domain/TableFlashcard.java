@@ -65,7 +65,7 @@ public class TableFlashcard implements Flashcard {
     }
 
     @Override
-    public <T> T accept(Visitor<T> visitor) {
-        return visitor.visit(this);
+    public <T> T accept(FlashcardVisitor<T> flashcardVisitor) {
+        return flashcardVisitor.visit(this);
     }
 }

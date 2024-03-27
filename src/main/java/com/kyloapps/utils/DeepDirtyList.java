@@ -1,6 +1,7 @@
-package com.kyloapps.dirty;
+package com.kyloapps.utils;
 
 import com.tobiasdiez.easybind.EasyBind;
+import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
@@ -60,13 +61,5 @@ public class DeepDirtyList<T> implements DirtyProperty {
     public void reset() {
         currentObservableList.setAll(baseObservableList);
         dirtyProperties.forEach(DirtyProperty::reset);
-    }
-
-    public ObservableList<T> getCurrentObservableList() {
-        return currentObservableList;
-    }
-
-    public ObservableList<T> getBaseObservableList() {
-        return baseObservableList;
     }
 }

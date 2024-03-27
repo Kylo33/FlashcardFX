@@ -1,8 +1,6 @@
 package com.kyloapps.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import javafx.beans.Observable;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -47,7 +45,7 @@ public class MultipleChoiceFlashcard implements Flashcard {
     }
 
     @Override
-    public <T> T accept(Visitor<T> visitor) {
-        return visitor.visit(this);
+    public <T> T accept(FlashcardVisitor<T> flashcardVisitor) {
+        return flashcardVisitor.visit(this);
     }
 }

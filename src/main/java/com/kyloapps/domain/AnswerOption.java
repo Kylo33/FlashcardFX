@@ -35,4 +35,12 @@ public class AnswerOption<T> {
     public void setContent(T content) {
         this.content = content;
     }
+
+    @Override
+    public String toString() {
+        return "AnswerOption{" +
+                "correct=" + correct +
+                ", content=" + content +
+                '}';
+    }
 }

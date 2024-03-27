@@ -1,6 +1,6 @@
 package com.kyloapps.deckeditor;
 
-import com.kyloapps.dirty.DeepDirtyList;
+import com.kyloapps.utils.DeepDirtyList;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import org.junit.Before;

@@ -1,7 +1,7 @@
 package com.kyloapps.deckeditor;
 
 import com.kyloapps.deckeditor.cardeditor.CardEditorMvciController;
-import com.kyloapps.dirty.DeepDirtyList;
+import com.kyloapps.utils.DeepDirtyList;
 import com.kyloapps.domain.Deck;
 import javafx.beans.Observable;
 import javafx.beans.property.*;

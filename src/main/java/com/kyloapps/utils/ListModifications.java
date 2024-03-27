@@ -1,4 +1,4 @@
-package com.kyloapps.deckeditor.cardeditor;
+package com.kyloapps.utils;
 
 import java.util.List;
 import java.util.function.Consumer;

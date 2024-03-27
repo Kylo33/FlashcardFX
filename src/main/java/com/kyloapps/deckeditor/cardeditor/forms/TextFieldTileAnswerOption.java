@@ -1,16 +1,12 @@
-package com.kyloapps.deckeditor.cardeditor;
+package com.kyloapps.deckeditor.cardeditor.forms;
 
 import atlantafx.base.theme.Styles;
-import javafx.beans.InvalidationListener;
 import javafx.scene.Node;
-import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
 import org.nield.dirtyfx.beans.DirtyBooleanProperty;
-
-import java.util.Objects;
 
 /** Subclass of TextFieldTile that includes an option to be correct or not. */
 public class TextFieldTileAnswerOption extends TextFieldTile{
