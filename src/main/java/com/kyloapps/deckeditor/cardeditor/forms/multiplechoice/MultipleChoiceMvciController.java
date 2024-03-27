@@ -1,6 +1,6 @@
 package com.kyloapps.deckeditor.cardeditor.forms.multiplechoice;
 
-import com.kyloapps.deckeditor.cardeditor.ControllerVisitor;
+import com.kyloapps.deckeditor.cardeditor.forms.CardControllerVisitor;
 import com.kyloapps.deckeditor.cardeditor.forms.CardController;
 import com.kyloapps.deckeditor.cardeditor.forms.TextFieldTileAnswerOption;
 import com.kyloapps.domain.AnswerOption;
@@ -31,8 +31,8 @@ public class MultipleChoiceMvciController implements CardController<MultipleChoi
     }
 
     @Override
-    public <T> T accept(ControllerVisitor<T> controllerVisitor) {
-        return controllerVisitor.visit(this);
+    public <T> T accept(CardControllerVisitor<T> cardControllerVisitor) {
+        return cardControllerVisitor.visit(this);
     }
 
     @Override

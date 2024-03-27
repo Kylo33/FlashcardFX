@@ -1,6 +1,7 @@
 package com.kyloapps.deckeditor.cardeditor;
 
 import com.kyloapps.deckeditor.cardeditor.forms.CardController;
+import com.kyloapps.deckeditor.cardeditor.forms.classic.ClassicMvciController;
 import com.kyloapps.deckeditor.cardeditor.forms.multiplechoice.MultipleChoiceMvciController;
 import com.kyloapps.domain.ClassicFlashcard;
 import com.kyloapps.domain.FlashcardVisitor;
@@ -10,7 +11,9 @@ import com.kyloapps.domain.TableFlashcard;
 public class FlashcardToControllerVisitor implements FlashcardVisitor<CardController<?>> {
     @Override
     public CardController<?> visit(ClassicFlashcard flashcard) {
-        return null;
+        ClassicMvciController result = new ClassicMvciController();
+        result.loadCard(flashcard);
+        return result;
     }
 
     @Override
