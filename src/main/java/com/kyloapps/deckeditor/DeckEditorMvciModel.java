@@ -21,8 +21,11 @@ public class DeckEditorMvciModel {
     private final ObservableList<CardEditorMvciController> cardEditorControllers = FXCollections.observableArrayList();
 
     // Store the new deck details (for when editing or creating a deck)
-    private final DirtyStringProperty deckNameInput = new DirtyStringProperty("");
-    private final DirtyStringProperty deckDescriptionInput = new DirtyStringProperty("");
+    private final DirtyStringProperty creationDeckNameInput = new DirtyStringProperty("");
+    private final DirtyStringProperty creationDeckDescriptionInput = new DirtyStringProperty("");
+
+    private final DirtyStringProperty editingDeckNameInput = new DirtyStringProperty("");
+    private final DirtyStringProperty editingDeckDescriptionInput = new DirtyStringProperty("");
 
     // Store a master CompositeDirtyProperty to determine if changes have been made.
     private final DirtyProperty masterDirtyProperty = new DeepDirtyList<>(cardEditorControllers, CardEditorMvciController::dirtyProperty);
@@ -48,28 +51,52 @@ public class DeckEditorMvciModel {
         return cardEditorControllers;
     }
 
-    public String getDeckNameInput() {
-        return deckNameInput.get();
+    public String getCreationDeckNameInput() {
+        return creationDeckNameInput.get();
     }
 
-    public DirtyStringProperty deckNameInputProperty() {
-        return deckNameInput;
+    public DirtyStringProperty creationDeckNameInputProperty() {
+        return creationDeckNameInput;
     }
 
-    public void setDeckNameInput(String deckNameInput) {
-        this.deckNameInput.set(deckNameInput);
+    public void setCreationDeckNameInput(String creationDeckNameInput) {
+        this.creationDeckNameInput.set(creationDeckNameInput);
     }
 
-    public String getDeckDescriptionInput() {
-        return deckDescriptionInput.get();
+    public String getCreationDeckDescriptionInput() {
+        return creationDeckDescriptionInput.get();
     }
 
-    public DirtyStringProperty deckDescriptionInputProperty() {
-        return deckDescriptionInput;
+    public DirtyStringProperty creationDeckDescriptionInputProperty() {
+        return creationDeckDescriptionInput;
     }
 
-    public void setDeckDescriptionInput(String deckDescriptionInput) {
-        this.deckDescriptionInput.set(deckDescriptionInput);
+    public void setCreationDeckDescriptionInput(String creationDeckDescriptionInput) {
+        this.creationDeckDescriptionInput.set(creationDeckDescriptionInput);
+    }
+
+    public String getEditingDeckNameInput() {
+        return editingDeckNameInput.get();
+    }
+
+    public DirtyStringProperty editingDeckNameInputProperty() {
+        return editingDeckNameInput;
+    }
+
+    public void setEditingDeckNameInput(String editingDeckNameInput) {
+        this.editingDeckNameInput.set(editingDeckNameInput);
+    }
+
+    public String getEditingDeckDescriptionInput() {
+        return editingDeckDescriptionInput.get();
+    }
+
+    public DirtyStringProperty editingDeckDescriptionInputProperty() {
+        return editingDeckDescriptionInput;
+    }
+
+    public void setEditingDeckDescriptionInput(String editingDeckDescriptionInput) {
+        this.editingDeckDescriptionInput.set(editingDeckDescriptionInput);
     }
 
     public DirtyProperty getMasterDirtyProperty() {

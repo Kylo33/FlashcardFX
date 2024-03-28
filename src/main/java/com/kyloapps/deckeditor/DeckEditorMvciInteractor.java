@@ -14,11 +14,17 @@ public class DeckEditorMvciInteractor {
     }
 
     public void createDeck() {
-
+        Deck result = new Deck();
+        result.setTitle(model.getCreationDeckNameInput());
+        result.setDescription(model.getCreationDeckDescriptionInput());
+        model.getDecks().add(result);
+        model.setCurrentDeck(result);
     }
 
     public void deleteDeck() {
-
+        model.getDecks().remove(model.getCurrentDeck());
+        model.setCurrentDeck(null);
+        model.getMasterDirtyProperty().rebaseline();
     }
 
     public void confirmEditDeck() {
@@ -38,13 +44,17 @@ public class DeckEditorMvciInteractor {
     }
 
     public void deleteCard(CardEditorMvciController cardEditorMvciController) {
-
+        model.getCardEditorControllers().remove(cardEditorMvciController);
     }
 
     public void switchDecks() {
         model.getCardEditorControllers().clear();
 
         Deck currentDeck = model.getCurrentDeck();
+
+        if (currentDeck == null)
+            return;
+
         //   Load cards
         currentDeck.getFlashcards().forEach(flashcard -> {
             CardEditorMvciController cardController = new CardEditorMvciController();

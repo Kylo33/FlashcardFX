@@ -1,12 +1,8 @@
 package com.kyloapps.deckeditor.cardeditor.forms.table;
 
-import com.kyloapps.deckeditor.cardeditor.forms.TextFieldTile;
 import com.kyloapps.deckeditor.cardeditor.forms.TextFieldTileAnswerOption;
 import com.kyloapps.utils.ListModifications;
-import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
-import javafx.scene.control.TextField;
 
 public class TableMvciInteractor {
     private final TableMvciModel model;

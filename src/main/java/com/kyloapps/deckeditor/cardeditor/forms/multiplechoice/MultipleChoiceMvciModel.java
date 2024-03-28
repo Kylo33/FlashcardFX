@@ -4,6 +4,8 @@ import com.kyloapps.deckeditor.cardeditor.forms.TextFieldTile;
 import com.kyloapps.deckeditor.cardeditor.forms.TextFieldTileAnswerOption;
 import com.kyloapps.domain.AnswerOption;
 import com.kyloapps.utils.DeepDirtyList;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,6 +18,8 @@ import org.nield.dirtyfx.tracking.DirtyProperty;
 public class MultipleChoiceMvciModel {
     static final int MINIMUM_MCQ_COUNT = 1;
     static final int MAXIMUM_MCQ_COUNT = 10;
+
+    private final IntegerProperty optionCount = new SimpleIntegerProperty();
 
     private final TextFieldTile questionTile = new TextFieldTile("Question", "Enter the flashcard's question.");
     private final ObservableList<TextFieldTileAnswerOption> optionTiles = FXCollections.observableArrayList();
@@ -41,5 +45,17 @@ public class MultipleChoiceMvciModel {
 
     public CompositeDirtyProperty getCompositeDirtyProperty() {
         return compositeDirtyProperty;
+    }
+
+    public int getOptionCount() {
+        return optionCount.get();
+    }
+
+    public IntegerProperty optionCountProperty() {
+        return optionCount;
+    }
+
+    public void setOptionCount(int optionCount) {
+        this.optionCount.set(optionCount);
     }
 }

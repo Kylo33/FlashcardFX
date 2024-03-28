@@ -17,7 +17,7 @@ public class MultipleChoiceMvciController implements CardController<MultipleChoi
     public MultipleChoiceMvciController() {
         this.model = new MultipleChoiceMvciModel();
         this.interactor = new MultipleChoiceMvciInteractor(model);
-        this.viewBuilder = new MultipleChoiceMvciViewBuilder(model, interactor::updateAnswerCount);
+        this.viewBuilder = new MultipleChoiceMvciViewBuilder(model);
     }
 
     @Override

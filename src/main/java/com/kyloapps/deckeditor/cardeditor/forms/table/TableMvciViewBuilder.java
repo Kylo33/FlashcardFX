@@ -40,7 +40,7 @@ public class TableMvciViewBuilder implements Builder<Region> {
         Tile result = new Tile("Columns", "Enter the number of columns in the table.");
         int currentColumnCount = model.getOptionTiles().isEmpty() ? 2 : model.getOptionTiles().size();
         Spinner<Integer> spinner = new Spinner<>(TableMvciModel.MIN_COLUMN_COUNT, TableMvciModel.MAX_COLUMN_COUNT, currentColumnCount);
-        spinner.getValueFactory().valueProperty().bindBidirectional(columnSpinnerValueProperty);
+        columnSpinnerValueProperty.bindBidirectional(spinner.getValueFactory().valueProperty());
         result.setAction(spinner);
         return result;
     }
@@ -48,7 +48,7 @@ public class TableMvciViewBuilder implements Builder<Region> {
     private Node createRowSpinnerTile() {
         Tile result = new Tile("Rows", "Enter the number of rows in the table.");
         Spinner<Integer> spinner = new Spinner<>(TableMvciModel.MIN_ROW_COUNT, TableMvciModel.MAX_ROW_COUNT, model.getOptionTiles().size());
-        spinner.getValueFactory().valueProperty().bindBidirectional(rowSpinnerValueProperty);
+        rowSpinnerValueProperty.bindBidirectional(spinner.getValueFactory().valueProperty());
         result.setAction(spinner);
         return result;
     }

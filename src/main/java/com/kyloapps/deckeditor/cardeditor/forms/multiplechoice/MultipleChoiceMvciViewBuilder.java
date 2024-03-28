@@ -1,19 +1,9 @@
 package com.kyloapps.deckeditor.cardeditor.forms.multiplechoice;
 
 import atlantafx.base.controls.Tile;
-import com.kyloapps.deckeditor.cardeditor.forms.TextFieldTile;
-import com.kyloapps.deckeditor.cardeditor.forms.TextFieldTileAnswerOption;
-import com.tobiasdiez.easybind.EasyBind;
-import java.util.function.Consumer;
-
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
-import javafx.beans.binding.Bindings;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
-import javafx.scene.control.Label;
+import javafx.beans.property.ObjectProperty;
 import javafx.scene.control.Spinner;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -21,11 +11,10 @@ import javafx.util.Builder;
 
 public class MultipleChoiceMvciViewBuilder implements Builder<Region> {
     private final MultipleChoiceMvciModel model;
-    private final Consumer<Integer> changeOptionCountAction;
-    public MultipleChoiceMvciViewBuilder(MultipleChoiceMvciModel model,
-                                         Consumer<Integer> changeOptionCountAction) {
+    private final ObjectProperty<Integer> rowSpinnerValue;
+    public MultipleChoiceMvciViewBuilder(MultipleChoiceMvciModel model) {
         this.model = model;
-        this.changeOptionCountAction = changeOptionCountAction;
+        this.rowSpinnerValue = model.optionCountProperty().asObject();
     }
 
     @Override
@@ -49,11 +38,7 @@ public class MultipleChoiceMvciViewBuilder implements Builder<Region> {
                 new Spinner<>(MultipleChoiceMvciModel.MINIMUM_MCQ_COUNT,
                         MultipleChoiceMvciModel.MAXIMUM_MCQ_COUNT,
                         model.getOptionTiles().size());
-
-        answerCountSpinner.valueProperty().addListener(
-                (observable, oldValue,
-                 newValue) -> changeOptionCountAction.accept(newValue));
-
+        rowSpinnerValue.bindBidirectional(answerCountSpinner.getValueFactory().valueProperty());
         spinnerTile.setAction(answerCountSpinner);
         return spinnerTile;
     }
