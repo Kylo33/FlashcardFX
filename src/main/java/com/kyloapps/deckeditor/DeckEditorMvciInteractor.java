@@ -1,16 +1,45 @@
 package com.kyloapps.deckeditor;
 
-import com.kyloapps.deckeditor.cardeditor.forms.classic.ClassicMvciController;
-import com.kyloapps.domain.ClassicFlashcard;
-import com.kyloapps.domain.Deck;
 import com.kyloapps.deckeditor.cardeditor.CardEditorMvciController;
-import javafx.application.Platform;
+import com.kyloapps.domain.Deck;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class DeckEditorMvciInteractor {
     private final DeckEditorMvciModel model;
+    private static final SimpleDateFormat simpleDateFormat =
+            new SimpleDateFormat("yyyy-MM-dd-kk-mm-ss-SSS");
 
-    public DeckEditorMvciInteractor(DeckEditorMvciModel model) {
+    public DeckEditorMvciInteractor(
+            DeckEditorMvciModel model) {
         this.model = model;
+        configureCompositeDirtyProperty();
+        configureEditingProperties();
+    }
+
+    private void configureEditingProperties() {
+        model.setEditingDeckNameInput(model.getCurrentDeck() == null
+                ? ""
+                : model.getCurrentDeck().getTitle());
+        model.setEditingDeckDescriptionInput(model.getCurrentDeck() == null
+                ? ""
+                : model.getCurrentDeck().getDescription());
+        model.currentDeckProperty().addListener((observable, oldDeck, newDeck) -> {
+            model.setEditingDeckNameInput(model.getCurrentDeck() == null
+                    ? ""
+                    : model.getCurrentDeck().getTitle());
+            model.setEditingDeckDescriptionInput(model.getCurrentDeck() == null
+                    ? ""
+                    : model.getCurrentDeck().getDescription());
+        });
+    }
+
+    private void configureCompositeDirtyProperty() {
+        model.getCompositeDirtyProperty().addAll(model.getDeepDirtyList(),
+                model.editingDeckDescriptionInputProperty(),
+                model.editingDeckNameInputProperty());
     }
 
     public void createDeck() {
@@ -19,16 +48,19 @@ public class DeckEditorMvciInteractor {
         result.setDescription(model.getCreationDeckDescriptionInput());
         model.getDecks().add(result);
         model.setCurrentDeck(result);
+        model.getDeckFileMap().put(result, new File(getFilename(result)));
+    }
+
+    private String getFilename(Deck deck) {
+        return model.getCurrentDirectory() + File.separator
+                + deck.getTitle() + "-" + simpleDateFormat.format(new Date())
+                + ".json";
     }
 
     public void deleteDeck() {
         model.getDecks().remove(model.getCurrentDeck());
         model.setCurrentDeck(null);
-        model.getMasterDirtyProperty().rebaseline();
-    }
-
-    public void confirmEditDeck() {
-
+        model.getCompositeDirtyProperty().rebaseline();
     }
 
     public void createCardEditor() {
@@ -36,11 +68,11 @@ public class DeckEditorMvciInteractor {
     }
 
     public void saveChanges() {
-        model.getMasterDirtyProperty().rebaseline();
+        model.getCompositeDirtyProperty().rebaseline();
     }
 
     public void revertChanges() {
-        model.getMasterDirtyProperty().reset();
+        model.getCompositeDirtyProperty().reset();
     }
 
     public void deleteCard(CardEditorMvciController cardEditorMvciController) {
@@ -61,6 +93,6 @@ public class DeckEditorMvciInteractor {
             cardController.loadCard(flashcard);
             model.getCardEditorControllers().add(cardController);
         });
-        model.getMasterDirtyProperty().rebaseline();
+        model.getCompositeDirtyProperty().rebaseline();
     }
 }

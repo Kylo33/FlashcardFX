@@ -15,8 +15,6 @@ public class Deck {
     private final StringProperty title = new SimpleStringProperty();
     private final StringProperty description = new SimpleStringProperty();
     private ObservableList<Flashcard> flashcards;
-    @JsonIgnore
-    private File file;
 
     public Deck(String title, String description, ObservableList<Flashcard> flashcards) {
         this.title.set(title);
@@ -63,14 +61,6 @@ public class Deck {
     @JsonDeserialize
     public void setFlashcards(List<Flashcard> flashcards){
         this.flashcards.setAll(flashcards);
-    }
-
-    public File getFile() {
-        return file;
-    }
-
-    public void setFile(File file) {
-        this.file = file;
     }
 
     @Override

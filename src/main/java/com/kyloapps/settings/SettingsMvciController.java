@@ -8,9 +8,12 @@ import java.io.File;
 
 public class SettingsMvciController {
     private final SettingsMvciViewBuilder view;
+    private final SettingsMvciInteractor interactor;
+    private final SettingsMvciModel model;
+
     public SettingsMvciController(ObjectProperty<File> currentDirectoryProperty) {
-        SettingsMvciModel model = new SettingsMvciModel();
-        SettingsMvciInteractor interactor = new SettingsMvciInteractor(model);
+        this.model = new SettingsMvciModel();
+        this.interactor = new SettingsMvciInteractor(model);
         view = new SettingsMvciViewBuilder(model);
         currentDirectoryProperty.bind(model.currentDirectoryProperty());
     }

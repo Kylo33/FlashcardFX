@@ -21,7 +21,7 @@ public class MainMvciController {
                 model.currentDeckProperty());
         settingsMvciController = new SettingsMvciController(model.currentDirectoryProperty());
         practiceMvciController = new PracticeMvciController(model.currentDeckProperty());
-        deckEditorMvciController = new DeckEditorMvciController(model.getDecks());
+        deckEditorMvciController = new DeckEditorMvciController(model.getDecks(), model.getDeckFileMap(), model.currentDirectoryProperty());
         view = new MainMvciViewBuilder(
                 model,
                 homeMvciController.getView(),

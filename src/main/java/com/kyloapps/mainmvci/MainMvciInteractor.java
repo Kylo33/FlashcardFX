@@ -33,7 +33,7 @@ public class MainMvciInteractor {
                 Deck newDeck;
                 try {
                     newDeck = mapper.readValue(file, Deck.class);
-                    newDeck.setFile(file);
+                    model.getDeckFileMap().put(newDeck, file);
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
                     continue;

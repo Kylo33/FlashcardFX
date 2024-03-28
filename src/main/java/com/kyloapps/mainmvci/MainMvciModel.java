@@ -6,14 +6,18 @@ import com.kyloapps.domain.Deck;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainMvciModel {
     private final ObjectProperty<Deck> currentDeck = new SimpleObjectProperty<>();
     private final ObservableList<Deck> decks = FXCollections.observableArrayList();
     private final ObjectProperty<File> currentDirectory = new SimpleObjectProperty<>();
     private final ObjectProperty<Page> selectedPage = new SimpleObjectProperty<>();
+    private final ObservableMap<Deck, File> deckFileMap = FXCollections.observableHashMap();
 
     public ObservableList<Deck> getDecks() {
         return decks;
@@ -53,5 +57,9 @@ public class MainMvciModel {
 
     public void setCurrentDeck(Deck currentDeck) {
         this.currentDeck.set(currentDeck);
+    }
+
+    public ObservableMap<Deck, File> getDeckFileMap() {
+        return deckFileMap;
     }
 }

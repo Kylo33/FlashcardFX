@@ -30,7 +30,6 @@ public class DeckEditorMvciViewBuilder implements Builder<Region> {
     private final ModalPane modalPane = new ModalPane();
     private final Runnable deleteDeckAction;
     private final Runnable createDeckAction;
-    private final Runnable editDeckAction;
     private final Runnable createCardEditorAction;
     private final Runnable saveAction;
     private final Runnable revertAction;
@@ -41,7 +40,6 @@ public class DeckEditorMvciViewBuilder implements Builder<Region> {
     public DeckEditorMvciViewBuilder(DeckEditorMvciModel model,
                                      Runnable createDeckAction,
                                      Runnable deleteDeckAction,
-                                     Runnable editDeckAction,
                                      Runnable createCardEditorAction,
                                      Runnable saveAction,
                                      Runnable revertAction,
@@ -50,7 +48,6 @@ public class DeckEditorMvciViewBuilder implements Builder<Region> {
         this.model = model;
         this.createDeckAction = createDeckAction;
         this.deleteDeckAction = deleteDeckAction;
-        this.editDeckAction = editDeckAction;
         this.createCardEditorAction = createCardEditorAction;
         this.saveAction = saveAction;
         this.revertAction = revertAction;
@@ -96,8 +93,8 @@ public class DeckEditorMvciViewBuilder implements Builder<Region> {
         result.getStyleClass().add("save-bar");
 
         BooleanBinding changesWereMade = Bindings.createBooleanBinding(
-                () -> model.getMasterDirtyProperty().isDirty(),
-                model.getMasterDirtyProperty().isDirtyProperty());
+                () -> model.getCompositeDirtyProperty().isDirty(),
+                model.getCompositeDirtyProperty().isDirtyProperty());
 
         Button saveButton = new Button("Save Changes", new FontIcon(MaterialDesignF.FLOPPY));
         saveButton.setOnAction((event) -> saveAction.run());
@@ -234,32 +231,30 @@ public class DeckEditorMvciViewBuilder implements Builder<Region> {
         Tile result = new Tile("Edit Deck Details", "Edit the details of the current deck.");
         Button editButton = new Button("Edit", new FontIcon(MaterialDesignF.FORM_TEXTBOX));
         result.setAction(editButton);
-//        editButton.setOnAction((event) -> modalPane.show(createDeckDetailDialog()));
+        editButton.setOnAction((event) -> modalPane.show(createDeckDetailDialog()));
         editButton.disableProperty().bind(
                 Bindings.createBooleanBinding(() -> model.getCurrentDeck() == null, model.currentDeckProperty())
         );
         return result;
     }
 
-//    private Region createDeckDetailDialog() {
-//        Tile deckTitleTile = new Tile("Deck Title", "Give your deck a descriptive name!");
-//        TextField titleField = new TextField();
-//        model.editingDeckNameProperty().unbind();
-//        titleField.textProperty().bindBidirectional(model.editingDeckNameProperty());
-//        deckTitleTile.setAction(titleField);
-//
-//        Tile deckDescriptionTile = new Tile("Deck Description", "Give your deck a description.");
-//        TextField descriptionField = new TextField();
-//        model.editingDeckDescriptionProperty().unbind();
-//        descriptionField.textProperty().bindBidirectional(model.editingDeckDescriptionProperty());
-//        deckDescriptionTile.setAction(descriptionField);
-//
-//        VBox content = new VBox(15, deckTitleTile, new Separator(Orientation.HORIZONTAL), deckDescriptionTile);
-//        content.setPadding(new Insets(15));
-//
-//        DeckEditorDialog dialog = new DeckEditorDialog(modalPane, content, new Region());
-//        return dialog.build();
-//    }
+    private Region createDeckDetailDialog() {
+        Tile deckTitleTile = new Tile("Deck Title", "Give your deck a descriptive name!");
+        TextField titleField = new TextField();
+        titleField.textProperty().bindBidirectional(model.editingDeckNameInputProperty());
+        deckTitleTile.setAction(titleField);
+
+        Tile deckDescriptionTile = new Tile("Deck Description", "Give your deck a description.");
+        TextField descriptionField = new TextField();
+        descriptionField.textProperty().bindBidirectional(model.editingDeckDescriptionInputProperty());
+        deckDescriptionTile.setAction(descriptionField);
+
+        VBox content = new VBox(15, deckTitleTile, new Separator(Orientation.HORIZONTAL), deckDescriptionTile);
+        content.setPadding(new Insets(15));
+
+        DeckEditorDialog dialog = new DeckEditorDialog(modalPane, content, new Region());
+        return dialog.build();
+    }
 
     private Node createDeckSwitcher() {
         Tile result = new Tile("Switch Decks", "Choose another deck to edit.");
