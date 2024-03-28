@@ -64,6 +64,10 @@ public class TableFlashcard implements Flashcard {
         ).forEachOrdered(this.options::add);
     }
 
+    public void setQuestion(String question) {
+        this.question.set(question);
+    }
+
     @Override
     public <T> T accept(FlashcardVisitor<T> flashcardVisitor) {
         return flashcardVisitor.visit(this);

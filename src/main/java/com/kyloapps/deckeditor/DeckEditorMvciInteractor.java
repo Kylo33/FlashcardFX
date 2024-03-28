@@ -1,5 +1,7 @@
 package com.kyloapps.deckeditor;
 
+import com.kyloapps.deckeditor.cardeditor.forms.classic.ClassicMvciController;
+import com.kyloapps.domain.ClassicFlashcard;
 import com.kyloapps.domain.Deck;
 import com.kyloapps.deckeditor.cardeditor.CardEditorMvciController;
 import javafx.application.Platform;
@@ -24,7 +26,7 @@ public class DeckEditorMvciInteractor {
     }
 
     public void createCardEditor() {
-
+        model.getCardEditorControllers().add(new CardEditorMvciController());
     }
 
     public void saveChanges() {

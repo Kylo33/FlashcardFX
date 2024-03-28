@@ -41,6 +41,7 @@ public class MultipleChoiceMvciController implements CardController<MultipleChoi
 
         model.getQuestionTile().getTextFields().get(0).setText(flashcard.getQuestion());
 
+        model.getOptionTiles().clear();
         for (AnswerOption<StringProperty> option : flashcard.getOptions()) {
             TextFieldTileAnswerOption result = new TextFieldTileAnswerOption("Answer Option", "Enter an answer choice.");
             result.getTextFields().get(0).setText(option.getContent().get());

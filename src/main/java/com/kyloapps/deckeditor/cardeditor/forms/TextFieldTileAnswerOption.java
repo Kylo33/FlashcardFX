@@ -24,10 +24,6 @@ public class TextFieldTileAnswerOption extends TextFieldTile{
         this.correct = new DirtyBooleanProperty(correct);
         getMasterDirtyProperty().add(this.correct);
 
-//        getTextFields().get(0).textProperty().addListener((observable, oldValue, newValue) ->
-//            System.out.println(this.getMasterDirtyProperty().isDirty())
-//        );
-
         Node textFieldTileActionNode = getAction();
         setAction(new HBox(TEXT_BOX_PADDING, createCorrectToggle(), textFieldTileActionNode));
     }

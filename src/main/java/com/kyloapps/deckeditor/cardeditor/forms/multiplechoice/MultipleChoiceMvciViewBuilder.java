@@ -34,14 +34,10 @@ public class MultipleChoiceMvciViewBuilder implements Builder<Region> {
         // Bindings.bindContent(optionBox.getChildren(), model.getOptionTiles());
         // Gives IndexOutOfBoundsException. I think it's a bug with JavaFX:
         // https://stackoverflow.com/questions/27769583/calling-clear-on-observablelist-causes-indexoutofboundsexception/27773466#27773466
-        Platform.runLater(() -> {
-            optionBox.getChildren().setAll(model.getOptionTiles());
-        });
-        model.getOptionTiles().addListener((InvalidationListener) observable -> {
-            Platform.runLater(() -> {
-                optionBox.getChildren().setAll(model.getOptionTiles());
-            });
-        });
+        Platform.runLater(() -> optionBox.getChildren().setAll(model.getOptionTiles()));
+        model.getOptionTiles().addListener((InvalidationListener) observable
+                -> Platform.runLater(
+                () -> optionBox.getChildren().setAll(model.getOptionTiles())));
         return new VBox(15, model.getQuestionTile(), createSpinnerTile(), optionBox);
     }
 
