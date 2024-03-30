@@ -20,22 +20,19 @@ public class MultipleChoiceMvciInteractor {
     }
 
     private void configureCompositeDirtyProperty() {
-        model.getCompositeDirtyProperty().addAll(model.getQuestionTile().getMasterDirtyProperty(), model.getDeepDirtyList(), model.getImageTile().getMasterDirtyProperty());
+        model.getCompositeDirtyProperty().addAll(model.questionProperty(), model.imageUrlProperty(), model.getDeepDirtyList());
     }
 
     public void manageOptionCount() {
-        ListModifications.populateList(model.getOptionTiles(), model.getOptionCount(),
+        ListModifications.populateList(model.getOptions(), model.getOptionCount(),
                 ()
-                        -> new TextFieldTileAnswerOption(
-                        "Answer Option", "Enter an answer choice."));
+                        -> new AnswerOption<>(false, new SimpleStringProperty("")));
         model.optionCountProperty().addListener(
                 (observable, oldValue, newValue)
-                        -> ListModifications.populateList(model.getOptionTiles(),
-                        newValue.intValue(),
+                        -> ListModifications.populateList(model.getOptions(), model.getOptionCount(),
                         ()
-                                -> new TextFieldTileAnswerOption(
-                                "Answer Option", "Enter an answer choice.")));
-        model.getOptionTiles().addListener((ListChangeListener<? super TextFieldTileAnswerOption>) change -> {
+                                -> new AnswerOption<>(false, new SimpleStringProperty(""))));
+        model.getOptions().addListener((ListChangeListener<? super AnswerOption<StringProperty>>) change -> {
             while (change.next())
                 model.setOptionCount(change.getList().size());
         });

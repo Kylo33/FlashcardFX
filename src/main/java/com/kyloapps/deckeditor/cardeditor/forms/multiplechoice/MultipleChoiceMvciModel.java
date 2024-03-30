@@ -1,7 +1,5 @@
 package com.kyloapps.deckeditor.cardeditor.forms.multiplechoice;
 
-import com.kyloapps.deckeditor.cardeditor.forms.TextFieldTile;
-import com.kyloapps.deckeditor.cardeditor.forms.TextFieldTileAnswerOption;
 import com.kyloapps.domain.AnswerOption;
 import com.kyloapps.utils.DeepDirtyList;
 import javafx.beans.property.IntegerProperty;
@@ -9,11 +7,9 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.util.Pair;
 import org.nield.dirtyfx.beans.DirtyBooleanProperty;
 import org.nield.dirtyfx.beans.DirtyStringProperty;
 import org.nield.dirtyfx.tracking.CompositeDirtyProperty;
-import org.nield.dirtyfx.tracking.DirtyProperty;
 
 public class MultipleChoiceMvciModel {
     static final int MINIMUM_MCQ_COUNT = 1;
@@ -21,32 +17,23 @@ public class MultipleChoiceMvciModel {
 
     private final IntegerProperty optionCount = new SimpleIntegerProperty();
 
-    private final TextFieldTile questionTile = new TextFieldTile("Question", "Enter the flashcard's question.");
-    private final TextFieldTile imageTile = new TextFieldTile("Image", "Enter an image URL — optional.");
-    private final ObservableList<TextFieldTileAnswerOption> optionTiles = FXCollections.observableArrayList();
-    private final DeepDirtyList<TextFieldTileAnswerOption> deepDirtyList = new DeepDirtyList<>(optionTiles, TextFieldTile::getMasterDirtyProperty);
+    private final DirtyStringProperty question = new DirtyStringProperty("");
+    private final DirtyStringProperty imageUrl = new DirtyStringProperty("");
+    private final ObservableList<AnswerOption<StringProperty>> options = FXCollections.observableArrayList();
+    private final DeepDirtyList<AnswerOption<StringProperty>> deepDirtyList = new DeepDirtyList<>(options, answerOption -> {
+        CompositeDirtyProperty result = new CompositeDirtyProperty();
+
+        DirtyBooleanProperty correct = new DirtyBooleanProperty(answerOption.isCorrect());
+        answerOption.correctProperty().bindBidirectional(correct);
+
+        DirtyStringProperty content = new DirtyStringProperty(answerOption.getContent().get());
+        answerOption.getContent().bindBidirectional(content);
+
+        result.addAll(correct, content);
+        return result;
+    });
 
     private final CompositeDirtyProperty compositeDirtyProperty = new CompositeDirtyProperty();
-
-    public TextFieldTile getQuestionTile() {
-        return questionTile;
-    }
-
-    public ObservableList<TextFieldTileAnswerOption> getOptionTiles() {
-        return optionTiles;
-    }
-
-    public DeepDirtyList<TextFieldTileAnswerOption> getDeepDirtyList() {
-        return deepDirtyList;
-    }
-
-    public CompositeDirtyProperty compositeDirtyPropertyProperty() {
-        return compositeDirtyProperty;
-    }
-
-    public CompositeDirtyProperty getCompositeDirtyProperty() {
-        return compositeDirtyProperty;
-    }
 
     public int getOptionCount() {
         return optionCount.get();
@@ -60,7 +47,39 @@ public class MultipleChoiceMvciModel {
         this.optionCount.set(optionCount);
     }
 
-    public TextFieldTile getImageTile() {
-        return imageTile;
+    public String getQuestion() {
+        return question.get();
+    }
+
+    public DirtyStringProperty questionProperty() {
+        return question;
+    }
+
+    public void setQuestion(String question) {
+        this.question.set(question);
+    }
+
+    public String getImageUrl() {
+        return imageUrl.get();
+    }
+
+    public DirtyStringProperty imageUrlProperty() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl.set(imageUrl);
+    }
+
+    public ObservableList<AnswerOption<StringProperty>> getOptions() {
+        return options;
+    }
+
+    public DeepDirtyList<AnswerOption<StringProperty>> getDeepDirtyList() {
+        return deepDirtyList;
+    }
+
+    public CompositeDirtyProperty getCompositeDirtyProperty() {
+        return compositeDirtyProperty;
     }
 }

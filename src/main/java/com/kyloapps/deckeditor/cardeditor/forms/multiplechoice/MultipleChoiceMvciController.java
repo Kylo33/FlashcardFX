@@ -41,31 +41,18 @@ public class MultipleChoiceMvciController
     // Copies the flashcard, so it will not be changed until the changes are
     // saved.
     public void loadCard(MultipleChoiceFlashcard flashcard) {
-        model.getQuestionTile().getTextFields().get(0).setText(
-                flashcard.getQuestion());
-
-        model.getOptionTiles().clear();
-        for (AnswerOption<StringProperty> option : flashcard.getOptions()) {
-            TextFieldTileAnswerOption result = new TextFieldTileAnswerOption(
-                    "Answer Option", "Enter an answer choice.");
-            result.getTextFields().get(0).setText(option.getContent().get());
-            result.setCorrect(option.isCorrect());
-            model.getOptionTiles().add(result);
-        }
+        model.setQuestion(flashcard.getQuestion());
+        model.getOptions().setAll(flashcard.getOptions());
+        if (flashcard.getImageUrl() != null)
+            model.imageUrlProperty().set(flashcard.getImageUrl());
     }
 
     @Override
     public MultipleChoiceFlashcard toFlashcard() {
         MultipleChoiceFlashcard result = new MultipleChoiceFlashcard();
-        result.setQuestion(
-                model.getQuestionTile().getTextFields().get(0).getText());
-        result.setOptions(model.getOptionTiles()
-                .stream()
-                .map(optionTile
-                        -> new AnswerOption<>(optionTile.isCorrect(),
-                        optionTile.getTextFields().get(0).getText()))
-                .collect(Collectors.toList()));
-        result.setImageUrl(model.getImageTile().getTextFields().get(0).getText());
+        result.setQuestion(model.getQuestion());
+        result.getOptions().setAll(model.getOptions());
+        result.setImageUrl(model.getImageUrl());
         return result;
     }
 }
