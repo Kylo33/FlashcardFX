@@ -73,7 +73,10 @@ public class DeckEditorMvciInteractor {
     }
 
     public void deleteDeck() {
-        model.getDecks().remove(model.getCurrentDeck());
+        if (model.getDeckFileMap().get(model.getCurrentDeck()).delete()) {
+            model.getDecks().remove(model.getCurrentDeck());
+            model.getDeckFileMap().remove(model.getCurrentDeck());
+        }
         model.setCurrentDeck(null);
         model.getCompositeDirtyProperty().rebaseline();
     }
