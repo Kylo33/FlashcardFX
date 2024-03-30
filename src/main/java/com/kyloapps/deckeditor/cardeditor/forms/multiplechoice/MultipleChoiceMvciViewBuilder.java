@@ -3,6 +3,7 @@ package com.kyloapps.deckeditor.cardeditor.forms.multiplechoice;
 import atlantafx.base.controls.Tile;
 import com.kyloapps.deckeditor.cardeditor.forms.TextFieldTile;
 import com.kyloapps.deckeditor.cardeditor.forms.TextFieldTileAnswerOption;
+import com.kyloapps.deckeditor.cardeditor.forms.classic.ClassicMvciViewBuilder;
 import com.tobiasdiez.easybind.EasyBind;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -35,7 +36,12 @@ public class MultipleChoiceMvciViewBuilder implements Builder<Region> {
 
     @Override
     public Region build() {
-        return new VBox(15, createQuestionTile(), createImageTile(), createSpinnerTile(), createOptionBox());
+        return new VBox(15,
+                ClassicMvciViewBuilder.createSimpleBoundTile("Question", "Enter the flashcard's question.",
+                        model.questionProperty()),
+                ClassicMvciViewBuilder.createSimpleBoundTile("Image", "Enter an image URL — optional.",
+                        model.questionProperty()),
+                createSpinnerTile(), createOptionBox());
     }
 
     private Node createOptionBox() {
@@ -45,18 +51,6 @@ public class MultipleChoiceMvciViewBuilder implements Builder<Region> {
                 -> Platform.runLater(
                 () -> optionBox.getChildren().setAll(textFieldTileAnswerOptions))); // watch out for GC
         return optionBox;
-    }
-
-    private Node createQuestionTile() {
-        TextFieldTile result = new TextFieldTile("Question", "Enter the flashcard's question.");
-        result.getTextFields().get(0).textProperty().bindBidirectional(model.questionProperty());
-        return result;
-    }
-
-    private Node createImageTile() {
-        TextFieldTile result = new TextFieldTile("Image", "Enter an image URL — optional.");
-        result.getTextFields().get(0).textProperty().bindBidirectional(model.imageUrlProperty());
-        return result;
     }
 
     private Region createSpinnerTile() {

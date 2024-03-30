@@ -10,7 +10,6 @@ public class ClassicMvciInteractor {
 
     private void configureCompositeDirtyProperty() {
         model.getCompositeDirtyProperty().addAll(
-                model.getQuestionTile().getMasterDirtyProperty(),
-                model.getAnswerTile().getMasterDirtyProperty());
+                model.questionProperty(), model.answerProperty(), model.imageUrlProperty());
     }
 }

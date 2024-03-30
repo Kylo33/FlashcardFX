@@ -44,7 +44,7 @@ public class MultipleChoiceMvciController
         model.setQuestion(flashcard.getQuestion());
         model.getOptions().setAll(flashcard.getOptions());
         if (flashcard.getImageUrl() != null)
-            model.imageUrlProperty().set(flashcard.getImageUrl());
+            model.setImageUrl(flashcard.getImageUrl());
     }
 
     @Override

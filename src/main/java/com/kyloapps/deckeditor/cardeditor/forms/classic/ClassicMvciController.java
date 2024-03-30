@@ -30,15 +30,18 @@ public class ClassicMvciController implements CardController<ClassicFlashcard> {
 
     @Override
     public void loadCard(ClassicFlashcard flashcard) {
-        model.getQuestionTile().getTextFields().get(0).setText(flashcard.getQuestion());
-        model.getAnswerTile().getTextFields().get(0).setText(flashcard.getAnswer());
+        model.setQuestion(flashcard.getQuestion());
+        model.setAnswer(flashcard.getAnswer());
+        if (flashcard.getImageUrl() != null)
+            model.setImageUrl(flashcard.getImageUrl());
     }
 
     @Override
     public ClassicFlashcard toFlashcard() {
         ClassicFlashcard result = new ClassicFlashcard();
-        result.setQuestion(model.getQuestionTile().getTextFields().get(0).getText());
-        result.setAnswer(model.getAnswerTile().getTextFields().get(0).getText());
+        result.setQuestion(model.getQuestion());
+        result.setAnswer(model.getAnswer());
+        result.setImageUrl(model.getImageUrl());
         return result;
     }
 

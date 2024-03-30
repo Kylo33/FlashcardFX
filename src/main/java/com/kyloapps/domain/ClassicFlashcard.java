@@ -6,6 +6,7 @@ import javafx.beans.property.StringProperty;
 public class ClassicFlashcard implements Flashcard {
     private StringProperty question = new SimpleStringProperty("");
     private StringProperty answer = new SimpleStringProperty("");
+    private StringProperty imageUrl = new SimpleStringProperty("");
 
     public ClassicFlashcard() {}
 
@@ -31,6 +32,18 @@ public class ClassicFlashcard implements Flashcard {
 
     public void setAnswer(String answer) {
         this.answer.set(answer);
+    }
+
+    public String getImageUrl() {
+        return imageUrl.get();
+    }
+
+    public StringProperty imageUrlProperty() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl.set(imageUrl);
     }
 
     @Override
