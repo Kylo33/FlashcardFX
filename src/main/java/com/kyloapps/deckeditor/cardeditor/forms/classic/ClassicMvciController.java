@@ -35,6 +35,14 @@ public class ClassicMvciController implements CardController<ClassicFlashcard> {
     }
 
     @Override
+    public ClassicFlashcard toFlashcard() {
+        ClassicFlashcard result = new ClassicFlashcard();
+        result.setQuestion(model.getQuestionTile().getTextFields().get(0).getText());
+        result.setAnswer(model.getAnswerTile().getTextFields().get(0).getText());
+        return result;
+    }
+
+    @Override
     public <T> T accept(CardControllerVisitor<T> cardControllerVisitor){
         return cardControllerVisitor.visit(this);
     }

@@ -27,7 +27,7 @@ public class MultipleChoiceMvciViewBuilder implements Builder<Region> {
         model.getOptionTiles().addListener((InvalidationListener) observable
                 -> Platform.runLater(
                 () -> optionBox.getChildren().setAll(model.getOptionTiles())));
-        return new VBox(15, model.getQuestionTile(), createSpinnerTile(), optionBox);
+        return new VBox(15, model.getQuestionTile(), model.getImageTile(), createSpinnerTile(), optionBox);
     }
 
     private Region createSpinnerTile() {

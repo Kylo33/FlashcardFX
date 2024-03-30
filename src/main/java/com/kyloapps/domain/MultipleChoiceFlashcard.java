@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 public class MultipleChoiceFlashcard implements Flashcard {
     private StringProperty question = new SimpleStringProperty("");
+    private StringProperty imageUrl = new SimpleStringProperty();
     private ObservableList<AnswerOption<StringProperty>> options = FXCollections.observableArrayList();
 
     public MultipleChoiceFlashcard() {}
@@ -47,5 +48,17 @@ public class MultipleChoiceFlashcard implements Flashcard {
     @Override
     public <T> T accept(FlashcardVisitor<T> flashcardVisitor) {
         return flashcardVisitor.visit(this);
+    }
+
+    public String getImageUrl() {
+        return imageUrl.get();
+    }
+
+    public StringProperty imageUrlProperty() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl.set(imageUrl);
     }
 }

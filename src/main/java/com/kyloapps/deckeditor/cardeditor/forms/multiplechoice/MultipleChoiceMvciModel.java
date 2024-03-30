@@ -22,6 +22,7 @@ public class MultipleChoiceMvciModel {
     private final IntegerProperty optionCount = new SimpleIntegerProperty();
 
     private final TextFieldTile questionTile = new TextFieldTile("Question", "Enter the flashcard's question.");
+    private final TextFieldTile imageTile = new TextFieldTile("Image", "Enter an image URL — optional.");
     private final ObservableList<TextFieldTileAnswerOption> optionTiles = FXCollections.observableArrayList();
     private final DeepDirtyList<TextFieldTileAnswerOption> deepDirtyList = new DeepDirtyList<>(optionTiles, TextFieldTile::getMasterDirtyProperty);
 
@@ -57,5 +58,9 @@ public class MultipleChoiceMvciModel {
 
     public void setOptionCount(int optionCount) {
         this.optionCount.set(optionCount);
+    }
+
+    public TextFieldTile getImageTile() {
+        return imageTile;
     }
 }

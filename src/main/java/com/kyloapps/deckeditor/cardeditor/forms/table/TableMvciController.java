@@ -3,9 +3,14 @@ package com.kyloapps.deckeditor.cardeditor.forms.table;
 import com.kyloapps.deckeditor.cardeditor.forms.CardController;
 import com.kyloapps.deckeditor.cardeditor.forms.CardControllerVisitor;
 import com.kyloapps.deckeditor.cardeditor.forms.TextFieldTileAnswerOption;
+import com.kyloapps.domain.AnswerOption;
 import com.kyloapps.domain.TableFlashcard;
+import javafx.scene.control.TextInputControl;
 import javafx.scene.layout.Region;
 import org.nield.dirtyfx.tracking.DirtyProperty;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class TableMvciController implements CardController<TableFlashcard> {
 
@@ -62,5 +67,29 @@ public class TableMvciController implements CardController<TableFlashcard> {
 
             model.getOptionTiles().add(result);
         }
+    }
+
+    @Override
+    public TableFlashcard toFlashcard() {
+        TableFlashcard result = new TableFlashcard();
+        result.setQuestion(model.getQuestionTile().getTextFields().get(0).getText());
+        result.setHeaders(model.getHeaders()
+                .getTextFields()
+                .stream()
+                .map(TextInputControl::getText)
+                .collect(Collectors.toList()));
+        result.setOptions(model.getOptionTiles()
+                .stream()
+                .map(textFieldTileAnswerOption -> {
+                    List<String> cells =
+                            textFieldTileAnswerOption.getTextFields()
+                                    .stream()
+                                    .map(TextInputControl::getText)
+                                    .collect(Collectors.toList());
+                    boolean correct = textFieldTileAnswerOption.isCorrect();
+                    return new AnswerOption<>(correct, cells);
+                })
+                .collect(Collectors.toList()));
+        return result;
     }
 }

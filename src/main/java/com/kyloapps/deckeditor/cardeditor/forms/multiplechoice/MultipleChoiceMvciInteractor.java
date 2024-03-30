@@ -20,7 +20,7 @@ public class MultipleChoiceMvciInteractor {
     }
 
     private void configureCompositeDirtyProperty() {
-        model.getCompositeDirtyProperty().addAll(model.getQuestionTile().getMasterDirtyProperty(), model.getDeepDirtyList());
+        model.getCompositeDirtyProperty().addAll(model.getQuestionTile().getMasterDirtyProperty(), model.getDeepDirtyList(), model.getImageTile().getMasterDirtyProperty());
     }
 
     public void manageOptionCount() {

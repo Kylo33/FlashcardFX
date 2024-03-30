@@ -9,4 +9,6 @@ public interface CardController<M extends Flashcard> {
     DirtyProperty getDirtyProperty();
     <T> T accept(CardControllerVisitor<T> cardControllerVisitor);
     void loadCard(M flashcard);
+
+    M toFlashcard();
 }
