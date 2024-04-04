@@ -92,6 +92,7 @@ public class DeckEditorMvciInteractor {
         model.getCurrentDeck().getFlashcards().setAll(
                 model.getCardEditorControllers()
                         .stream()
+                        .filter(controller -> controller.getCardController() != null)
                         .map(controller -> controller.getCardController().toFlashcard())
                         .collect(Collectors.toList()));
         try {

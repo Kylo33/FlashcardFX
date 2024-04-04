@@ -5,6 +5,7 @@ import com.kyloapps.deckeditor.cardeditor.forms.CardControllerVisitor;
 import com.kyloapps.deckeditor.cardeditor.forms.classic.ClassicMvciController;
 import com.kyloapps.deckeditor.cardeditor.forms.multiplechoice.MultipleChoiceMvciController;
 import com.kyloapps.deckeditor.cardeditor.forms.table.TableMvciController;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
 import javafx.util.StringConverter;
@@ -41,11 +42,26 @@ public class CardTypeComboBoxFactory {
     };
 
     static ComboBox<CardController<?>> createCardTypeComboBox() {
+        MultipleChoiceMvciController mcq = new MultipleChoiceMvciController();
         ComboBox<CardController<?>> controllerComboBox = new ComboBox<>(FXCollections.observableArrayList(
-                new MultipleChoiceMvciController(),
+                mcq,
                 new ClassicMvciController(),
                 new TableMvciController()
         ));
+
+        // TODO Clean up
+
+        new Thread(() -> {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            Platform.runLater(() -> {
+                controllerComboBox.setValue(mcq);
+            });
+        }).start();
+
         controllerComboBox.setConverter(controllerStringConverter);
         return controllerComboBox;
     }

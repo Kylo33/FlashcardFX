@@ -49,11 +49,11 @@ public class DeepDirtyProperty<T> implements DirtyProperty {
                 ()
                         -> {
                     if (dirtyProperty.get(0) == null) return false;
-                    if (baseProperty.get() == null || currentProperty.get() == null)
-                        return baseProperty.get() == currentProperty.get();
+                    if (baseProperty.get() == null || currentProperty.get() == null) {
+                        return baseProperty.get() != currentProperty.get();
+                    }
                     return !baseProperty.get().equals(currentProperty.get()) || dirtyProperty.get(0).isDirty();
-                },
-                currentProperty, baseProperty, dirtyProperty));
+                }, currentProperty, baseProperty, dirtyProperty));
     }
 
     @Override
