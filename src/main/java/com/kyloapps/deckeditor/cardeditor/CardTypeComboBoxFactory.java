@@ -42,26 +42,11 @@ public class CardTypeComboBoxFactory {
     };
 
     static ComboBox<CardController<?>> createCardTypeComboBox() {
-        MultipleChoiceMvciController mcq = new MultipleChoiceMvciController();
         ComboBox<CardController<?>> controllerComboBox = new ComboBox<>(FXCollections.observableArrayList(
-                mcq,
+                new MultipleChoiceMvciController(),
                 new ClassicMvciController(),
                 new TableMvciController()
         ));
-
-        // TODO Clean up
-
-        new Thread(() -> {
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            Platform.runLater(() -> {
-                controllerComboBox.setValue(mcq);
-            });
-        }).start();
-
         controllerComboBox.setConverter(controllerStringConverter);
         return controllerComboBox;
     }

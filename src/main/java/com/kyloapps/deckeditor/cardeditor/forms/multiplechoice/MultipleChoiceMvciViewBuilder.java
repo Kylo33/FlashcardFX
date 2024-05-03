@@ -27,8 +27,8 @@ public class MultipleChoiceMvciViewBuilder implements Builder<Region> {
 
     private ObservableList<TextFieldTileAnswerOption> createTextFieldTileAnswerOptionBoundList() {
         return EasyBind.mapBacked(model.getOptions(), answerOption -> {
-            TextFieldTileAnswerOption result = new TextFieldTileAnswerOption("Answer Option", "Enter an answer choice.", answerOption.isCorrect());
-            result.getTextFields().get(0).textProperty().bindBidirectional(answerOption.getContent());
+            TextFieldTileAnswerOption result = new TextFieldTileAnswerOption("Answer Option", "Enter an answer choice.", answerOption.getContent());
+            result.setCorrect(answerOption.isCorrect());
             answerOption.correctProperty().bindBidirectional(result.correctProperty());
             return result;
         });
@@ -37,11 +37,10 @@ public class MultipleChoiceMvciViewBuilder implements Builder<Region> {
     @Override
     public Region build() {
         return new VBox(15,
-                ClassicMvciViewBuilder.createSimpleBoundTile("Question", "Enter the flashcard's question.",
-                        model.questionProperty()),
-                ClassicMvciViewBuilder.createSimpleBoundTile("Image", "Enter an image URL — optional.",
-                        model.questionProperty()),
-                createSpinnerTile(), createOptionBox());
+                ClassicMvciViewBuilder.createQuestionTile(model.questionProperty()),
+                ClassicMvciViewBuilder.createImageTile(model.imageUrlProperty()),
+                createSpinnerTile(),
+                createOptionBox());
     }
 
     private Node createOptionBox() {

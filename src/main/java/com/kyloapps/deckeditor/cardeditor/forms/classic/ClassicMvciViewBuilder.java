@@ -17,17 +17,17 @@ public class ClassicMvciViewBuilder implements Builder<Region> {
     @Override
     public Region build() {
         return new VBox(15,
-                createSimpleBoundTile("Question", "Enter the flashcard's question.",
-                        model.questionProperty()),
-                createSimpleBoundTile("Image", "Enter an image URL — optional.",
-                        model.imageUrlProperty()),
-                createSimpleBoundTile("Answer", "Enter the flashcard's answer.",
+                createQuestionTile(model.questionProperty()),
+                createImageTile(model.imageUrlProperty()),
+                new TextFieldTile("Answer", "Enter the flashcard's answer.",
                         model.answerProperty()));
     }
 
-    public static Node createSimpleBoundTile( String title, String desc, StringProperty propertyToBindTo) {
-        TextFieldTile result = new TextFieldTile(title, desc);
-        result.getTextFields().get(0).textProperty().bindBidirectional(propertyToBindTo);
-        return result;
+    public static Node createQuestionTile(StringProperty propertyToBindTo) {
+        return new TextFieldTile("Question", "Enter the flashcard's question.", propertyToBindTo);
+    }
+
+    public static Node createImageTile(StringProperty propertyToBindTo) {
+        return new TextFieldTile("Image", "Enter an image URL — optional.", propertyToBindTo);
     }
 }

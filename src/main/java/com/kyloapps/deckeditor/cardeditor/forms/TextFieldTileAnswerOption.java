@@ -1,6 +1,9 @@
 package com.kyloapps.deckeditor.cardeditor.forms;
 
 import atlantafx.base.theme.Styles;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
@@ -11,33 +14,23 @@ import org.nield.dirtyfx.beans.DirtyBooleanProperty;
 /** Subclass of TextFieldTile that includes an option to be correct or not. */
 public class TextFieldTileAnswerOption extends TextFieldTile{
 
-    public static final String SUCCESS_TOGGLE_STYLE = "success-toggle";
-    private final DirtyBooleanProperty correct;
+    public static final String SUCCESS_TOGGLE_STYLE_CLASS = "success-toggle";
+    private final DirtyBooleanProperty correct = new DirtyBooleanProperty(false);
 
-    public TextFieldTileAnswerOption(String title, String description) {
-        this(title, description, false);
+    public TextFieldTileAnswerOption(String title, String description, ObservableList<StringProperty> stringProperties) {
+        super(title, description, stringProperties);
+        setAction(new HBox(TextFieldTileAnswerOption.TEXT_BOX_PADDING, createCorrectToggle(), getAction()));
     }
 
-    public TextFieldTileAnswerOption(String title, String description, boolean correct) {
-        super(title, description);
-
-        this.correct = new DirtyBooleanProperty(correct);
-        getMasterDirtyProperty().add(this.correct);
-
-        Node textFieldTileActionNode = getAction();
-        setAction(new HBox(TEXT_BOX_PADDING, createCorrectToggle(), textFieldTileActionNode));
+    public TextFieldTileAnswerOption(String title, String description, StringProperty stringProperty) {
+        this(title, description, FXCollections.observableArrayList(stringProperty));
     }
 
     private Node createCorrectToggle() {
         ToggleButton result = new ToggleButton(null, new FontIcon(MaterialDesignC.CHECK));
-        result.getStyleClass().addAll(SUCCESS_TOGGLE_STYLE, Styles.BUTTON_ICON);
+        result.getStyleClass().addAll(SUCCESS_TOGGLE_STYLE_CLASS, Styles.BUTTON_ICON);
         result.selectedProperty().bindBidirectional(this.correct);
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return getTextFields().get(0).getText();
     }
 
     @Override

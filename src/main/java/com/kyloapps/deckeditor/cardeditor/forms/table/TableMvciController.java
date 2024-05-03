@@ -5,10 +5,16 @@ import com.kyloapps.deckeditor.cardeditor.forms.CardControllerVisitor;
 import com.kyloapps.deckeditor.cardeditor.forms.TextFieldTileAnswerOption;
 import com.kyloapps.domain.AnswerOption;
 import com.kyloapps.domain.TableFlashcard;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.layout.Region;
 import org.nield.dirtyfx.tracking.DirtyProperty;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,55 +47,32 @@ public class TableMvciController implements CardController<TableFlashcard> {
 
     @Override
     public void loadCard(TableFlashcard flashcard) {
-        int rows = flashcard.getHeaders().size();
-        int columns = flashcard.getOptions().size();
+        model.setQuestion(flashcard.getQuestion());
+        model.setImageUrl(flashcard.getImage());
 
-        model.setRowCount(rows);
-        model.setColumnCount(columns);
+        model.getHeaders().setAll(copyStringPropertyList(flashcard.getHeaders()));
+        model.getOptions().setAll(copyOptions(flashcard.getOptions()));
+    }
 
-        model.getHeaders().setTextFieldCount(columns);
-        model.getQuestionTile().getTextFields().get(0).setText(flashcard.getQuestion());
+    private static List<StringProperty> copyStringPropertyList(List<StringProperty> listToCopy) {
+        return listToCopy.stream()
+                .map(stringProperty -> new SimpleStringProperty(stringProperty.get()))
+                .collect(Collectors.toList());
+    }
 
-        for (int i = 0, c = flashcard.getHeaders().size(); i < c; i++) {
-            model.getHeaders().getTextFields().get(i).setText(flashcard.getHeaders().get(i).get());
-        }
-
-        model.getOptionTiles().clear();
-        for (int i = 0; i < rows; i++) {
-            TextFieldTileAnswerOption result = new TextFieldTileAnswerOption("Answer Option", "Enter an answer choice.");
-            result.setCorrect(flashcard.getOptions().get(i).isCorrect());
-
-            result.setTextFieldCount(columns);
-            for (int j = 0; j < columns; j++) {
-                String flashcardText = flashcard.getOptions().get(i).getContent().get(j).get();
-                result.getTextFields().get(j).setText(flashcardText);
-            }
-
-            model.getOptionTiles().add(result);
-        }
+    private static List<AnswerOption<ObservableList<StringProperty>>> copyOptions(List<AnswerOption<ObservableList<StringProperty>>> copyFrom) {
+        return copyFrom.stream().map(option ->
+                new AnswerOption<>(option.isCorrect(), FXCollections.observableArrayList(copyStringPropertyList(option.getContent())))
+        ).collect(Collectors.toList());
     }
 
     @Override
     public TableFlashcard toFlashcard() {
         TableFlashcard result = new TableFlashcard();
-        result.setQuestion(model.getQuestionTile().getTextFields().get(0).getText());
-        result.setHeaders(model.getHeaders()
-                .getTextFields()
-                .stream()
-                .map(TextInputControl::getText)
-                .collect(Collectors.toList()));
-        result.setOptions(model.getOptionTiles()
-                .stream()
-                .map(textFieldTileAnswerOption -> {
-                    List<String> cells =
-                            textFieldTileAnswerOption.getTextFields()
-                                    .stream()
-                                    .map(TextInputControl::getText)
-                                    .collect(Collectors.toList());
-                    boolean correct = textFieldTileAnswerOption.isCorrect();
-                    return new AnswerOption<>(correct, cells);
-                })
-                .collect(Collectors.toList()));
+        result.setQuestion(model.getQuestion());
+        result.setImage(model.getImageUrl());
+        result.getHeaders().setAll(copyStringPropertyList(model.getHeaders()));
+        result.getOptions().setAll(copyOptions(model.getOptions()));
         return result;
     }
 }
