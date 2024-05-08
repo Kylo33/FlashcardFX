@@ -16,11 +16,6 @@ public class ClassicMvciController implements CardController<ClassicFlashcard> {
         this.model = new ClassicMvciModel();
         this.interactor = new ClassicMvciInteractor(model);
         this.viewBuilder = new ClassicMvciViewBuilder(model);
-
-        model.getCompositeDirtyProperty().addListener((observable, oldValue, newValue) -> {
-            System.out.println(newValue + " dirty");
-            System.out.println(model.getQuestion());
-        });
     }
 
     @Override

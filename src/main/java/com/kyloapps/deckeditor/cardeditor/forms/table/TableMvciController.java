@@ -2,19 +2,15 @@ package com.kyloapps.deckeditor.cardeditor.forms.table;
 
 import com.kyloapps.deckeditor.cardeditor.forms.CardController;
 import com.kyloapps.deckeditor.cardeditor.forms.CardControllerVisitor;
-import com.kyloapps.deckeditor.cardeditor.forms.TextFieldTileAnswerOption;
 import com.kyloapps.domain.AnswerOption;
 import com.kyloapps.domain.TableFlashcard;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.TextInputControl;
 import javafx.scene.layout.Region;
 import org.nield.dirtyfx.tracking.DirtyProperty;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,7 +44,7 @@ public class TableMvciController implements CardController<TableFlashcard> {
     @Override
     public void loadCard(TableFlashcard flashcard) {
         model.setQuestion(flashcard.getQuestion());
-        model.setImageUrl(flashcard.getImage());
+        model.setImageUrl(flashcard.getImageUrl());
 
         model.getHeaders().setAll(copyStringPropertyList(flashcard.getHeaders()));
         model.getOptions().setAll(copyOptions(flashcard.getOptions()));
@@ -70,7 +66,7 @@ public class TableMvciController implements CardController<TableFlashcard> {
     public TableFlashcard toFlashcard() {
         TableFlashcard result = new TableFlashcard();
         result.setQuestion(model.getQuestion());
-        result.setImage(model.getImageUrl());
+        result.setImageUrl(model.getImageUrl());
         result.getHeaders().setAll(copyStringPropertyList(model.getHeaders()));
         result.getOptions().setAll(copyOptions(model.getOptions()));
         return result;

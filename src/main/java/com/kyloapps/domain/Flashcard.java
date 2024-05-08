@@ -11,4 +11,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 })
 public interface Flashcard {
     <T> T accept(FlashcardVisitor<T> flashcardVisitor);
+    String getQuestion();
+    String getImageUrl();
 }

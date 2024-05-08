@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class TableFlashcard implements Flashcard {
     private StringProperty question = new SimpleStringProperty("");
-    private StringProperty image = new SimpleStringProperty("");
+    private StringProperty imageUrl = new SimpleStringProperty("");
     private ObservableList<StringProperty> headers = FXCollections.observableArrayList();
     private ObservableList<AnswerOption<ObservableList<StringProperty>>> options = FXCollections.observableArrayList();
 
@@ -74,15 +74,15 @@ public class TableFlashcard implements Flashcard {
         return flashcardVisitor.visit(this);
     }
 
-    public String getImage() {
-        return image.get();
+    public String getImageUrl() {
+        return imageUrl.get();
     }
 
-    public StringProperty imageProperty() {
-        return image;
+    public StringProperty imageUrlProperty() {
+        return imageUrl;
     }
 
-    public void setImage(String image) {
-        this.image.set(image);
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl.set(imageUrl);
     }
 }

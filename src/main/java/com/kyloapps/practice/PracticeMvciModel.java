@@ -5,22 +5,10 @@ import com.kyloapps.domain.Flashcard;
 import javafx.beans.property.*;
 
 public class PracticeMvciModel {
-    private final ObjectProperty<Deck> currentDeck = new SimpleObjectProperty<>();
     private final IntegerProperty currentFlashcardIndex = new SimpleIntegerProperty();
-    private final BooleanProperty previousCardExists = new SimpleBooleanProperty();
-    private final BooleanProperty nextCardExists = new SimpleBooleanProperty();
-
-    public Deck getCurrentDeck() {
-        return currentDeck.get();
-    }
-
-    public ObjectProperty<Deck> currentDeckProperty() {
-        return currentDeck;
-    }
-
-    public void setCurrentDeck(Deck currentDeck) {
-        this.currentDeck.set(currentDeck);
-    }
+    private final ObjectProperty<Flashcard> currentFlashcard = new SimpleObjectProperty<>();
+    private final StringProperty question = new SimpleStringProperty(currentFlashcard.get().getQuestion());
+    private final StringProperty imageUrl = new SimpleStringProperty(currentFlashcard.get().getImageUrl());
 
     public int getCurrentFlashcardIndex() {
         return currentFlashcardIndex.get();
@@ -30,31 +18,35 @@ public class PracticeMvciModel {
         return currentFlashcardIndex;
     }
 
-    public void setCurrentFlashcardIndex(int currentFlashcardIndex) {
-        this.currentFlashcardIndex.set(currentFlashcardIndex);
+    public Flashcard getCurrentFlashcard() {
+        return currentFlashcard.get();
     }
 
-    public boolean isPreviousCardExists() {
-        return previousCardExists.get();
+    public ObjectProperty<Flashcard> currentFlashcardProperty() {
+        return currentFlashcard;
     }
 
-    public BooleanProperty previousCardExistsProperty() {
-        return previousCardExists;
+    public String getQuestion() {
+        return question.get();
     }
 
-    public void setPreviousCardExists(boolean previousCardExists) {
-        this.previousCardExists.set(previousCardExists);
+    public StringProperty questionProperty() {
+        return question;
     }
 
-    public boolean isNextCardExists() {
-        return nextCardExists.get();
+    public void setQuestion(String question) {
+        this.question.set(question);
     }
 
-    public BooleanProperty nextCardExistsProperty() {
-        return nextCardExists;
+    public String getImageUrl() {
+        return imageUrl.get();
     }
 
-    public void setNextCardExists(boolean nextCardExists) {
-        this.nextCardExists.set(nextCardExists);
+    public StringProperty imageUrlProperty() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl.set(imageUrl);
     }
 }

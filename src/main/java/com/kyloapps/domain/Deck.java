@@ -2,6 +2,7 @@ package com.kyloapps.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import javafx.beans.Observable;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -15,12 +16,6 @@ public class Deck {
     private final StringProperty title = new SimpleStringProperty();
     private final StringProperty description = new SimpleStringProperty();
     private ObservableList<Flashcard> flashcards;
-
-    public Deck(String title, String description, ObservableList<Flashcard> flashcards) {
-        this.title.set(title);
-        this.description.set(description);
-        this.flashcards = flashcards;
-    }
 
     public Deck() {
         flashcards = FXCollections.observableArrayList();
