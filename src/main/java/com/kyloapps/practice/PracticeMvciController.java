@@ -15,7 +15,8 @@ public class PracticeMvciController {
     public PracticeMvciController(ObjectProperty<Deck> currentDeckProperty) {
         model = new PracticeMvciModel();
         interactor = new PracticeMvciInteractor(model);
-        view = new PracticeMvciViewBuilder(model);
+        view = new PracticeMvciViewBuilder(model, interactor::reload);
+        model.currentDeckProperty().bind(currentDeckProperty);
     }
 
     public Region getView() {
