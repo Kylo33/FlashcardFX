@@ -1,6 +1,9 @@
 package com.kyloapps.practice;
 
+import com.kyloapps.domain.Deck;
+import com.kyloapps.domain.Flashcard;
 import javafx.beans.binding.Bindings;
+import javafx.scene.image.Image;
 
 public class PracticeMvciInteractor {
 
@@ -10,12 +13,25 @@ public class PracticeMvciInteractor {
         this.model = model;
         manageNextPrevExists();
         bindQuestion();
+        bindImage();
+    }
+
+    private void bindImage() {
+        model.imageProperty().bind(Bindings.createObjectBinding(() -> {
+            if (model.getCurrentDeck() == null) return null;
+            String imageUrl = getCurrentFlashcard().getImageUrl();
+            return imageUrl == null || imageUrl.isBlank() ? null : new Image(imageUrl.strip(), true);
+        }, model.currentDeckProperty(), model.currentDeckIndexProperty()));
+    }
+
+    private Flashcard getCurrentFlashcard() {
+        return model.getCurrentDeck().getFlashcards().get(model.getCurrentDeckIndex());
     }
 
     private void bindQuestion() {
         model.questionProperty().bind(Bindings.createStringBinding(() -> {
             if (model.getCurrentDeck() == null) return "";
-            return model.getCurrentDeck().getFlashcards().get(model.getCurrentDeckIndex()).getQuestion();
+            return getCurrentFlashcard().getQuestion();
         }, model.currentDeckProperty(), model.currentDeckIndexProperty()));
     }
 
