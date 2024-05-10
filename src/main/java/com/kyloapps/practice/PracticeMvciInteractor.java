@@ -1,8 +1,8 @@
 package com.kyloapps.practice;
 
-import com.kyloapps.domain.Deck;
 import com.kyloapps.domain.Flashcard;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.scene.image.Image;
 
 public class PracticeMvciInteractor {
@@ -36,14 +36,26 @@ public class PracticeMvciInteractor {
     }
 
     private void manageNextPrevExists() {
-        model.nextExistsProperty().bind(Bindings.createBooleanBinding(
-                () -> {
-                    if (model.getCurrentDeck() == null)
-                        return false;
-                    return model.getCurrentDeckIndex() < model.getCurrentDeck().getFlashcards().size() - 1;
-                },
-                model.currentDeckProperty(),
-                model.currentDeckIndexProperty()));
+        BooleanBinding nextExistsBinding = new BooleanBinding() {
+            {
+                bind(model.currentDeckProperty(), model.currentDeckIndexProperty());
+                if (model.getCurrentDeck() != null)
+                    bind(model.getCurrentDeck().getFlashcards());
+                model.currentDeckProperty().addListener((observable, oldValue, newValue) -> {
+                    if (oldValue != null)
+                        unbind(oldValue.getFlashcards());
+                    if (newValue != null)
+                        bind(newValue.getFlashcards());
+                });
+            }
+            @Override
+            protected boolean computeValue() {
+                if (model.getCurrentDeck() == null)
+                    return false;
+                return model.getCurrentDeckIndex() < model.getCurrentDeck().getFlashcards().size() - 1;
+            }
+        };
+        model.nextExistsProperty().bind(nextExistsBinding);
 
         model.prevExistsProperty().bind(Bindings.createBooleanBinding(
                 () -> model.getCurrentDeckIndex() > 0,

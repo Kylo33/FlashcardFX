@@ -18,7 +18,7 @@ public class HomeMvciInteractor {
     }
 
     public void beginPractice(Deck deck) {
-        currentDeckProperty.setValue(deck);
         selectedPageProperty.setValue(Page.PRACTICE);
+        currentDeckProperty.setValue(deck);
     }
 }
