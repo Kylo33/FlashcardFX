@@ -11,6 +11,7 @@ public class PracticeMvciInteractor {
 
     public PracticeMvciInteractor(PracticeMvciModel model) {
         this.model = model;
+        model.currentDeckProperty().addListener((observable, oldValue, newValue) -> model.setCurrentDeckIndex(0));
         manageNextPrevExists();
         bindQuestion();
         bindImage();
@@ -62,7 +63,7 @@ public class PracticeMvciInteractor {
                 model.currentDeckIndexProperty()));
     }
 
-    public void reload() {
-        model.setCurrentDeckIndex(0);
+    public void unload() {
+        model.setCurrentDeck(null);
     }
 }

@@ -1,24 +1,23 @@
 package com.kyloapps.practice;
 
 import atlantafx.base.theme.Styles;
-import com.kyloapps.domain.Deck;
 import com.kyloapps.domain.Flashcard;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Builder;
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -27,11 +26,12 @@ import org.kordamp.ikonli.materialdesign2.MaterialDesignC;
 public class PracticeMvciViewBuilder implements Builder<Region> {
 
     private final PracticeMvciModel model;
-    private final Runnable onVisibleAction;
+    private final Runnable unloadAction;
+    private static final AnswerCreatorVisitor answerCreatorVisitor = new AnswerCreatorVisitor();
 
-    public PracticeMvciViewBuilder(PracticeMvciModel model, Runnable onVisibleAction) {
+    public PracticeMvciViewBuilder(PracticeMvciModel model, Runnable unloadAction) {
         this.model = model;
-        this.onVisibleAction = onVisibleAction;
+        this.unloadAction = unloadAction;
     }
 
     @Override
@@ -90,6 +90,38 @@ public class PracticeMvciViewBuilder implements Builder<Region> {
 
         rootGridPane.add(questionPane, 0, 0);
 
+        ObjectProperty<AnswerDisplay> answerDisplayObjectProperty = new SimpleObjectProperty<>();
+        answerDisplayObjectProperty.bind(Bindings.createObjectBinding(() -> {
+            if (model.getCurrentDeck() == null) return null;
+            Flashcard currentFlashcard = model.getCurrentDeck().getFlashcards().get(model.getCurrentDeckIndex());
+            return currentFlashcard.accept(answerCreatorVisitor);
+        }, model.currentDeckProperty(), model.currentDeckIndexProperty()));
+
+        HBox answerBox = new HBox();
+        answerBox.setAlignment(Pos.CENTER);
+
+        ScrollPane scrollPaneContainer = new ScrollPane(answerBox);
+        scrollPaneContainer.setFitToWidth(true);
+        scrollPaneContainer.setFitToHeight(true);
+
+        rootGridPane.add(scrollPaneContainer, 0, 1);
+        GridPane.setVgrow(scrollPaneContainer, Priority.ALWAYS);
+
+        rootGridPane.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
+            if (mouseEvent.getButton().equals(MouseButton.PRIMARY))
+                answerDisplayObjectProperty.get().getForwardAction().run();
+            if (mouseEvent.getButton().equals(MouseButton.SECONDARY))
+                answerDisplayObjectProperty.get().getBackAction().run();
+        });
+
+        answerDisplayObjectProperty.addListener((observable, oldValue, newValue) -> {
+            if (newValue == null) return;
+            if (answerBox.getChildren().isEmpty())
+                answerBox.getChildren().add(answerDisplayObjectProperty.get().getAnswerRegion());
+            else
+                answerBox.getChildren().set(0, answerDisplayObjectProperty.get().getAnswerRegion());
+        });
+
         result.getChildren().add(rootGridPane);
         return result;
     }
@@ -141,7 +173,7 @@ public class PracticeMvciViewBuilder implements Builder<Region> {
 
     private void addVisibleListener(Region result) {
         result.visibleProperty().addListener((observable, wasVisible, isVisible) -> {
-            if (isVisible) onVisibleAction.run();
+            if (!isVisible) unloadAction.run();
         });
     }
 }

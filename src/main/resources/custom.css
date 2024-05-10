@@ -18,3 +18,14 @@
     -fx-background-color: -color-neutral-muted;
     -fx-padding: 10;
 }
+
+.mcq-option {
+    -fx-background-radius: 5px;
+    -fx-padding: 3px;
+}
+
+.table-cell {
+    -fx-border-color: black;
+    -fx-border-width: 2px;
+    -fx-border-insets: -1px;
+}

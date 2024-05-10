@@ -4,9 +4,6 @@ import com.kyloapps.domain.Deck;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.layout.Region;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 public class PracticeMvciController {
     private final PracticeMvciViewBuilder view;
     private final PracticeMvciModel model;
@@ -15,8 +12,8 @@ public class PracticeMvciController {
     public PracticeMvciController(ObjectProperty<Deck> currentDeckProperty) {
         model = new PracticeMvciModel();
         interactor = new PracticeMvciInteractor(model);
-        view = new PracticeMvciViewBuilder(model, interactor::reload);
-        model.currentDeckProperty().bind(currentDeckProperty);
+        view = new PracticeMvciViewBuilder(model, interactor::unload);
+        model.currentDeckProperty().bindBidirectional(currentDeckProperty);
     }
 
     public Region getView() {
