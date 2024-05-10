@@ -190,6 +190,8 @@ public class DeckEditorMvciViewBuilder implements Builder<Region> {
     private Node createDeckCreator() {
         Tile result = new Tile("Create Deck", "Create a new deck.");
         Button createButtonTileAction = new Button("Create", new FontIcon(MaterialDesignP.PLUS));
+        createButtonTileAction.disableProperty().bind(Bindings.createBooleanBinding(
+                () -> model.getCurrentDirectory() == null, model.currentDirectoryProperty()));
         createButtonTileAction.getStyleClass().add(Styles.SUCCESS);
         result.setAction(createButtonTileAction);
 
@@ -260,6 +262,8 @@ public class DeckEditorMvciViewBuilder implements Builder<Region> {
         Tile result = new Tile("Switch Decks", "Choose another deck to edit.");
 
         ComboBox<Deck> deckComboBox = new ComboBox<>();
+        deckComboBox.disableProperty().bind(Bindings.createBooleanBinding(
+                () -> model.getCurrentDirectory() == null, model.currentDirectoryProperty()));
         deckComboBox.setItems(model.getDecks());
         deckComboBox.valueProperty().bindBidirectional(model.currentDeckProperty());
         deckComboBox.setOnAction((event) -> switchDecksAction.run());

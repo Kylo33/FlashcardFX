@@ -79,11 +79,15 @@
                 <version>0.0.6</version>
                 <executions>
                     <execution>
-                        <!-- Default configuration for running -->
-                        <!-- Usage: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>com.kyloapps.App</mainClass>
+                            <launcher>launch.sh</launcher>
+                            <compress>2</compress>
+                            <jlinkZipName>flashcard-fx</jlinkZipName>
+                            <jlinkImageName>flashcard-fx</jlinkImageName>
+                            <noManPages>true</noManPages>
+                            <noHeaderFiles>true</noHeaderFiles>
                         </configuration>
                     </execution>
                 </executions>
