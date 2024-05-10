@@ -9,7 +9,6 @@ module com.kyloapps {
     requires com.fasterxml.jackson.dataformat.xml;
     requires java.desktop;
     requires com.tobiasdiez.easybind;
-    requires com.google.common;
     requires dirtyfx;
     requires atlantafx.base;
     exports com.kyloapps;

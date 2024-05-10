@@ -1,7 +1,5 @@
 package com.kyloapps.mainmvci;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import javafx.scene.Node;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Toggle;
@@ -85,10 +83,15 @@ public class MainMvciViewBuilder implements Builder<Region> {
             button.getStyleClass().add("toggle-button");
         });
 
-        BiMap<Page, Toggle> pageToggleMap = HashBiMap.create();
+
+        Map<Page, Toggle> pageToggleMap = new HashMap<>();
+        Map<Toggle, Page> togglePageMap = new HashMap<>();
         pageToggleMap.put(Page.HOME, homeButton);
+        togglePageMap.put(homeButton, Page.HOME);
         pageToggleMap.put(Page.EDITOR, editorButton);
+        togglePageMap.put(editorButton, Page.EDITOR);
         pageToggleMap.put(Page.SETTINGS, settingsButton);
+        togglePageMap.put(settingsButton, Page.SETTINGS);
         model.selectedPageProperty().addListener((observable, oldPage, newPage) -> {
             if (pageToggleMap.containsKey(newPage)) {
                 pageToggleMap.get(newPage).setSelected(true);
@@ -97,7 +100,7 @@ public class MainMvciViewBuilder implements Builder<Region> {
 
         toolbarButtonGroup.selectedToggleProperty().addListener((observable, oldToggle, newToggle) -> {
             if (newToggle == null) return;
-            Page newPage = pageToggleMap.inverse().get(newToggle);
+            Page newPage = togglePageMap.get(newToggle);
             model.setSelectedPage(newPage);
         });
 
