@@ -13,7 +13,7 @@ A flashcard app built with JavaFX for Harvard's CS50x -- "Introduction to Comput
   + Classic flashcards
   + Multiple choice flashcards
   + Table-based flashcards
-+ ⌨️ Easily scriptable with [JSON)
++ ⌨️ Easily scriptable with JSON
 + 📝 Built-in deck editor
 + 🌗 Several light-mode and dark-mode themes
 
