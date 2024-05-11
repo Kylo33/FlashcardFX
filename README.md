@@ -1,45 +1,109 @@
-# FlashcardApp
+# FlashcardFX
+#### Video Demo:  <URL HERE>
+#### Description:
+A flashcard app built with JavaFX for Harvard's CS50x -- "Introduction to Computer Science".
 
-## by Kylo33 for Harvard's CS50x
+![Demo Image](https://github.com/Kylo33/FlashcardFX/assets/56988649/fda59ea6-35f4-469c-a5b3-c8b3f7602408)
 
-Hi! This flashcard app is the project I chose to make for my final project as part of Harvard's CS50.
 
-# Features
+##### Features:
 
-## Support for multiple types of flashcards:
++ 🖼️ Built-in support for images
++ ⭐ Several types of flashcards:
+  + Classic flashcards
+  + Multiple choice flashcards
+  + Table-based flashcards
++ ⌨️ Easily scriptable with [JSON)
++ 📝 Built-in deck editor
++ 🌗 Several light-mode and dark-mode themes
 
-+ Classic flashcards
-+ Table-style flashcards
-+ Multiple choice flashcards
+#### Installation:
 
-## Simple support for scripting
+Download the latest release (on the right). It is a 'fat jar' -- the dependencies are packaged with the program. Simply run the jar on your computer, and you are good to go!
 
-Decks are stored as JSON files, which means they support creations via scripts. This was a key consideration in the creation of this program because writing scripts is my preferred way to create flashcards quickly! Languages such as JavaScript and Python have excellent support for interacting with JSON files, which makes the creation of flashcards much easier for those who choose to.
+##### Quick Start:
 
-## In-depth deck creation menu
+1. Select a location to store your decks in the **Settings** page.
+2. Create a new deck on the **Deck Editor** page.
+3. Head to the home page to begin practicing!!
 
-The deck creation menu supports a variety of options including editing all aspects of a deck's attributes:
+#### JSON Reference:
 
-+ Deck title
-+ Deck description
-+ Add/delete cards
-+ Add/delete decks
-+ Adding images to cards
-+ Selecting multiple correct answers
+```json
+{
+  "title" : "Deck Title",
+  "description" : "Deck Description",
+  "flashcards" : [ {
+    "type" : "classic",
+    "question" : "Classic Flashcard Question",
+    "answer" : "Classic Flashcard Answer",
+    "imageUrl" : "Classic Flashcard Image URL"
+  }, {
+    "type" : "multipleChoice",
+    "question" : "Multiple Choice Question",
+    "imageUrl" : "Multiple Choice Image URL",
+    "options" : [ {
+      "correct" : true,
+      "content" : "Multiple Choice Answer 1"
+    }, {
+      "correct" : false,
+      "content" : "Multiple Choice Answer 2"
+    } ]
+  }, {
+    "type" : "table",
+    "question" : "Table Question",
+    "imageUrl" : "Table Image URL",
+    "headers" : [ "Table Header Column 1", "Table Header Column 2" ],
+    "options" : [ {
+      "correct" : false,
+      "content" : [ "Table Header Column 1 Row 1", "Table Header Column 2 Row 1" ]
+    }, {
+      "correct" : true,
+      "content" : [ "Table Header Column 1 Row 2", "Table Header Column 2 Row 2" ]
+    } ]
+  } ]
+}
+```
 
-## Various color themes
+#### Screenshots:
 
-Using the [atlantafx](https://mkpaz.github.io/atlantafx/) project, the app supports a variety of color themes: both light and dark. All colors in the application are based on these themes, so nothing will feel out of place, no matter which theme you use.
+##### Deck Editor
 
-## Performance
+![Deck Editor](https://github.com/Kylo33/FlashcardFX/assets/56988649/74794a19-82c4-417f-8364-488035ae1dc6)
 
-Performance was an important consideration for the project, especially with the file operations. By working towards reducing the load times, I learned how to manage threads effectively.
+##### Dark Theme
 
-All decks are loaded without their images when the program starts. For directories with a small number of decks, they will appear instantly. For others, the application will load with a loading bar to indicate that the remaining decks are still loading.
-When a deck is selected for practice, all of the images are loaded sequentially in another thread.
+![Nord Dark Color Scheme](https://github.com/Kylo33/FlashcardFX/assets/56988649/c3e3068c-de33-461c-ab33-885ca0c30d62)
 
-# Reflection
+##### Home Page
 
-Overall, this project was very difficult for me. I spent a few months learning java from the University of Helensiki's MOOC before coming back to finish this project. I chose to use javafx because I had a basic understanding of it from that course, but the project was much more difficult than I had expected. For one, I think the scope was bigger than I realized. In addition, it quickly got disorganized. Although I spent countless hours researching the **Model View Controller** architecture for GUI apps, my project still feels messy in that regard.
+![Home Page](https://github.com/Kylo33/FlashcardFX/assets/56988649/0a3a59ba-66f0-4fdf-a558-4af747bad9bb)
 
-I found the article [FXML isn't MVC](https://www.pragmaticcoding.ca/javafx/fxml_isnt_mvc) very useful in my learning about this model. My app still feels somewhat messy in its implementation of the Model-View-Controller architecture—such as the DisplayableFlashcard class which is not clearly in one category or another—but I feel grateful for the opportunity to get a brief introduction to the MVC architecture which I know is used in Web Development, which I intend on pursuing next.
+#### Building from Source:
+
+First, clone the repository:
+
+```
+git clone https://github.com/Kylo33/FlashcardFX.git
+cd FlashcardFX
+```
+
+Then, use **Maven** to build the app:
+
+```
+mvn package
+```
+
+To use the app, head to the `target` directory, and run the `jar` file (`java -jar flashcard-fx-{version}.jar` or `chmod +x flashcard-fx-{version}.jar` and open it using your file manager).
+
+#### Reflection
+
+By far the most difficult part about building this project was creating the **Deck Editor** page. It was incredibly difficult to manage the 'dirty' states of so many modules and components, and the library I used ([DirtyFX](https://github.com/thomasnield/DirtyFX)) is unmaintained (I found some problems myself, but the maintainer is inactive & I don't want to support the library myself, as it is written in Kotlin). So, I ended up making some helper classes of my own (`DeepDirtyList` and `DeepDirtyProperty`) which helped tremendously.
+
+In addition, I restarted this project several times in an attempt to clean up my code. It still isn't perfect, but I am proud of the state it is in. If you look back at some of the older commits on this branch, I pretty much deleted everything after completing the project once. With my real-life time commitments, this was a difficult decision, and I really started to run out of motivation at some points. I am glad that I persevered, but I am unsure if the time I spent rebuilding the project was worth it.
+
+This project taught me a lot about object-oriented programming and designing GUI apps that I am extremely glad to have pursued. I chose to use JavaFX after a brief introduction in the Univeristy of Helsinki's Java Programming courses, but building a multi-screen app was much more challenging. I ended up using the MVCI-architecture proposed by Dave Barrett on [PragmaticCoding](https://www.pragmaticcoding.ca/javafx/mvci/) it works really well and he gives countless examples that served as a lot of guidance throughout the entire project.
+
+#### Contributors:
+
++ [Kylo33](https://github.com/Kylo33)
