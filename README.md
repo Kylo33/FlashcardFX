@@ -1,4 +1,6 @@
 # FlashcardFX
+## By Renn Gilbert
+
 #### Video Demo:  <URL HERE>
 #### Description:
 A flashcard app built with JavaFX for Harvard's CS50x -- "Introduction to Computer Science".
